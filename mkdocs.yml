@@ -58,3 +58,6 @@ extra:
     - icon: fontawesome/brands/github
       link: https://github.com/Ops-Talks/agronomist
       name: GitHub Ops-Talks/agronomist
+    - icon: fontawesome/solid/box-archive
+      link: https://github.com/orgs/Ops-Talks/repositories
+      name: Ops-Talks Projects
