@@ -37,6 +37,14 @@ poetry run ruff format .
 poetry run black .
 ```
 
+## CI (Quality Checks)
+
+The GitHub Actions workflow runs quality checks on each push to `main` and on pull requests.
+
+```sh
+poetry run task check
+```
+
 ## Building
 
 ### Using Make (recommended)

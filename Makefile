@@ -52,7 +52,7 @@ release:
 	fi
 	git tag $(TAG)
 	git push origin $(TAG)
-	@echo "✓ Release $(TAG) triggered!"
+	@echo "Release $(TAG) triggered!"
 
 install-dev:
 	poetry install --with dev

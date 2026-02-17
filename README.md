@@ -89,6 +89,9 @@ poetry run task check         # Run linters + tests
 poetry run task pre-commit    # Install and run pre-commit hooks
 ```
 
+### CI (Quality Checks)
+GitHub Actions runs `poetry run task check` on pushes to `main` and on pull requests.
+
 Or with `poe` alias (shorter):
 ```
 poe lint          # Run ruff and black
