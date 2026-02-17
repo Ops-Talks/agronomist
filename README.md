@@ -16,6 +16,7 @@ Ferramenta para detectar e atualizar versões dos módulos de OpenTofu/Terraform
 ```
 poetry install
 poetry run agronomist report --root . --output report.json
+poetry run agronomist report --root . --markdown report.md --output report.json
 poetry run agronomist update --root . --output report.json
 ```
 

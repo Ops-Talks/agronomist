@@ -10,6 +10,7 @@ from urllib.parse import urlparse
 from .config import CategoryRule, load_config
 from .git import GitClient
 from .github import GitHubClient
+from .markdown import write_markdown
 from .models import SourceRef
 from .report import build_report, write_report
 from .scanner import scan_sources
@@ -18,26 +19,48 @@ from .updater import apply_updates
 
 def _parse_args(argv: List[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(prog="agronomist")
-    parser.add_argument("--root", default=".")
-    parser.add_argument("--include", action="append", default=[])
-    parser.add_argument("--exclude", action="append", default=[])
-    parser.add_argument("--github-base-url", default="https://api.github.com")
-    parser.add_argument("--token", default=None)
-    parser.add_argument("--config", default=".agronomist.yaml")
-    parser.add_argument(
+
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    report_parser = subparsers.add_parser("report")
+    report_parser.add_argument("--root", default=".")
+    report_parser.add_argument("--include", action="append", default=[])
+    report_parser.add_argument("--exclude", action="append", default=[])
+    report_parser.add_argument("--github-base-url", default="https://api.github.com")
+    report_parser.add_argument("--token", default=None)
+    report_parser.add_argument("--config", default=".agronomist.yaml")
+    report_parser.add_argument(
         "--resolver",
         default="git",
         choices=["git", "github", "auto"],
         help="Como resolver a ultima versao: git, github ou auto",
     )
-
-    subparsers = parser.add_subparsers(dest="command", required=True)
-
-    report_parser = subparsers.add_parser("report")
     report_parser.add_argument("--output", default="report.json")
+    report_parser.add_argument(
+        "--markdown",
+        default=None,
+        help="Gerar relatorio em Markdown (ex.: report.md)",
+    )
 
     update_parser = subparsers.add_parser("update")
+    update_parser.add_argument("--root", default=".")
+    update_parser.add_argument("--include", action="append", default=[])
+    update_parser.add_argument("--exclude", action="append", default=[])
+    update_parser.add_argument("--github-base-url", default="https://api.github.com")
+    update_parser.add_argument("--token", default=None)
+    update_parser.add_argument("--config", default=".agronomist.yaml")
+    update_parser.add_argument(
+        "--resolver",
+        default="git",
+        choices=["git", "github", "auto"],
+        help="Como resolver a ultima versao: git, github ou auto",
+    )
     update_parser.add_argument("--output", default="report.json")
+    update_parser.add_argument(
+        "--markdown",
+        default=None,
+        help="Gerar relatorio em Markdown (ex.: report.md)",
+    )
 
     return parser.parse_args(argv)
 
@@ -56,7 +79,7 @@ def _categorize(rules: List[CategoryRule], repo: str, module: Optional[str]) -> 
 
 
 def _collect_updates(
-    latest_ref: Callable[[SourceRef], Optional[str]],
+    latest_ref_fn: Callable[[SourceRef], Optional[str]],
     sources: List[SourceRef],
     category_rules: List[CategoryRule],
 ) -> List[Dict[str, object]]:
@@ -65,7 +88,7 @@ def _collect_updates(
 
     for source in sources:
         if source.repo not in by_repo:
-            by_repo[source.repo] = latest_ref(source)
+            by_repo[source.repo] = latest_ref_fn(source)
 
         latest_ref = by_repo[source.repo]
         if not latest_ref or latest_ref == source.ref:
@@ -137,6 +160,10 @@ def main(argv: List[str] | None = None) -> int:
     report = build_report(args.root, updates)
     write_report(args.output, report)
 
+    if args.markdown:
+        write_markdown(args.markdown, report)
+        print(f"Markdown report written to {args.markdown}.")
+
     if args.command == "update":
         touched = apply_updates(args.root, updates)
         if touched:
@@ -149,3 +176,4 @@ def main(argv: List[str] | None = None) -> int:
     _print_category_summary(updates)
 
     return 0
+
