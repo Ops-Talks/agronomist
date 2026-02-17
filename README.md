@@ -1,18 +1,19 @@
-# agronomist
-Ferramenta para detectar e atualizar versões dos módulos de OpenTofu/Terraform do seu IaC gerenciado via Terragrunt.
+# Agronomist
+Tool to detect and update versions of OpenTofu/Terraform modules in your IaC managed via Terragrunt, keeping your infrastructure up to date.
 
-## O que faz no MVP
-- Varre arquivos .hcl e .tf e encontra `source` com `?ref=` apontando para GitHub.
-- Consulta releases/tags para sugerir uma nova versao.
-- Gera relatorio JSON e opcionalmente atualiza refs in-place.
-- Pode ser usado via CLI local ou GitHub Action.
+## What it does in MVP
+- Scans .hcl and .tf files and finds `source` with `?ref=` pointing to GitHub.
+- Queries releases/tags to suggest a new version.
+- Generates JSON report and optionally updates refs in-place.
+- Generate humam readable reports with updates using Markdown.
+- Can be used via local CLI or GitHub Action.
 
-## Requisitos
+## Requirements
 - Python 3.10+
-- Git instalado (para resolver tags via `git ls-remote`)
-- Token do GitHub (PAT) recomendado para evitar rate limit quando usar `--resolver github`
+- Git installed (to resolve tags via `git ls-remote`)
+- GitHub token (PAT) recommended to avoid rate limit when using `--resolver github`
 
-## Uso rapido (CLI)
+## Quick start (CLI)
 ```
 poetry install
 poetry run agronomist report --root . --output report.json
@@ -20,18 +21,38 @@ poetry run agronomist report --root . --markdown report.md --output report.json
 poetry run agronomist update --root . --output report.json
 ```
 
-## Resolver de versoes
-- Padrao: `git` (usa `git ls-remote --tags`).
-- Opcional: `github` (usa GitHub API).
-`git` funciona com GitHub, GitLab e outros servidores Git compativeis.
+## Version resolver
+- Default: `git` (uses `git ls-remote --tags`).
+- Optional: `github` (uses GitHub API).
 
-Exemplos:
+`git` works with GitHub, GitLab and other compatible Git servers.
+
+Examples:
 ```
 poetry run agronomist report --root . --resolver git --output report.json
 poetry run agronomist report --root . --resolver github --output report.json
 ```
 
-## Lint e testes
+## Lint and tests
+### Using task runner (taskipy)
+```
+poetry run task lint          # Run ruff and black
+poetry run task format        # Format code
+poetry run task test          # Run tests
+poetry run task check         # Run linters + tests
+poetry run task pre-commit    # Install and run pre-commit hooks
+```
+
+Or with `poe` alias (shorter):
+```
+poe lint          # Run ruff and black
+poe format        # Format code
+poe test          # Run tests
+poe check         # Run linters + tests
+poe pre-commit    # Install and run pre-commit hooks
+```
+
+### Using poetry directly
 ```
 poetry run ruff check .
 poetry run ruff format .
@@ -40,29 +61,44 @@ poetry run pytest
 ```
 
 ## Pre-commit
+Using task runner:
+```
+poetry run task pre-commit-install  # Install hooks
+poetry run task pre-commit-run      # Run on all files
+poetry run task pre-commit          # Install + run hooks
+```
+
+Or with `poe` alias:
+```
+poe pre-commit-install  # Install hooks
+poe pre-commit-run      # Run on all files
+poe pre-commit          # Install + run hooks
+```
+
+Using poetry directly:
 ```
 poetry run pre-commit install
 poetry run pre-commit run --all-files
 ```
 
 ## GitHub Action
-Exemplo em [examples/workflows/agronomist.yml](examples/workflows/agronomist.yml).
+See example in [examples/workflows/agronomist.yml](examples/workflows/agronomist.yml).
 
-## Categorias (config)
-Crie um arquivo `.agronomist.yaml` (ou informe `--config`) para classificar dependencias:
+## Categories (config)
+Create a `.agronomist.yaml` file (or specify `--config`) to classify dependencies:
 ```
 categories:
-	- name: aws
-		repo_patterns:
-			- "*/terraform-aws-*"
-	- name: mysql
-		repo_patterns:
-			- "*/terraform-*-mysql-*"
-	- name: postgres
-		repo_patterns:
-			- "*/terraform-*-postgres-*"
+  - name: aws
+    repo_patterns:
+      - "*/terraform-aws-*"
+  - name: mysql
+    repo_patterns:
+      - "*/terraform-*-mysql-*"
+  - name: postgres
+    repo_patterns:
+      - "*/terraform-*-postgres-*"
 ```
-O campo `category` sera incluido no relatorio e exibido no stdout.
+The `category` field will be included in the report and displayed in stdout.
 
 ## Design
-Veja o design do MVP em [docs/design.md](docs/design.md).
+See MVP design in [docs/design.md](docs/design.md).

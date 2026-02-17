@@ -1,0 +1,36 @@
+# API
+
+Agronomist can be used as a Python library for custom automation.
+
+## Basic usage
+
+```python
+
+from agronomist.scanner import scan_sources
+from agronomist.config import load_config
+from agronomist.github import GitHubClient
+from agronomist.git import GitClient
+from agronomist.report import build_report, write_report
+from agronomist.markdown import write_markdown
+
+sources = scan_sources(root="./infra", include=[".tf"], exclude=[".terraform/"])
+rules = load_config(".agronomist.yaml", root=".")
+
+github = GitHubClient(token="...")
+resolver = GitClient()
+
+# Resolve and build a report using custom logic
+```
+
+## Common functions and classes
+
+- `scan_sources` Scan files and return discovered sources.
+- `load_config` Load category rules from YAML or JSON.
+- `GitHubClient` Resolve latest release and tags.
+- `GitClient` Resolve tags via `git ls-remote`.
+- `build_report` Build the report structure.
+- `write_report` Write JSON report to disk.
+- `write_markdown` Write Markdown report to disk.
+- `apply_updates` Apply updates to files.
+
+Refer to the source in `src/agronomist` for implementation details.

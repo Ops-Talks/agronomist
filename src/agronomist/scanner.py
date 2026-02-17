@@ -3,7 +3,7 @@ from __future__ import annotations
 import fnmatch
 import os
 import re
-from typing import Iterable, List, Optional
+from collections.abc import Iterable
 from urllib.parse import urlparse
 
 from .models import SourceRef
@@ -18,7 +18,7 @@ def _match_any(path: str, patterns: Iterable[str]) -> bool:
     return any(fnmatch.fnmatch(path, pattern) for pattern in patterns)
 
 
-def _parse_git_source(source: str) -> Optional[SourceRef]:
+def _parse_git_source(source: str) -> SourceRef | None:
     match = _GIT_SOURCE_RE.search(source)
     if not match:
         return None
@@ -47,11 +47,13 @@ def _parse_git_source(source: str) -> Optional[SourceRef]:
     )
 
 
-def scan_sources(root: str, include: Optional[List[str]] = None, exclude: Optional[List[str]] = None) -> List[SourceRef]:
+def scan_sources(
+    root: str, include: list[str] | None = None, exclude: list[str] | None = None
+) -> list[SourceRef]:
     include = include or ["**/*.hcl", "**/*.tf"]
     exclude = exclude or []
 
-    results: List[SourceRef] = []
+    results: list[SourceRef] = []
     for dirpath, _, filenames in os.walk(root):
         for filename in filenames:
             rel_path = os.path.relpath(os.path.join(dirpath, filename), root)
@@ -62,7 +64,7 @@ def scan_sources(root: str, include: Optional[List[str]] = None, exclude: Option
 
             full_path = os.path.join(root, rel_path)
             try:
-                with open(full_path, "r", encoding="utf-8") as handle:
+                with open(full_path, encoding="utf-8") as handle:
                     content = handle.read()
             except OSError:
                 continue

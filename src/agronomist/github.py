@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import Optional
 
 import requests
 
@@ -12,7 +11,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class GitHubClient:
     base_url: str
-    token: Optional[str] = None
+    token: str | None = None
     timeout: int = 20
 
     def validate_token(self) -> bool:
@@ -40,7 +39,7 @@ class GitHubClient:
             headers["Authorization"] = f"Bearer {self.token}"
         return headers
 
-    def latest_release_tag(self, repo: str) -> Optional[str]:
+    def latest_release_tag(self, repo: str) -> str | None:
         url = f"{self.base_url}/repos/{repo}/releases/latest"
         try:
             response = requests.get(url, headers=self._headers(), timeout=self.timeout)
@@ -59,7 +58,7 @@ class GitHubClient:
             logger.warning(f"Error fetching release tag for {repo}: {e}")
             return None
 
-    def latest_tag(self, repo: str) -> Optional[str]:
+    def latest_tag(self, repo: str) -> str | None:
         url = f"{self.base_url}/repos/{repo}/tags"
         try:
             response = requests.get(url, headers=self._headers(), timeout=self.timeout)
@@ -80,9 +79,8 @@ class GitHubClient:
             logger.warning(f"Error fetching tags for {repo}: {e}")
             return None
 
-    def latest_ref(self, repo: str) -> Optional[str]:
+    def latest_ref(self, repo: str) -> str | None:
         tag = self.latest_release_tag(repo)
         if tag:
             return tag
         return self.latest_tag(repo)
-

@@ -1,14 +1,10 @@
 from __future__ import annotations
 
-from typing import Dict, List
 
-from .models import SourceRef
+def apply_updates(root: str, updates: list[dict[str, object]]) -> list[str]:
+    touched: list[str] = []
 
-
-def apply_updates(root: str, updates: List[Dict[str, object]]) -> List[str]:
-    touched: List[str] = []
-
-    updates_by_file: Dict[str, List[Dict[str, object]]] = {}
+    updates_by_file: dict[str, list[dict[str, object]]] = {}
     for update in updates:
         for file_path in update["files"]:
             updates_by_file.setdefault(file_path, []).append(update)
@@ -16,7 +12,7 @@ def apply_updates(root: str, updates: List[Dict[str, object]]) -> List[str]:
     for file_path, file_updates in updates_by_file.items():
         full_path = f"{root}/{file_path}"
         try:
-            with open(full_path, "r", encoding="utf-8") as handle:
+            with open(full_path, encoding="utf-8") as handle:
                 content = handle.read()
         except OSError:
             continue

@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-import json
-from typing import Any, Dict, List
+from typing import Any
 
 
-def _group_by_repo(updates: List[Dict[str, Any]]) -> Dict[str, List[Dict[str, Any]]]:
-    by_repo: Dict[str, List[Dict[str, Any]]] = {}
+def _group_by_repo(updates: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
+    by_repo: dict[str, list[dict[str, Any]]] = {}
     for update in updates:
         repo = update.get("repo", "unknown")
         if repo not in by_repo:
@@ -14,8 +13,8 @@ def _group_by_repo(updates: List[Dict[str, Any]]) -> Dict[str, List[Dict[str, An
     return by_repo
 
 
-def _group_by_module(updates: List[Dict[str, Any]]) -> Dict[str, List[Dict[str, Any]]]:
-    by_module: Dict[str, List[Dict[str, Any]]] = {}
+def _group_by_module(updates: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
+    by_module: dict[str, list[dict[str, Any]]] = {}
     for update in updates:
         module = update.get("module", "root")
         if module not in by_module:
@@ -24,7 +23,7 @@ def _group_by_module(updates: List[Dict[str, Any]]) -> Dict[str, List[Dict[str, 
     return by_module
 
 
-def generate_markdown(report: Dict[str, Any]) -> str:
+def generate_markdown(report: dict[str, Any]) -> str:
     updates = report.get("updates", [])
     if not updates:
         return "# Agronomist Report\n\nNo updates available.\n"
@@ -97,7 +96,7 @@ def generate_markdown(report: Dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
-def write_markdown(path: str, report: Dict[str, Any]) -> None:
+def write_markdown(path: str, report: dict[str, Any]) -> None:
     markdown = generate_markdown(report)
     with open(path, "w", encoding="utf-8") as handle:
         handle.write(markdown)

@@ -5,7 +5,7 @@ import fnmatch
 import logging
 import os
 import sys
-from typing import Callable, Dict, List, Optional
+from collections.abc import Callable
 from urllib.parse import urlparse
 
 from .config import CategoryRule, load_config
@@ -21,7 +21,7 @@ from .updater import apply_updates
 logger = logging.getLogger(__name__)
 
 
-def _parse_args(argv: List[str]) -> argparse.Namespace:
+def _parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(prog="agronomist")
 
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -79,11 +79,11 @@ def _parse_args(argv: List[str]) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
-def _match_any(value: str, patterns: List[str]) -> bool:
+def _match_any(value: str, patterns: list[str]) -> bool:
     return any(fnmatch.fnmatch(value, pattern) for pattern in patterns)
 
 
-def _categorize(rules: List[CategoryRule], repo: str, module: Optional[str]) -> Optional[str]:
+def _categorize(rules: list[CategoryRule], repo: str, module: str | None) -> str | None:
     for rule in rules:
         if rule.repo_patterns and _match_any(repo, rule.repo_patterns):
             return rule.name
@@ -93,12 +93,12 @@ def _categorize(rules: List[CategoryRule], repo: str, module: Optional[str]) -> 
 
 
 def _collect_updates(
-    latest_ref_fn: Callable[[SourceRef], Optional[str]],
-    sources: List[SourceRef],
-    category_rules: List[CategoryRule],
-) -> List[Dict[str, object]]:
-    by_repo: Dict[str, Optional[str]] = {}
-    updates: List[Dict[str, object]] = []
+    latest_ref_fn: Callable[[SourceRef], str | None],
+    sources: list[SourceRef],
+    category_rules: list[CategoryRule],
+) -> list[dict[str, object]]:
+    by_repo: dict[str, str | None] = {}
+    updates: list[dict[str, object]] = []
 
     for source in sources:
         if source.repo not in by_repo:
@@ -130,11 +130,11 @@ def _collect_updates(
     return updates
 
 
-def _print_category_summary(updates: List[Dict[str, object]]) -> None:
+def _print_category_summary(updates: list[dict[str, object]]) -> None:
     if not updates:
         return
 
-    counts: Dict[str, int] = {}
+    counts: dict[str, int] = {}
     for update in updates:
         category = update.get("category", "uncategorized")
         counts[category] = counts.get(category, 0) + 1
@@ -143,7 +143,7 @@ def _print_category_summary(updates: List[Dict[str, object]]) -> None:
     print(f"Updates by category: {summary}")
 
 
-def main(argv: List[str] | None = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     args = _parse_args(argv or sys.argv[1:])
 
     logging.basicConfig(
@@ -176,7 +176,7 @@ def main(argv: List[str] | None = None) -> int:
     if base_host:
         github_hosts.add(base_host)
 
-    def _latest_ref(source: SourceRef) -> Optional[str]:
+    def _latest_ref(source: SourceRef) -> str | None:
         gitlab_host = GitLabClient.detect_gitlab_host(source.repo_url)
 
         if args.resolver == "github":
@@ -223,4 +223,3 @@ def main(argv: List[str] | None = None) -> int:
     _print_category_summary(updates)
 
     return 0
-

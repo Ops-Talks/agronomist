@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import Optional
 from urllib.parse import urlparse
 
 import requests
@@ -13,11 +12,11 @@ logger = logging.getLogger(__name__)
 @dataclass
 class GitLabClient:
     base_url: str
-    token: Optional[str] = None
+    token: str | None = None
     timeout: int = 20
 
     @staticmethod
-    def detect_gitlab_host(repo_url: str) -> Optional[str]:
+    def detect_gitlab_host(repo_url: str) -> str | None:
         try:
             parsed = urlparse(repo_url)
             if "gitlab" in parsed.netloc:
@@ -51,7 +50,7 @@ class GitLabClient:
             headers["PRIVATE-TOKEN"] = self.token
         return headers
 
-    def latest_tag(self, project_id: str) -> Optional[str]:
+    def latest_tag(self, project_id: str) -> str | None:
         url = f"{self.base_url}/api/v4/projects/{project_id}/repository/tags"
         try:
             response = requests.get(
@@ -77,7 +76,7 @@ class GitLabClient:
             logger.warning(f"Error fetching GitLab tags for {project_id}: {e}")
             return None
 
-    def latest_ref(self, repo_url: str) -> Optional[str]:
+    def latest_ref(self, repo_url: str) -> str | None:
         try:
             parsed = urlparse(repo_url)
             path = parsed.path.strip("/")

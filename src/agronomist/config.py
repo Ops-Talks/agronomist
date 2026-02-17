@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import os
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import yaml
 
@@ -11,12 +11,12 @@ import yaml
 @dataclass(frozen=True)
 class CategoryRule:
     name: str
-    repo_patterns: List[str]
-    module_patterns: List[str]
+    repo_patterns: list[str]
+    module_patterns: list[str]
 
 
-def _normalize_rules(data: Dict[str, Any]) -> List[CategoryRule]:
-    rules: List[CategoryRule] = []
+def _normalize_rules(data: dict[str, Any]) -> list[CategoryRule]:
+    rules: list[CategoryRule] = []
     for item in data.get("categories", []) or []:
         name = item.get("name")
         if not name:
@@ -31,7 +31,7 @@ def _normalize_rules(data: Dict[str, Any]) -> List[CategoryRule]:
     return rules
 
 
-def load_config(path: str, root: str) -> List[CategoryRule]:
+def load_config(path: str, root: str) -> list[CategoryRule]:
     if not path:
         return []
 
@@ -42,7 +42,7 @@ def load_config(path: str, root: str) -> List[CategoryRule]:
     if not os.path.exists(full_path):
         return []
 
-    with open(full_path, "r", encoding="utf-8") as handle:
+    with open(full_path, encoding="utf-8") as handle:
         if full_path.endswith(".json"):
             data = json.load(handle)
         else:

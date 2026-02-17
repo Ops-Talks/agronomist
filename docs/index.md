@@ -1,0 +1,33 @@
+# Agronomist
+
+Agronomist detects and updates OpenTofu/Terraform module references in Terragrunt-managed IaC.
+
+## Overview
+
+- Scan `.hcl` and `.tf` files for `source` references with `?ref=`.
+- Resolve latest versions via Git tags, GitHub API, or auto detection.
+- Generate JSON and Markdown reports.
+- Optionally update files in place.
+
+## Quick start
+
+```sh
+poetry install
+poetry run agronomist report --root . --output report.json
+poetry run agronomist update --root . --output report.json
+```
+
+## Documentation
+
+- [Getting Started](getting-started.md)
+- [CLI](cli.md)
+- [Configuration](configuration.md)
+- [Resolvers](resolvers.md)
+- [Reports](reports.md)
+- [GitHub Action](github-action.md)
+- [GitLab CI](gitlab-ci.md)
+- [Architecture](architecture.md)
+- [API](api.md)
+- [Development](development.md)
+- [Troubleshooting](troubleshooting.md)
+- [Design](design.md)

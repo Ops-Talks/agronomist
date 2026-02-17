@@ -3,7 +3,6 @@ from __future__ import annotations
 import logging
 import subprocess
 from dataclasses import dataclass
-from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -12,7 +11,7 @@ logger = logging.getLogger(__name__)
 class GitClient:
     timeout: int = 20
 
-    def latest_ref(self, repo_url: str) -> Optional[str]:
+    def latest_ref(self, repo_url: str) -> str | None:
         cmd = [
             "git",
             "ls-remote",
@@ -54,4 +53,3 @@ class GitClient:
             if ref.startswith("refs/tags/"):
                 return ref.replace("refs/tags/", "", 1)
         return None
-

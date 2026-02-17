@@ -1,3 +1,10 @@
+# Configuration
+
+Agronomist reads category rules from a YAML or JSON file. By default, it looks for `.agronomist.yaml` in the root directory.
+
+## Example
+
+```yaml
 categories:
   - name: aws
     repo_patterns:
@@ -11,7 +18,7 @@ categories:
       - "*/tofu-*-mysql-*"
       - "*/terraform-*-mariadb-*"
       - "*/opentofu-*-mariadb-*"
-      - "*/tofu-*-mariadb-*"      
+      - "*/tofu-*-mariadb-*"
       - "*/terraform-*-postgres-*"
       - "*/opentofu-*-postgres-*"
       - "*/tofu-*-postgres-*"
@@ -25,3 +32,16 @@ categories:
       - "*/terraform-*-monitoring-*"
       - "*/opentofu-*-monitoring-*"
       - "*/tofu-*-monitoring-*"
+```
+
+## Fields
+
+- `categories` List of category rules.
+- `name` Category name.
+- `repo_patterns` Match repositories using glob patterns.
+- `module_patterns` Match module names using glob patterns.
+
+## Notes
+
+- Pattern matching uses Python `fnmatch` rules.
+- If no rule matches, updates are labeled `uncategorized`.
