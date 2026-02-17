@@ -9,14 +9,6 @@ Agronomist continuously monitors and reports on module updates, ensuring your Ia
 - Generate JSON and Markdown reports.
 - Optionally update files in place.
 
-## Quick start
-
-```sh
-poetry install
-poetry run agronomist report --root . --output report.json
-poetry run agronomist update --root . --output report.json
-```
-
 ## Documentation
 
 - [Getting Started](getting-started.md)
