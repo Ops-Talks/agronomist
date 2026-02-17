@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "agronomist"
-version = "0.1.0"
+version = "0.2.2"
 description = "CLI to detect and update refs of Terragrunt modules"
 readme = "README.md"
 packages = [{ include = "agronomist", from = "src" }]
@@ -21,9 +21,6 @@ mkdocs-material = ">=9.5.0"
 
 [tool.poetry.scripts]
 agronomist = "agronomist.cli:main"
-
-[tool.poetry.repositories.github]
-url = "https://maven.pkg.github.com/Ops-Talks/agronomist"
 
 [tool.black]
 line-length = 100
