@@ -9,11 +9,21 @@
 
 ### Using pipx (recommended)
 
-Build and install globally:
+#### From GitHub Releases (pre-built)
+
+Download the latest version from [Releases](https://github.com/Ops-Talks/agronomist/releases):
 
 ```sh
+pipx install agronomist-X.Y.Z-py3-none-any.whl
+```
+
+#### From Source (build locally)
+
+```sh
+git clone https://github.com/Ops-Talks/agronomist.git
+cd agronomist
 poetry build
-pipx install dist/agronomist-0.1.0-py3-none-any.whl
+pipx install dist/agronomist-*-py3-none-any.whl
 ```
 
 ### For local development

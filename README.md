@@ -22,13 +22,34 @@ Agronomist continuously monitors and reports on module updates, ensuring your Ia
 
 ## Quick start (CLI)
 
-### Install with pipx (recommended)
+### Install from Latest Release (recommended)
+```bash
+# Download the latest wheel from releases
+# https://github.com/Ops-Talks/agronomist/releases/latest
+
+# Install globally with pipx
+pipx install agronomist-X.Y.Z-py3-none-any.whl
+```
+
+### Build from Source
+
+#### Using Poetry
 ```bash
 # Build the package
 poetry build
 
 # Install globally with pipx
-pipx install dist/agronomist-0.1.0-py3-none-any.whl
+pipx install dist/agronomist-*-py3-none-any.whl
+```
+
+#### Using Docker
+```bash
+# Build inside container
+docker build -t agronomist-build .
+docker run -v $(pwd)/dist:/output agronomist-build
+
+# Install from generated artifacts
+pipx install dist/agronomist-*-py3-none-any.whl
 ```
 
 ### Usage (after installing with pipx)
