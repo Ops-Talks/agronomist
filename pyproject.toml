@@ -22,6 +22,10 @@ mkdocs-material = ">=9.5.0"
 [tool.poetry.scripts]
 agronomist = "agronomist.cli:main"
 
+[[tool.poetry.repositories]]
+name = "github"
+url = "https://maven.pkg.github.com/Ops-Talks/agronomist"
+
 [tool.black]
 line-length = 100
 target-version = ["py310"]

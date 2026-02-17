@@ -7,7 +7,18 @@
 
 ## Install
 
-For local development from this repository:
+### Using pipx (recommended)
+
+Build and install globally:
+
+```sh
+poetry build
+pipx install dist/agronomist-0.1.0-py3-none-any.whl
+```
+
+### For local development
+
+If you want to develop the project:
 
 ```sh
 poetry install
@@ -15,17 +26,41 @@ poetry install
 
 ## Run a report
 
+### With pipx
+
+```sh
+agronomist report --root . --output report.json
+```
+
+### With poetry
+
 ```sh
 poetry run agronomist report --root . --output report.json
 ```
 
 ## Apply updates
 
+### With pipx
+
+```sh
+agronomist update --root . --output report.json
+```
+
+### With poetry
+
 ```sh
 poetry run agronomist update --root . --output report.json
 ```
 
 ## Generate Markdown report
+
+### With pipx
+
+```sh
+agronomist report --root . --markdown report.md --output report.json
+```
+
+### With poetry
 
 ```sh
 poetry run agronomist report --root . --markdown report.md --output report.json

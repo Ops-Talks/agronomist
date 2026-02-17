@@ -1,0 +1,46 @@
+name: Build & Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Poetry
+        run: python -m pip install --upgrade pip poetry
+
+      - name: Install dependencies
+        run: poetry install --with dev
+
+      - name: Build package
+        run: poetry build
+
+      - name: Create Release with artifacts
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/*
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish to GitHub Package Registry
+        env:
+          POETRY_REPOSITORIES_GITHUB_URL: https://maven.pkg.github.com/${{ github.repository }}
+          POETRY_REPOSITORIES_GITHUB_USERNAME: ${{ github.actor }}
+          POETRY_REPOSITORIES_GITHUB_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+        run: poetry publish -r github

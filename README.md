@@ -8,7 +8,7 @@ Agronomist continuously monitors and reports on module updates, ensuring your Ia
   <img src="assets/agronomist-logo.png" width="400" alt="Agronomist Logo">
 </div>
 
-## What it does in MVP
+## What it does?
 - Scans .hcl and .tf files and finds `source` with `?ref=` pointing to GitHub.
 - Queries releases/tags to suggest a new version.
 - Generates JSON report and optionally updates refs in-place.
@@ -21,7 +21,25 @@ Agronomist continuously monitors and reports on module updates, ensuring your Ia
 - GitHub token (PAT) recommended to avoid rate limit when using `--resolver github`
 
 ## Quick start (CLI)
+
+### Install with pipx (recommended)
+```bash
+# Build the package
+poetry build
+
+# Install globally with pipx
+pipx install dist/agronomist-0.1.0-py3-none-any.whl
 ```
+
+### Usage (after installing with pipx)
+```bash
+agronomist report --root . --output report.json
+agronomist report --root . --markdown report.md --output report.json
+agronomist update --root . --output report.json
+```
+
+### Alternative: Using poetry directly
+```bash
 poetry install
 poetry run agronomist report --root . --output report.json
 poetry run agronomist report --root . --markdown report.md --output report.json
@@ -34,8 +52,14 @@ poetry run agronomist update --root . --output report.json
 
 `git` works with GitHub, GitLab and other compatible Git servers.
 
-Examples:
+Examples (after installing with pipx):
+```bash
+agronomist report --root . --resolver git --output report.json
+agronomist report --root . --resolver github --output report.json
 ```
+
+Or with poetry:
+```bash
 poetry run agronomist report --root . --resolver git --output report.json
 poetry run agronomist report --root . --resolver github --output report.json
 ```

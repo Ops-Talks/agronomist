@@ -29,6 +29,17 @@ agronomist update [options]
 
 ## Examples
 
+### With pipx (after installation)
+
+```sh
+agronomist report --root . --output report.json
+agronomist report --root . --resolver github --token $GITHUB_TOKEN
+agronomist report --root . --markdown report.md --output report.json
+agronomist update --root . --output report.json
+```
+
+### With poetry
+
 ```sh
 poetry run agronomist report --root . --output report.json
 poetry run agronomist report --root . --resolver github --token $GITHUB_TOKEN
