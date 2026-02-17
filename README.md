@@ -1,5 +1,5 @@
 # agronomist
-Ferramenta alternativa ao Gruntwork Patcher para detectar e atualizar refs de modulos Terragrunt.
+Ferramenta para detectar e atualizar versões dos módulos de OpenTofu/Terraform do seu IaC gerenciado via Terragrunt.
 
 ## O que faz no MVP
 - Varre arquivos .hcl e .tf e encontra `source` com `?ref=` apontando para GitHub.
