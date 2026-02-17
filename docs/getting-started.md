@@ -92,3 +92,4 @@ poetry run agronomist report --root . --markdown report.md --output report.json
 - Review [CLI](cli.md) options
 - Configure categories in [Configuration](configuration.md)
 - CI runs `poetry run task check` on pushes to `main` and on pull requests.
+- Releases are created by pushing a SemVer tag (e.g. `v0.3.8`).

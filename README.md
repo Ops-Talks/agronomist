@@ -9,7 +9,7 @@ Agronomist continuously monitors and reports on module updates, ensuring your Ia
 </div>
 
 ## What it does?
-- Scans .hcl and .tf files and finds `source` with `?ref=` pointing to GitHub.
+- Scans `.hcl` and `.tf` files and finds `source` with `?ref=` pointing to GitHub.
 - Queries releases/tags to suggest a new version.
 - Generates JSON report and optionally updates refs in-place.
 - Generate humam readable reports with updates using Markdown.
@@ -91,6 +91,9 @@ poetry run task pre-commit    # Install and run pre-commit hooks
 
 ### CI (Quality Checks)
 GitHub Actions runs `poetry run task check` on pushes to `main` and on pull requests.
+
+### Release workflow
+Releases are created by pushing a SemVer tag (e.g. `v0.3.8`), which triggers the GitHub Actions release workflow to build and attach artifacts.
 
 Or with `poe` alias (shorter):
 ```
