@@ -1,5 +1,9 @@
 # Agronomist
-Tool to detect and update versions of OpenTofu/Terraform modules in your IaC managed via Terragrunt, keeping your infrastructure up to date.
+
+
+**Automate dependency version management for your Terraform/OpenTofu infrastructure.** Agronomist continuously monitors and reports on module updates, ensuring your IaC stays current, secure, and maintainable with minimal effort.
+
+<img src="assets/agronomist-logo.png" width="400" alt="Agronomist Logo" style="display: block; margin: 20px auto;">
 
 ## What it does in MVP
 - Scans .hcl and .tf files and finds `source` with `?ref=` pointing to GitHub.
