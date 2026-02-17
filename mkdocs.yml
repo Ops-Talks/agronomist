@@ -1,8 +1,8 @@
 site_name: Agronomist
 site_description: Documentation for Agronomist
-site_url: https://example.com
-repo_url: https://github.com/your-org/your-repo
-repo_name: GitHub Repository
+site_url: https://ops-talks.github.io/agronomist/
+repo_url: https://github.com/Ops-Talks/agronomist
+repo_name: Ops-Talks/agronomist
 
 theme:
   name: material
@@ -56,5 +56,5 @@ plugins:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/your-org/your-repo
-      name: GitHub Repository
+      link: https://github.com/Ops-Talks/agronomist
+      name: GitHub Ops-Talks/agronomist
