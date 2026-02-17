@@ -1,9 +1,12 @@
 # Agronomist
 
+**Automate dependency version management for your Terraform/OpenTofu infrastructure.** 
 
-**Automate dependency version management for your Terraform/OpenTofu infrastructure.** Agronomist continuously monitors and reports on module updates, ensuring your IaC stays current, secure, and maintainable with minimal effort.
+Agronomist continuously monitors and reports on module updates, ensuring your IaC stays current, secure, and maintainable with minimal effort.
 
-<img src="assets/agronomist-logo.png" width="400" alt="Agronomist Logo" style="display: block; margin: 20px auto;">
+<div align="center">
+  <img src="assets/agronomist-logo.png" width="400" alt="Agronomist Logo">
+</div>
 
 ## What it does in MVP
 - Scans .hcl and .tf files and finds `source` with `?ref=` pointing to GitHub.
