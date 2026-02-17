@@ -1,0 +1,14 @@
+categories:
+  - name: aws
+    repo_patterns:
+      - "*/terraform-aws-*"
+  - name: database
+    repo_patterns:
+      - "*/terraform-*-mysql-*"
+      - "*/terraform-*-postgres-*"
+  - name: security
+    repo_patterns:
+      - "*/terraform-*-security-*"
+  - name: monitoring
+    repo_patterns:
+      - "*/terraform-*-monitoring-*"

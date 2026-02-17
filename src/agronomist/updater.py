@@ -1,0 +1,34 @@
+from __future__ import annotations
+
+from typing import Dict, List
+
+from .models import SourceRef
+
+
+def apply_updates(root: str, updates: List[Dict[str, object]]) -> List[str]:
+    touched: List[str] = []
+
+    updates_by_file: Dict[str, List[Dict[str, object]]] = {}
+    for update in updates:
+        for file_path in update["files"]:
+            updates_by_file.setdefault(file_path, []).append(update)
+
+    for file_path, file_updates in updates_by_file.items():
+        full_path = f"{root}/{file_path}"
+        try:
+            with open(full_path, "r", encoding="utf-8") as handle:
+                content = handle.read()
+        except OSError:
+            continue
+
+        new_content = content
+        for update in file_updates:
+            for replacement in update["replacements"]:
+                new_content = new_content.replace(replacement["from"], replacement["to"], 1)
+
+        if new_content != content:
+            with open(full_path, "w", encoding="utf-8") as handle:
+                handle.write(new_content)
+            touched.append(file_path)
+
+    return touched
