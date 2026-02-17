@@ -33,22 +33,16 @@ pipx install agronomist-X.Y.Z-py3-none-any.whl
 
 ### Build from Source
 
-#### Using Poetry
+#### Using Make (recommended)
 ```bash
-# Build the package
-poetry build
-
-# Install globally with pipx
+make build-docker
+# Artifacts in dist/
 pipx install dist/agronomist-*-py3-none-any.whl
 ```
 
-#### Using Docker
+#### Using Poetry
 ```bash
-# Build inside container
-docker build -t agronomist-build .
-docker run -v $(pwd)/dist:/output agronomist-build
-
-# Install from generated artifacts
+poetry build
 pipx install dist/agronomist-*-py3-none-any.whl
 ```
 

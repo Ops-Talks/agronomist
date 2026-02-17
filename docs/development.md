@@ -39,6 +39,14 @@ poetry run black .
 
 ## Building
 
+### Using Make (recommended)
+
+```sh
+make build-docker
+```
+
+Generates `dist/agronomist-*.whl` and `dist/agronomist-*.tar.gz` using Docker.
+
 ### Using Poetry
 
 ```sh
@@ -46,15 +54,6 @@ poetry build
 ```
 
 Generates `dist/agronomist-*.whl` and `dist/agronomist-*.tar.gz`
-
-### Using Docker
-
-```sh
-docker build -t agronomist-build .
-docker run -v $(pwd)/dist:/output agronomist-build
-```
-
-Artifacts will be placed in `./dist/`
 
 ## Release
 

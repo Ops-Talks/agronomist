@@ -19,6 +19,17 @@ pipx install agronomist-X.Y.Z-py3-none-any.whl
 
 #### From Source (build locally)
 
+##### With Make (simplest)
+
+```sh
+git clone https://github.com/Ops-Talks/agronomist.git
+cd agronomist
+make build-docker
+pipx install dist/agronomist-*-py3-none-any.whl
+```
+
+##### With Poetry
+
 ```sh
 git clone https://github.com/Ops-Talks/agronomist.git
 cd agronomist
