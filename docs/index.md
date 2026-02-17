@@ -1,6 +1,6 @@
 # Agronomist
 
-Agronomist detects and updates OpenTofu/Terraform module references in Terragrunt-managed IaC.
+Agronomist continuously monitors and reports on module updates, ensuring your IaC stays current, secure, and maintainable with minimal effort.
 
 ## Overview
 
@@ -30,4 +30,3 @@ poetry run agronomist update --root . --output report.json
 - [API](api.md)
 - [Development](development.md)
 - [Troubleshooting](troubleshooting.md)
-- [Design](design.md)
