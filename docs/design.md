@@ -1,51 +1,51 @@
-# Agronomist: design do MVP
+# Agronomist: MVP Design
 
-## Objetivo
-Desenvolver uma ferramenta que detecta e atualiza referencias de modulos Terragrunt, mantendo o IaC em dia, usando:
-- CLI local para reportar e atualizar referencias de modulos GitHub.
-- GitHub Action para rodar o CLI e permitir abertura de PR via workflow.
-- Detecao de breaking changes somente por aviso (sem patches).
+## Objective
+Develop a tool that detects and updates references of Terragrunt modules, keeping IaC up to date, using:
+- Local CLI to report and update references of GitHub modules.
+- GitHub Action to run the CLI and allow opening PR via workflow.
+- Detection of breaking changes only by warning (without patches).
 
-## Escopo do MVP
-- Scan de arquivos .hcl e .tf em um diretorio raiz.
-- Descoberta de dependencias Git em `source` com `?ref=`.
-- Resolucao de nova versao via Git:
-  - Usa `git ls-remote --tags` como fonte principal.
-  - Opcionalmente usa GitHub API quando configurado.
-- Gera relatorio JSON com dependencias e sugestoes de update.
-- Opcionalmente aplica updates in-place (substitui `ref=`).
+## Scope of MVP
+- Scan of .hcl and .tf files in a root directory.
+- Discovery of Git dependencies in `source` with `?ref=`.
+- Resolution of new version via Git:
+  - Uses `git ls-remote --tags` as primary source.
+  - Optionally uses GitHub API when configured.
+- Generates JSON report with dependencies and update suggestions.
+- Optionally applies updates in-place (replaces `ref=`).
 
-## Nao inclui no MVP
-- Patches para breaking changes.
-- Validacao de planos ou aplicacao de Terraform/Tofu.
-- Registry do Terraform.
-- Suporte amplo a VCS alem de Git.
+## Not included in MVP
+- Patches for breaking changes.
+- Validation of plans or application of Terraform/Tofu.
+- Terraform Registry.
+- Wide support for VCS beyond Git.
 
-## Componentes
+## Components
 1) Scanner
-- Percorre arquivos, aplica include/exclude via glob.
-- Extrai `source` com regex simples.
-- Normaliza repositorios GitHub e ref atual.
+- Traverses files, applies include/exclude via glob.
+- Extracts `source` with simple regex.
+- Normalizes GitHub repositories and current ref.
 
 1b) Categorizer
-- Carrega regras de categorias via YAML/JSON.
-- Classifica dependencias por padroes de repo ou modulo.
+- Loads category rules via YAML/JSON.
+- Classifies dependencies by repository or module patterns.
 
 2) Resolver
-- Consulta GitHub API usando token.
-- Determina ultima versao disponivel (release/tag).
-- Compara versoes e marca candidato.
+- Consults GitHub API using token.
+- Determines latest available version (release/tag).
+- Compares versions and marks candidate.
 
 3) Updater
-- Substitui o `source` antigo pelo novo dentro do arquivo.
-- Mantem o restante do arquivo intacto.
+- Replaces old `source` with new one within the file.
+- Keeps the rest of the file intact.
 
 4) Reporter
-- Exporta JSON com dependencias, versoes e sugestoes.
-- Inclui lista de arquivos afetados.
-- Adiciona `category` quando configurado.
+- Exports JSON with dependencies, versions and suggestions.
+- Includes list of affected files.
+- Adds `category` when configured.
 
-## Formato do relatorio (JSON)
+## Report format (JSON)
 ```
 {
   "generated_at": "2026-02-17T12:34:56Z",
@@ -73,31 +73,31 @@ Desenvolver uma ferramenta que detecta e atualiza referencias de modulos Terragr
 Flags:
 - `--include`, `--exclude` (glob)
 - `--github-base-url` (default: https://api.github.com)
-- `--token` (PAT ou via env GITHUB_TOKEN)
+- `--token` (PAT or via env GITHUB_TOKEN)
 
 ## GitHub Action
-- Composite action que instala o pacote e roda o CLI.
-- Abertura de PR fica no workflow, usando `peter-evans/create-pull-request`.
+- Composite action that installs the package and runs the CLI.
+- Opening PR is left to the workflow, using `peter-evans/create-pull-request`.
 
-## Riscos e limitacoes
-- Regex pode perder formatos HCL mais complexos.
-- Comparacao de versoes usa string simples (sem semver avancado).
-- Sem detecao automatica de breaking changes.
+## Risks and limitations
+- Regex may miss more complex HCL formats.
+- Version comparison uses simple string (without advanced semver).
+- No automatic detection of breaking changes.
 
-## Proximos passos
-- Parser HCL real (python-hcl2) para maior robustez.
-  - Substituir regex por parser HCL e mapear `source` em estruturas reais.
-  - Garantir suporte a `locals`, `include`, `dependency` e multi-line strings.
-  - Adicionar testes com fixtures HCL variados.
-- Suporte a Terraform Registry.
-  - Resolver versoes via API do Registry e mapear namespace/modulo/provider.
-  - Permitir configurar prioridades: Registry vs GitHub.
-  - Cache local para reduzir chamadas de rede.
-- Regras de agrupamento por dependencia para PRs.
-  - Agrupar por repo/modulo/categoria e gerar um PR por grupo.
-  - Adicionar regras de tamanho (ex.: max N updates por PR).
-  - Ajustar o workflow para criar branches distintas.
-- Estrategias `next-safe` com changelogs gerados.
-  - Implementar comparacao semver real e salto de versoes com zero changes.
-  - Gerar changelog consolidado no relatorio/PR.
-  - Permitir filtros (seguranca/bugfix/feature).
+## Next steps
+- Real HCL parser (python-hcl2) for greater robustness.
+  - Replace regex with HCL parser and map `source` to real structures.
+  - Ensure support for `locals`, `include`, `dependency` and multi-line strings.
+  - Add tests with varied HCL fixtures.
+- Terraform Registry support.
+  - Resolve versions via Registry API and map namespace/module/provider.
+  - Allow configuring priorities: Registry vs GitHub.
+  - Local cache to reduce network calls.
+- Grouping rules by dependency for PRs.
+  - Group by repo/module/category and generate one PR per group.
+  - Add size rules (e.g.: max N updates per PR).
+  - Adjust workflow to create distinct branches.
+- `next-safe` strategies with generated changelogs.
+  - Implement real semver comparison and version jumping with zero changes.
+  - Generate consolidated changelog in report/PR.
+  - Allow filters (security/bugfix/feature).

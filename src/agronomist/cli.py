@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import fnmatch
+import logging
 import os
 import sys
 from typing import Callable, Dict, List, Optional
@@ -10,11 +11,14 @@ from urllib.parse import urlparse
 from .config import CategoryRule, load_config
 from .git import GitClient
 from .github import GitHubClient
+from .gitlab import GitLabClient
 from .markdown import write_markdown
 from .models import SourceRef
 from .report import build_report, write_report
 from .scanner import scan_sources
 from .updater import apply_updates
+
+logger = logging.getLogger(__name__)
 
 
 def _parse_args(argv: List[str]) -> argparse.Namespace:
@@ -33,13 +37,18 @@ def _parse_args(argv: List[str]) -> argparse.Namespace:
         "--resolver",
         default="git",
         choices=["git", "github", "auto"],
-        help="Como resolver a ultima versao: git, github ou auto",
+        help="How to resolve the latest version: git, github or auto",
     )
     report_parser.add_argument("--output", default="report.json")
     report_parser.add_argument(
         "--markdown",
         default=None,
-        help="Gerar relatorio em Markdown (ex.: report.md)",
+        help="Generate Markdown report (e.g.: report.md)",
+    )
+    report_parser.add_argument(
+        "--validate-token",
+        action="store_true",
+        help="Validate token before processing (useful for CI/CD)",
     )
 
     update_parser = subparsers.add_parser("update")
@@ -53,13 +62,18 @@ def _parse_args(argv: List[str]) -> argparse.Namespace:
         "--resolver",
         default="git",
         choices=["git", "github", "auto"],
-        help="Como resolver a ultima versao: git, github ou auto",
+        help="How to resolve the latest version: git, github or auto",
     )
     update_parser.add_argument("--output", default="report.json")
     update_parser.add_argument(
         "--markdown",
         default=None,
-        help="Gerar relatorio em Markdown (ex.: report.md)",
+        help="Generate Markdown report (e.g.: report.md)",
+    )
+    update_parser.add_argument(
+        "--validate-token",
+        action="store_true",
+        help="Validate token before processing (useful for CI/CD)",
     )
 
     return parser.parse_args(argv)
@@ -132,12 +146,30 @@ def _print_category_summary(updates: List[Dict[str, object]]) -> None:
 def main(argv: List[str] | None = None) -> int:
     args = _parse_args(argv or sys.argv[1:])
 
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(levelname)s: %(message)s",
+    )
+
     category_rules = load_config(args.config, args.root)
     sources = scan_sources(args.root, include=args.include, exclude=args.exclude)
 
     token = args.token or os.environ.get("GITHUB_TOKEN")
     github_client = GitHubClient(base_url=args.github_base_url, token=token)
+    gitlab_client = GitLabClient(base_url="https://gitlab.com", token=token)
     git_client = GitClient()
+
+    if args.validate_token:
+        if token:
+            if not github_client.validate_token():
+                logger.error("GitHub token validation failed")
+                return 1
+            if not gitlab_client.validate_token():
+                logger.error("GitLab token validation failed")
+                return 1
+            print("Tokens validated successfully.")
+        else:
+            print("No token provided. Token validation skipped.")
 
     base_host = urlparse(args.github_base_url).netloc
     github_hosts = {"github.com"}
@@ -145,15 +177,30 @@ def main(argv: List[str] | None = None) -> int:
         github_hosts.add(base_host)
 
     def _latest_ref(source: SourceRef) -> Optional[str]:
+        gitlab_host = GitLabClient.detect_gitlab_host(source.repo_url)
+
         if args.resolver == "github":
-            if source.repo_host not in github_hosts:
-                return None
-            return github_client.latest_ref(source.repo)
+            if source.repo_host in github_hosts:
+                ref = github_client.latest_ref(source.repo)
+                if ref:
+                    return ref
+            return git_client.latest_ref(source.repo_url)
+
         if args.resolver == "git":
             return git_client.latest_ref(source.repo_url)
-        if source.repo_host in github_hosts:
-            return github_client.latest_ref(source.repo)
-        return git_client.latest_ref(source.repo_url)
+
+        if args.resolver == "auto":
+            if gitlab_host:
+                ref = gitlab_client.latest_ref(source.repo_url)
+                if ref:
+                    return ref
+            elif source.repo_host in github_hosts:
+                ref = github_client.latest_ref(source.repo)
+                if ref:
+                    return ref
+            return git_client.latest_ref(source.repo_url)
+
+        return None
 
     updates = _collect_updates(_latest_ref, sources, category_rules)
 

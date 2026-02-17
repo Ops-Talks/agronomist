@@ -1,39 +1,39 @@
 name: "Agronomist"
-description: "Detecta e atualiza refs de modulos Terragrunt"
+description: "Detects and updates refs of Terragrunt modules"
 inputs:
   github_token:
-    description: "GitHub token para chamadas a API"
+    description: "GitHub token for API calls"
     required: false
   root:
-    description: "Diretorio raiz para scan"
+    description: "Root directory to scan"
     required: false
     default: "."
   include:
-    description: "Lista de globs separados por virgula"
+    description: "Comma-separated list of globs"
     required: false
     default: ""
   exclude:
-    description: "Lista de globs separados por virgula"
+    description: "Comma-separated list of globs"
     required: false
     default: ""
   mode:
-    description: "report ou update"
+    description: "report or update"
     required: false
     default: "report"
   output:
-    description: "Arquivo de relatorio"
+    description: "Report file"
     required: false
     default: "report.json"
   github_base_url:
-    description: "Base URL da API do GitHub"
+    description: "GitHub API base URL"
     required: false
     default: "https://api.github.com"
   resolver:
-    description: "Resolver de versoes: git, github ou auto"
+    description: "Version resolver: git, github or auto"
     required: false
     default: "git"
   config:
-    description: "Arquivo de configuracao (yaml/json) para categorias"
+    description: "Configuration file (yaml/json) for categories"
     required: false
     default: ".agronomist.yaml"
 runs:

@@ -27,13 +27,13 @@ def _group_by_module(updates: List[Dict[str, Any]]) -> Dict[str, List[Dict[str, 
 def generate_markdown(report: Dict[str, Any]) -> str:
     updates = report.get("updates", [])
     if not updates:
-        return "# Agronomist Report\n\nNenhuma atualização disponível.\n"
+        return "# Agronomist Report\n\nNo updates available.\n"
 
     lines = [
         "# Agronomist Report",
         "",
-        f"**Gerado em:** {report.get('generated_at', 'N/A')}",
-        f"**Raiz:** `{report.get('root', '.')}`",
+        f"**Generated at:** {report.get('generated_at', 'N/A')}",
+        f"**Root:** `{report.get('root', '.')}`",
         "",
     ]
 
@@ -44,18 +44,18 @@ def generate_markdown(report: Dict[str, Any]) -> str:
 
     lines.extend(
         [
-            "## Resumo",
+            "## Summary",
             "",
-            f"- **Total de atualizações:** {total_updates}",
-            f"- **Repositórios afetados:** {unique_repos}",
-            f"- **Módulos afetados:** {unique_modules}",
+            f"- **Total updates:** {total_updates}",
+            f"- **Affected repositories:** {unique_repos}",
+            f"- **Affected modules:** {unique_modules}",
             "",
         ]
     )
 
     lines.extend(
         [
-            "## Atualizações por Repositório",
+            "## Updates by Repository",
             "",
         ]
     )
@@ -70,9 +70,9 @@ def generate_markdown(report: Dict[str, Any]) -> str:
         for module in sorted(by_module.keys()):
             module_updates = by_module[module]
             if module and module != "root":
-                lines.append(f"#### Módulo: `{module}`")
+                lines.append(f"#### Module: `{module}`")
             else:
-                lines.append("#### Raiz")
+                lines.append("#### Root")
             lines.append("")
 
             for update in module_updates:
@@ -83,15 +83,15 @@ def generate_markdown(report: Dict[str, Any]) -> str:
 
                 lines.append(f"**{current} → {latest}**")
                 if category:
-                    lines.append(f"- Categoria: `{category}`")
-                lines.append(f"- Arquivos afetados: {len(files)}")
+                    lines.append(f"- Category: `{category}`")
+                lines.append(f"- Affected files: {len(files)}")
                 if len(files) <= 3:
                     for file in files:
                         lines.append(f"  - `{file}`")
                 else:
                     for file in files[:3]:
                         lines.append(f"  - `{file}`")
-                    lines.append(f"  - ... e mais {len(files) - 3}")
+                    lines.append(f"  - ... and {len(files) - 3} more")
                 lines.append("")
 
     return "\n".join(lines)
