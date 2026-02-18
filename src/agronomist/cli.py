@@ -22,11 +22,24 @@ logger = logging.getLogger(__name__)
 
 
 def _parse_args(argv: list[str]) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(prog="agronomist")
+    parser = argparse.ArgumentParser(
+        prog="agronomist",
+        description="Detect and update Terraform module versions across repositories",
+        epilog="""
+examples:
+  %(prog)s report                           # Generate version report
+  %(prog)s report --resolver github         # Use GitHub API resolver
+  %(prog)s update --include '**/*.tf'       # Update matching Terraform files
+  %(prog)s report --markdown report.md      # Export as Markdown
+        """,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
 
-    subparsers = parser.add_subparsers(dest="command", required=True)
+    subparsers = parser.add_subparsers(dest="command")
 
-    report_parser = subparsers.add_parser("report")
+    report_parser = subparsers.add_parser(
+        "report", help="Generate a version report for all Terraform modules"
+    )
     report_parser.add_argument("--root", default=".")
     report_parser.add_argument("--include", action="append", default=[])
     report_parser.add_argument("--exclude", action="append", default=[])
@@ -51,7 +64,9 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
         help="Validate token before processing (useful for CI/CD)",
     )
 
-    update_parser = subparsers.add_parser("update")
+    update_parser = subparsers.add_parser(
+        "update", help="Update Terraform modules to their latest versions and generate report"
+    )
     update_parser.add_argument("--root", default=".")
     update_parser.add_argument("--include", action="append", default=[])
     update_parser.add_argument("--exclude", action="append", default=[])
@@ -76,7 +91,13 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
         help="Validate token before processing (useful for CI/CD)",
     )
 
-    return parser.parse_args(argv)
+    args = parser.parse_args(argv)
+
+    if not argv or not args.command:
+        parser.print_help()
+        sys.exit(0)
+
+    return args
 
 
 def _match_any(value: str, patterns: list[str]) -> bool:
