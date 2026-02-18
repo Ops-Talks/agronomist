@@ -36,4 +36,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-See [examples/workflows/agronomist.yml](../examples/workflows/agronomist.yml) for a full example.
+See [examples/workflows/agronomist.yml](https://github.com/Ops-Talks/agronomist/blob/main/examples/workflows/agronomist.yml) for a full example.
