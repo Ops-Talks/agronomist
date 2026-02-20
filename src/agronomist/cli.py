@@ -44,7 +44,21 @@ examples:
     report_parser.add_argument("--include", action="append", default=[])
     report_parser.add_argument("--exclude", action="append", default=[])
     report_parser.add_argument("--github-base-url", default="https://api.github.com")
-    report_parser.add_argument("--token", default=None)
+    report_parser.add_argument(
+        "--token",
+        default=None,
+        help="Shared fallback token for GitHub/GitLab when specific tokens are not provided",
+    )
+    report_parser.add_argument(
+        "--github-token",
+        default=None,
+        help="GitHub API token (overrides GITHUB_TOKEN env var)",
+    )
+    report_parser.add_argument(
+        "--gitlab-token",
+        default=None,
+        help="GitLab API token (overrides GITLAB_TOKEN env var)",
+    )
     report_parser.add_argument("--config", default=".agronomist.yaml")
     report_parser.add_argument(
         "--resolver",
@@ -71,7 +85,21 @@ examples:
     update_parser.add_argument("--include", action="append", default=[])
     update_parser.add_argument("--exclude", action="append", default=[])
     update_parser.add_argument("--github-base-url", default="https://api.github.com")
-    update_parser.add_argument("--token", default=None)
+    update_parser.add_argument(
+        "--token",
+        default=None,
+        help="Shared fallback token for GitHub/GitLab when specific tokens are not provided",
+    )
+    update_parser.add_argument(
+        "--github-token",
+        default=None,
+        help="GitHub API token (overrides GITHUB_TOKEN env var)",
+    )
+    update_parser.add_argument(
+        "--gitlab-token",
+        default=None,
+        help="GitLab API token (overrides GITLAB_TOKEN env var)",
+    )
     update_parser.add_argument("--config", default=".agronomist.yaml")
     update_parser.add_argument(
         "--resolver",
@@ -175,19 +203,25 @@ def main(argv: list[str] | None = None) -> int:
     category_rules = load_config(args.config, args.root)
     sources = scan_sources(args.root, include=args.include, exclude=args.exclude)
 
-    token = args.token or os.environ.get("GITHUB_TOKEN")
-    github_client = GitHubClient(base_url=args.github_base_url, token=token)
-    gitlab_client = GitLabClient(base_url="https://gitlab.com", token=token)
+    github_token = args.github_token or os.environ.get("GITHUB_TOKEN") or args.token
+    gitlab_token = args.gitlab_token or os.environ.get("GITLAB_TOKEN") or args.token
+    github_client = GitHubClient(base_url=args.github_base_url, token=github_token)
+    gitlab_client = GitLabClient(base_url="https://gitlab.com", token=gitlab_token)
     git_client = GitClient()
 
     if args.validate_token:
-        if token:
+        validated_any = False
+        if github_token:
+            validated_any = True
             if not github_client.validate_token():
                 logger.error("GitHub token validation failed")
                 return 1
+        if gitlab_token:
+            validated_any = True
             if not gitlab_client.validate_token():
                 logger.error("GitLab token validation failed")
                 return 1
+        if validated_any:
             print("Tokens validated successfully.")
         else:
             print("No token provided. Token validation skipped.")

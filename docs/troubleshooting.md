@@ -4,7 +4,7 @@
 
 Agronomist uses `git ls-remote`. Install Git and ensure it is on your PATH.
 
-## GitHub token errors
+## GitHub/GitLab token errors
 
 - `401` means the token is invalid or expired.
 - `403` means the token lacks permissions or rate limit was hit.

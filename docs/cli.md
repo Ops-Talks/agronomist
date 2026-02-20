@@ -40,7 +40,9 @@ Scans Terraform/OpenTofu files, identifies available module version updates, and
 
 | Option | Description | Default |
 |--------|-------------|---------|
-| `--token` | Authentication token for GitHub and GitLab APIs (PAT - Personal Access Token). Can also be set via `GITHUB_TOKEN` environment variable. | Read from `GITHUB_TOKEN` env var |
+| `--github-token` | Authentication token for GitHub API (PAT - Personal Access Token). Can also be set via `GITHUB_TOKEN` environment variable. | Read from `GITHUB_TOKEN` env var |
+| `--gitlab-token` | Authentication token for GitLab API (PAT - Personal Access Token). Can also be set via `GITLAB_TOKEN` environment variable. | Read from `GITLAB_TOKEN` env var |
+| `--token` | Shared fallback token for GitHub and GitLab APIs when specific tokens are not provided. | Not set |
 | `--github-base-url` | GitHub API base URL (useful for GitHub Enterprise). | `https://api.github.com` |
 | `--resolver` | Version resolution strategy. See [Resolution Strategies](#resolution-strategies). | `git` |
 | `--validate-token` | Validate API token before processing (useful for CI/CD pipelines). Does not scan if invalid. | `false` |
@@ -81,7 +83,8 @@ The `--resolver` option determines how Agronomist queries for the latest module 
 
 ## Environment Variables
 
-- `GITHUB_TOKEN` - Default authentication token for GitHub and GitLab APIs. Used when `--token` is not specified.
+- `GITHUB_TOKEN` - Default authentication token for GitHub API. Used when `--github-token` is not specified.
+- `GITLAB_TOKEN` - Default authentication token for GitLab API. Used when `--gitlab-token` is not specified.
 
 ## Exit Codes
 
@@ -116,12 +119,16 @@ agronomist report --root ./terraform --markdown UPDATES.md
 ### Using Environment Variables
 
 ```sh
-# Use GITHUB_TOKEN from environment
+# Use GITHUB_TOKEN from environment (GitHub API)
 export GITHUB_TOKEN="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 agronomist report --root . --resolver github
 
 # Or pass token inline
 GITHUB_TOKEN="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxx" agronomist report --root . --resolver github
+
+# Use GITLAB_TOKEN from environment (GitLab API)
+export GITLAB_TOKEN="glpat_xxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+agronomist report --root . --resolver auto
 ```
 
 ### Using GitHub Enterprise
@@ -132,7 +139,7 @@ export GITHUB_TOKEN="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 agronomist report --github-base-url https://github.enterprise.com/api/v3 --resolver github
 
 # Or pass token directly
-agronomist report --github-base-url https://github.enterprise.com/api/v3 --resolver github --token $GITHUB_TOKEN
+agronomist report --github-base-url https://github.enterprise.com/api/v3 --resolver github --github-token $GITHUB_TOKEN
 ```
 
 ### Filtering Files
@@ -152,7 +159,7 @@ agronomist report --include "**/*.tf" --exclude "**/examples/**"
 
 ```sh
 # Validate token in CI/CD before running expensive scan
-agronomist report --token $GITHUB_TOKEN --validate-token
+agronomist report --github-token $GITHUB_TOKEN --gitlab-token $GITLAB_TOKEN --validate-token
 
 # If token is invalid, exit with code 1
 ```
@@ -167,5 +174,5 @@ agronomist update --output report.json
 agronomist update --markdown UPDATES.md --output report.json
 
 # Update specific directory with token
-agronomist update --root ./terraform --resolver github --token $GITHUB_TOKEN
+agronomist update --root ./terraform --resolver github --github-token $GITHUB_TOKEN
 ```

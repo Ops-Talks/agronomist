@@ -4,10 +4,11 @@ This project includes a GitLab pipeline to run Agronomist using GitLab Runners.
 
 ## Requirements
 - GitLab Runner with Docker or shell executor.
-- A GitHub or GitLab token stored in GitLab CI variables.
+- GitHub and/or GitLab tokens stored in GitLab CI variables (set only what you need).
 
 ## Variables
-- `GITHUB_TOKEN` Token used by Agronomist for GitHub or GitLab API calls.
+- `GITHUB_TOKEN` Token used by Agronomist for GitHub API calls.
+- `GITLAB_TOKEN` Token used by Agronomist for GitLab API calls.
 - `AGRONOMIST_ROOT` Root directory to scan. Default: `.`
 - `AGRONOMIST_RESOLVER` Resolver strategy: `git`, `github`, or `auto`.
 - `AGRONOMIST_CONFIG` Path to configuration file. Default: `.agronomist.yaml`.
@@ -55,4 +56,4 @@ update:
       - report.json
 ```
 
-For a full pipeline, see [.gitlab-ci.yml](https://ops-talks.github.io/agronomist/.gitlab-ci.yml).
+For a full pipeline, see [.gitlab-ci.yml](https://github.com/ops-talks/agronomist/blob/main/.gitlab-ci.yml).

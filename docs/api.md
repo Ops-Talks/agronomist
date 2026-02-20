@@ -10,6 +10,7 @@ from agronomist.scanner import scan_sources
 from agronomist.config import load_config
 from agronomist.github import GitHubClient
 from agronomist.git import GitClient
+from agronomist.gitlab import GitLabClient
 from agronomist.report import build_report, write_report
 from agronomist.markdown import write_markdown
 
@@ -17,6 +18,7 @@ sources = scan_sources(root="./infra", include=[".tf"], exclude=[".terraform/"])
 rules = load_config(".agronomist.yaml", root=".")
 
 github = GitHubClient(token="...")
+gitlab = GitLabClient(base_url="https://gitlab.com", token="...")
 resolver = GitClient()
 
 # Resolve and build a report using custom logic

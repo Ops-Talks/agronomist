@@ -18,7 +18,8 @@ Agronomist continuously monitors and reports on module updates, ensuring your Ia
 ## Requirements
 - Python 3.10+
 - Git installed (to resolve tags via `git ls-remote`)
-- GitHub token (PAT) recommended to avoid rate limit when using `--resolver github`
+- GitHub token (PAT) recommended to avoid rate limit when using `--resolver github` (`GITHUB_TOKEN` or `--github-token`)
+- GitLab token (PAT) recommended for private GitLab repositories when using `--resolver auto` (`GITLAB_TOKEN` or `--gitlab-token`)
 
 ## Quick start (CLI)
 
@@ -61,96 +62,11 @@ poetry run agronomist report --root . --markdown report.md --output report.json
 poetry run agronomist update --root . --output report.json
 ```
 
-## Version resolver
-- Default: `git` (uses `git ls-remote --tags`).
-- Optional: `github` (uses GitHub API).
-
-`git` works with GitHub, GitLab and other compatible Git servers.
-
-Examples (after installing with pipx):
-```bash
-agronomist report --root . --resolver git --output report.json
-agronomist report --root . --resolver github --output report.json
-```
-
-Or with poetry:
-```bash
-poetry run agronomist report --root . --resolver git --output report.json
-poetry run agronomist report --root . --resolver github --output report.json
-```
-
-## Lint and tests
-### Using task runner (taskipy)
-```
-poetry run task lint          # Run ruff and black
-poetry run task format        # Format code
-poetry run task test          # Run tests
-poetry run task check         # Run linters + tests
-poetry run task pre-commit    # Install and run pre-commit hooks
-```
-
-### CI (Quality Checks)
-GitHub Actions runs `poetry run task check` on pushes to `main` and on pull requests.
-
-### Release workflow
-Releases are created by pushing a SemVer tag (e.g. `v0.3.8`), which triggers the GitHub Actions release workflow to build and attach artifacts.
-
-Or with `poe` alias (shorter):
-```
-poe lint          # Run ruff and black
-poe format        # Format code
-poe test          # Run tests
-poe check         # Run linters + tests
-poe pre-commit    # Install and run pre-commit hooks
-```
-
-### Using poetry directly
-```
-poetry run ruff check .
-poetry run ruff format .
-poetry run black .
-poetry run pytest
-```
-
-## Pre-commit
-Using task runner:
-```
-poetry run task pre-commit-install  # Install hooks
-poetry run task pre-commit-run      # Run on all files
-poetry run task pre-commit          # Install + run hooks
-```
-
-Or with `poe` alias:
-```
-poe pre-commit-install  # Install hooks
-poe pre-commit-run      # Run on all files
-poe pre-commit          # Install + run hooks
-```
-
-Using poetry directly:
-```
-poetry run pre-commit install
-poetry run pre-commit run --all-files
-```
-
-## GitHub Action
-See example in [examples/workflows/agronomist.yml](examples/workflows/agronomist.yml).
-
-## Categories (config)
-Create a `.agronomist.yaml` file (or specify `--config`) to classify dependencies:
-```
-categories:
-  - name: aws
-    repo_patterns:
-      - "*/terraform-aws-*"
-  - name: mysql
-    repo_patterns:
-      - "*/terraform-*-mysql-*"
-  - name: postgres
-    repo_patterns:
-      - "*/terraform-*-postgres-*"
-```
-The `category` field will be included in the report and displayed in stdout.
-
-## Design
-See MVP design in [docs/design.md](docs/design.md).
+## Documentation
+- Getting started: [docs/getting-started.md](docs/getting-started.md)
+- CLI reference: [docs/cli.md](docs/cli.md)
+- Configuration: [docs/configuration.md](docs/configuration.md)
+- Resolvers: [docs/resolvers.md](docs/resolvers.md)
+- Reports: [docs/reports.md](docs/reports.md)
+- GitHub Action: [docs/github-action.md](docs/github-action.md)
+- GitLab CI: [docs/gitlab-ci.md](docs/gitlab-ci.md)

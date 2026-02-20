@@ -3,7 +3,8 @@
 ## Requirements
 - Python 3.10 or newer
 - Git installed (used for `git ls-remote`)
-- GitHub token recommended to avoid rate limits when using `--resolver github`
+- GitHub token recommended to avoid rate limits when using `--resolver github` (`GITHUB_TOKEN` or `--github-token`)
+- GitLab token recommended for private GitLab repositories when using `--resolver auto` (`GITLAB_TOKEN` or `--gitlab-token`)
 
 ## Install
 
