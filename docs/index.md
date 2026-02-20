@@ -6,6 +6,7 @@ Agronomist continuously monitors and reports on module updates, ensuring your Ia
 
 - Scan `.hcl` and `.tf` files for `source` references with `?ref=`.
 - Resolve latest versions via Git tags, GitHub API, or auto detection.
+- Support blacklist filtering to ignore specific repositories, modules, or files.
 - Generate JSON and Markdown reports.
 - Optionally update files in place.
 

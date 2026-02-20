@@ -36,6 +36,8 @@ Scans Terraform/OpenTofu files, identifies available module version updates, and
 | `--include` | Glob patterns to include in scan. Can be specified multiple times. |
 | `--exclude` | Glob patterns to exclude from scan. Can be specified multiple times. |
 
+**Note**: Additional filtering via **blacklist** can be configured in `.agronomist.yaml` to permanently ignore specific repositories, modules, or files. See [Configuration](configuration.md) for details.
+
 ### API & Authentication
 
 | Option | Description | Default |

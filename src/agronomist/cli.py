@@ -8,7 +8,7 @@ import sys
 from collections.abc import Callable
 from urllib.parse import urlparse
 
-from .config import CategoryRule, load_config
+from .config import load_config
 from .git import GitClient
 from .github import GitHubClient
 from .gitlab import GitLabClient
@@ -132,7 +132,7 @@ def _match_any(value: str, patterns: list[str]) -> bool:
     return any(fnmatch.fnmatch(value, pattern) for pattern in patterns)
 
 
-def _categorize(rules: list[CategoryRule], repo: str, module: str | None) -> str | None:
+def _categorize(rules: list, repo: str, module: str | None) -> str | None:
     for rule in rules:
         if rule.repo_patterns and _match_any(repo, rule.repo_patterns):
             return rule.name
@@ -144,7 +144,7 @@ def _categorize(rules: list[CategoryRule], repo: str, module: str | None) -> str
 def _collect_updates(
     latest_ref_fn: Callable[[SourceRef], str | None],
     sources: list[SourceRef],
-    category_rules: list[CategoryRule],
+    category_rules: list,
 ) -> list[dict[str, object]]:
     by_repo: dict[str, str | None] = {}
     updates: list[dict[str, object]] = []
@@ -200,8 +200,15 @@ def main(argv: list[str] | None = None) -> int:
         format="%(levelname)s: %(message)s",
     )
 
-    category_rules = load_config(args.config, args.root)
-    sources = scan_sources(args.root, include=args.include, exclude=args.exclude)
+    config = load_config(args.config, args.root)
+    sources = scan_sources(
+        args.root,
+        include=args.include,
+        exclude=args.exclude,
+        blacklist_repos=config.blacklist.repos,
+        blacklist_modules=config.blacklist.modules,
+        blacklist_files=config.blacklist.files,
+    )
 
     github_token = args.github_token or os.environ.get("GITHUB_TOKEN") or args.token
     gitlab_token = args.gitlab_token or os.environ.get("GITLAB_TOKEN") or args.token
@@ -257,7 +264,7 @@ def main(argv: list[str] | None = None) -> int:
 
         return None
 
-    updates = _collect_updates(_latest_ref, sources, category_rules)
+    updates = _collect_updates(_latest_ref, sources, config.categories)
 
     report = build_report(args.root, updates)
     write_report(args.output, report)

@@ -12,7 +12,7 @@ Agronomist ships a composite action in `action.yml` that installs the package an
 - `output` Report file name.
 - `github_base_url` GitHub API base URL.
 - `resolver` Version resolver strategy: `git`, `github`, or `auto`.
-- `config` Path to configuration file.
+- `config` Path to configuration file (supports category rules and blacklist filters).
 
 ## Example workflow
 

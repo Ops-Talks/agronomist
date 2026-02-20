@@ -14,20 +14,32 @@ from agronomist.gitlab import GitLabClient
 from agronomist.report import build_report, write_report
 from agronomist.markdown import write_markdown
 
-sources = scan_sources(root="./infra", include=[".tf"], exclude=[".terraform/"])
-rules = load_config(".agronomist.yaml", root=".")
+# Load configuration (includes categories and blacklist)
+config = load_config(".agronomist.yaml", root=".")
+
+# Scan sources with optional blacklist filters
+sources = scan_sources(
+    root="./infra",
+    include=[".tf"],
+    exclude=[".terraform/"],
+    blacklist_repos=config.blacklist.repos,
+    blacklist_modules=config.blacklist.modules,
+    blacklist_files=config.blacklist.files,
+)
 
 github = GitHubClient(token="...")
 gitlab = GitLabClient(base_url="https://gitlab.com", token="...")
 resolver = GitClient()
 
-# Resolve and build a report using custom logic
+# Resolve and build a report using custom logic with categories
+updates = []  # Collect updates using resolver
+report = build_report(root=".", updates=updates)
 ```
 
 ## Common functions and classes
 
-- `scan_sources` Scan files and return discovered sources.
-- `load_config` Load category rules from YAML or JSON.
+- `scan_sources` Scan files and return discovered sources. Supports optional blacklist filters for repos, modules, and files.
+- `load_config` Load configuration from YAML or JSON. Returns a `Config` object containing category rules and blacklist settings.
 - `GitHubClient` Resolve latest release and tags.
 - `GitClient` Resolve tags via `git ls-remote`.
 - `build_report` Build the report structure.

@@ -25,3 +25,14 @@ categories:
       - "*/terraform-*-monitoring-*"
       - "*/opentofu-*-monitoring-*"
       - "*/tofu-*-monitoring-*"
+
+# Optional: Blacklist to exclude specific resources from scanning
+# blacklist:
+#   repos:
+#     - "*/terraform-legacy-*"
+#     - "*/deprecated-*"
+#   modules:
+#     - "old-modules/*"
+#   files:
+#     - "**/legacy/**"
+#     - "**/deprecated/**"

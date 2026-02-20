@@ -13,6 +13,7 @@ Agronomist continuously monitors and reports on module updates, ensuring your Ia
 - Queries releases/tags to suggest a new version.
 - Generates JSON report and optionally updates refs in-place.
 - Generate humam readable reports with updates using Markdown.
+- Supports blacklist filtering to ignore specific repositories, modules, or files.
 - Can be used via local CLI or GitHub Action.
 
 ## Requirements

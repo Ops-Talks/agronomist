@@ -10,8 +10,8 @@
 
 ## Components
 
-- `scanner` Walks the file tree and finds module sources.
-- `config` Loads category rules for tagging updates.
+- `scanner` Walks the file tree and finds module sources. Supports blacklist filters for repos, modules, and files.
+- `config` Loads category rules and blacklist settings for filtering and tagging updates.
 - `git` Resolves tags using Git.
 - `github` Resolves releases and tags using GitHub API.
 - `gitlab` Resolves tags using GitLab API when detected.

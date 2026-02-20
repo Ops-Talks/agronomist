@@ -15,6 +15,19 @@ class CategoryRule:
     module_patterns: list[str]
 
 
+@dataclass(frozen=True)
+class Blacklist:
+    repos: list[str]
+    modules: list[str]
+    files: list[str]
+
+
+@dataclass(frozen=True)
+class Config:
+    categories: list[CategoryRule]
+    blacklist: Blacklist
+
+
 def _normalize_rules(data: dict[str, Any]) -> list[CategoryRule]:
     rules: list[CategoryRule] = []
     for item in data.get("categories", []) or []:
@@ -31,16 +44,16 @@ def _normalize_rules(data: dict[str, Any]) -> list[CategoryRule]:
     return rules
 
 
-def load_config(path: str, root: str) -> list[CategoryRule]:
+def load_config(path: str, root: str) -> Config:
     if not path:
-        return []
+        return Config(categories=[], blacklist=Blacklist(repos=[], modules=[], files=[]))
 
     full_path = path
     if not os.path.isabs(path):
         full_path = os.path.join(root, path)
 
     if not os.path.exists(full_path):
-        return []
+        return Config(categories=[], blacklist=Blacklist(repos=[], modules=[], files=[]))
 
     with open(full_path, encoding="utf-8") as handle:
         if full_path.endswith(".json"):
@@ -49,6 +62,14 @@ def load_config(path: str, root: str) -> list[CategoryRule]:
             data = yaml.safe_load(handle) or {}
 
     if not isinstance(data, dict):
-        return []
+        return Config(categories=[], blacklist=Blacklist(repos=[], modules=[], files=[]))
 
-    return _normalize_rules(data)
+    categories = _normalize_rules(data)
+    blacklist_data = data.get("blacklist", {}) or {}
+    blacklist = Blacklist(
+        repos=blacklist_data.get("repos", []) or [],
+        modules=blacklist_data.get("modules", []) or [],
+        files=blacklist_data.get("files", []) or [],
+    )
+
+    return Config(categories=categories, blacklist=blacklist)

@@ -305,7 +305,7 @@ agronomist/
 │   └── agronomist/
 │       ├── __init__.py
 │       ├── cli.py              # CLI entry point
-│       ├── config.py           # Configuration loader
+│       ├── config.py           # Configuration loader (categories & blacklist)
 │       ├── models.py           # Data models (SourceRef, etc.)
 │       ├── scanner.py          # File scanner
 │       ├── categorizer.py      # Update categorizer

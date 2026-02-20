@@ -48,10 +48,18 @@ def _parse_git_source(source: str) -> SourceRef | None:
 
 
 def scan_sources(
-    root: str, include: list[str] | None = None, exclude: list[str] | None = None
+    root: str,
+    include: list[str] | None = None,
+    exclude: list[str] | None = None,
+    blacklist_repos: list[str] | None = None,
+    blacklist_modules: list[str] | None = None,
+    blacklist_files: list[str] | None = None,
 ) -> list[SourceRef]:
     include = include or ["**/*.hcl", "**/*.tf"]
     exclude = exclude or []
+    blacklist_repos = blacklist_repos or []
+    blacklist_modules = blacklist_modules or []
+    blacklist_files = blacklist_files or []
 
     results: list[SourceRef] = []
     for dirpath, _, filenames in os.walk(root):
@@ -60,6 +68,8 @@ def scan_sources(
             if include and not _match_any(rel_path, include):
                 continue
             if exclude and _match_any(rel_path, exclude):
+                continue
+            if blacklist_files and _match_any(rel_path, blacklist_files):
                 continue
 
             full_path = os.path.join(root, rel_path)
@@ -74,6 +84,17 @@ def scan_sources(
                 parsed = _parse_git_source(source)
                 if not parsed:
                     continue
+
+                # Apply blacklist filters
+                if blacklist_repos and _match_any(parsed.repo, blacklist_repos):
+                    continue
+                if (
+                    parsed.module
+                    and blacklist_modules
+                    and _match_any(parsed.module, blacklist_modules)
+                ):
+                    continue
+
                 results.append(
                     SourceRef(
                         file_path=rel_path,
