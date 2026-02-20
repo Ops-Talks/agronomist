@@ -55,4 +55,4 @@ update:
       - report.json
 ```
 
-For a full pipeline, see [.gitlab-ci.yml](../.gitlab-ci.yml).
+For a full pipeline, see [.gitlab-ci.yml](https://ops-talks.github.io/agronomist/.gitlab-ci.yml).

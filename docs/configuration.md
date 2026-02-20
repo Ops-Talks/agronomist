@@ -4,6 +4,8 @@ Agronomist reads category rules from a YAML or JSON file. By default, it looks f
 
 ## Example
 
+### YAML Format
+
 ```yaml
 categories:
   - name: aws
@@ -34,14 +36,45 @@ categories:
       - "*/tofu-*-monitoring-*"
 ```
 
+### JSON Format
+
+```json
+{
+  "categories": [
+    {
+      "name": "aws",
+      "repo_patterns": [
+        "*/terraform-aws-*",
+        "*/opentofu-aws-*"
+      ]
+    },
+    {
+      "name": "database",
+      "repo_patterns": [
+        "*/terraform-*-mysql-*",
+        "*/terraform-*-postgres-*"
+      ]
+    }
+  ]
+}
+```
+
 ## Fields
 
-- `categories` List of category rules.
-- `name` Category name.
-- `repo_patterns` Match repositories using glob patterns.
-- `module_patterns` Match module names using glob patterns.
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `categories` | list | Yes | List of category rules |
+| `name` | string | Yes | Category name (assigned to matching updates) |
+| `repo_patterns` | list[string] | No | Glob patterns to match repository names/URLs |
+| `module_patterns` | list[string] | No | Glob patterns to match module names |
 
-## Notes
+## Behavior
 
-- Pattern matching uses Python `fnmatch` rules.
-- If no rule matches, updates are labeled `uncategorized`.
+- **Pattern matching**: Uses Python `fnmatch` rules (not regex). Supports `*`, `?`, `[abc]`, `[!abc]`
+- **Matching logic**: 
+  - If `repo_patterns` matches the repository, category is assigned
+  - If `module_patterns` matches the module name, category is assigned
+  - First matching rule wins
+- **Uncategorized**: Updates that don't match any rule are labeled `uncategorized`
+- **Optional patterns**: If `repo_patterns` or `module_patterns` are omitted or empty, they are skipped
+- **File formats**: Both YAML (`.yaml`, `.yml`) and JSON (`.json`) are supported
