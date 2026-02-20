@@ -36,4 +36,33 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-See [examples/workflows/agronomist.yml](https://github.com/Ops-Talks/agronomist/blob/main/examples/workflows/agronomist.yml) for a full example.
+## Workflow using GitHub Releases
+
+If you prefer not to use the composite action, install Agronomist from GitHub Releases and run the CLI directly:
+
+```yaml
+name: Agronomist Updates (Releases)
+on:
+  schedule:
+    - cron: "0 7 * * 1"
+  workflow_dispatch: {}
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Agronomist
+        run: |
+          AGRONOMIST_VERSION="v0.4.6"
+          WHEEL="agronomist-${AGRONOMIST_VERSION#v}-py3-none-any.whl"
+          curl -L -o "$WHEEL" "https://github.com/Ops-Talks/agronomist/releases/download/${AGRONOMIST_VERSION}/${WHEEL}"
+          pip install "$WHEEL"
+      - name: Run Agronomist
+        run: |
+          agronomist update --root . --output report.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+See [examples/workflows/agronomist-ci.yml](https://github.com/Ops-Talks/agronomist/blob/main/examples/workflows/agronomist-ci.yml) for a full example.

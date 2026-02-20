@@ -1,7 +1,7 @@
 name: Agronomist Updates
 on:
   schedule:
-    - cron: "0 7 * * 1"
+    - cron: "0 6 * * 1"
   workflow_dispatch: {}
 
 permissions:
@@ -14,12 +14,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install Agronomist
+        run: |
+          AGRONOMIST_VERSION="v0.4.6"
+          WHEEL="agronomist-${AGRONOMIST_VERSION#v}-py3-none-any.whl"
+          curl -L -o "$WHEEL" "https://github.com/Ops-Talks/agronomist/releases/download/${AGRONOMIST_VERSION}/${WHEEL}"
+          pip install "$WHEEL"
+
       - name: Run Agronomist
-        uses: ./. 
-        with:
-          mode: "update"
-          output: "report.json"
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+        run: agronomist update --root . --output report.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create PR
         uses: peter-evans/create-pull-request@v6

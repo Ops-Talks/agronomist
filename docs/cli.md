@@ -158,8 +158,11 @@ agronomist report --include "**/*.tf" --exclude "**/examples/**"
 ### Validating Token Before Processing
 
 ```sh
-# Validate token in CI/CD before running expensive scan
-agronomist report --github-token $GITHUB_TOKEN --gitlab-token $GITLAB_TOKEN --validate-token
+# Validate token in CI/CD before running expensive scan (GitHub)
+agronomist report --github-token $GITHUB_TOKEN --validate-token
+
+# Validate token in CI/CD before running expensive scan (GitLab)
+agronomist report --gitlab-token $GITLAB_TOKEN --validate-token
 
 # If token is invalid, exit with code 1
 ```
