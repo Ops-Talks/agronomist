@@ -12,7 +12,7 @@ def apply_updates(root: str, updates: list[dict[str, object]]) -> list[str]:
     for file_path, file_updates in updates_by_file.items():
         full_path = f"{root}/{file_path}"
         try:
-            with open(full_path, encoding="utf-8") as handle:
+            with open(full_path, encoding="utf-8", newline="") as handle:
                 content = handle.read()
         except OSError:
             continue
@@ -23,7 +23,7 @@ def apply_updates(root: str, updates: list[dict[str, object]]) -> list[str]:
                 new_content = new_content.replace(replacement["from"], replacement["to"], 1)
 
         if new_content != content:
-            with open(full_path, "w", encoding="utf-8") as handle:
+            with open(full_path, "w", encoding="utf-8", newline="") as handle:
                 handle.write(new_content)
             touched.append(file_path)
 

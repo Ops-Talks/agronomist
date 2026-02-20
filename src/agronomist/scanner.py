@@ -64,7 +64,7 @@ def scan_sources(
 
             full_path = os.path.join(root, rel_path)
             try:
-                with open(full_path, encoding="utf-8") as handle:
+                with open(full_path, encoding="utf-8", newline="") as handle:
                     content = handle.read()
             except OSError:
                 continue
