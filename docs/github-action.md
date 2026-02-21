@@ -13,6 +13,7 @@ Agronomist ships a composite action in `action.yml` that installs the package an
 - `github_base_url` GitHub API base URL.
 - `resolver` Version resolver strategy: `git`, `github`, or `auto`.
 - `config` Path to configuration file (supports category rules and blacklist filters).
+- `no_report` Skip generating report files (useful for CI/CD pipelines). Default: `false`.
 
 ## Example workflow
 
@@ -54,13 +55,13 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install Agronomist
         run: |
-          AGRONOMIST_VERSION="v0.4.6"
+          AGRONOMIST_VERSION="v0.5.0"
           WHEEL="agronomist-${AGRONOMIST_VERSION#v}-py3-none-any.whl"
           curl -L -o "$WHEEL" "https://github.com/Ops-Talks/agronomist/releases/download/${AGRONOMIST_VERSION}/${WHEEL}"
           pip install "$WHEEL"
       - name: Run Agronomist
         run: |
-          agronomist update --root . --output report.json
+          agronomist update --root . --no-report
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```

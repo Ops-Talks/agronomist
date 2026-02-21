@@ -77,6 +77,11 @@ examples:
         action="store_true",
         help="Validate token before processing (useful for CI/CD)",
     )
+    report_parser.add_argument(
+        "--no-report",
+        action="store_true",
+        help="Skip generating report files (useful for CI/CD pipelines)",
+    )
 
     update_parser = subparsers.add_parser(
         "update", help="Update Terraform modules to their latest versions and generate report"
@@ -117,6 +122,11 @@ examples:
         "--validate-token",
         action="store_true",
         help="Validate token before processing (useful for CI/CD)",
+    )
+    update_parser.add_argument(
+        "--no-report",
+        action="store_true",
+        help="Skip generating report files (useful for CI/CD pipelines)",
     )
 
     args = parser.parse_args(argv)
@@ -266,22 +276,29 @@ def main(argv: list[str] | None = None) -> int:
 
     updates = _collect_updates(_latest_ref, sources, config.categories)
 
-    report = build_report(args.root, updates)
-    write_report(args.output, report)
+    if updates:
+        if not args.no_report:
+            report = build_report(args.root, updates)
+            write_report(args.output, report)
 
-    if args.markdown:
-        write_markdown(args.markdown, report)
-        print(f"Markdown report written to {args.markdown}.")
+            if args.markdown:
+                write_markdown(args.markdown, report)
+                print(f"Markdown report written to {args.markdown}.")
 
-    if args.command == "update":
-        touched = apply_updates(args.root, updates)
-        if touched:
-            print(f"Updated {len(touched)} file(s).")
-        else:
-            print("No updates applied.")
+            if args.command == "update":
+                print(f"Report written to {args.output}.")
+            else:
+                print(f"Report written to {args.output}.")
+
+        if args.command == "update":
+            touched = apply_updates(args.root, updates)
+            if touched:
+                print(f"Updated {len(touched)} file(s).")
+            else:
+                print("No updates applied.")
+
+        _print_category_summary(updates)
     else:
-        print(f"Report written to {args.output}.")
-
-    _print_category_summary(updates)
+        print("No updates found.")
 
     return 0

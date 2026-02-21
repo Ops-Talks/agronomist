@@ -9,7 +9,7 @@ This project includes a GitLab pipeline to run Agronomist using GitLab Runners.
 ## Variables
 
 - `GITLAB_TOKEN` Token used by Agronomist for GitLab API calls and MR creation.
-- `AGRONOMIST_VERSION` Agronomist release tag (e.g. `v0.4.10`).
+- `AGRONOMIST_VERSION` Agronomist release tag (e.g. `v0.5.0`).
 - `AGRONOMIST_ROOT` Root directory to scan. Default: `.`
 - `AGRONOMIST_RESOLVER` Resolver strategy: `git`, `github`, or `auto`.
 - `AGRONOMIST_CONFIG` Path to configuration file (supports category rules and blacklist filters). Default: `.agronomist.yaml`.
@@ -22,9 +22,11 @@ This project includes a GitLab pipeline to run Agronomist using GitLab Runners.
 ## Pipeline overview
 - `update` stage runs Agronomist, applies changes, and automatically creates a Merge Request if updates are found.
 - **Workflow rules**: Only runs on `main` branch via manual trigger (web) or scheduled pipelines.
+- **Token validation**: Validates GitLab token before processing to fail fast on authentication issues.
 - **Dynamic branch naming**: Uses `CI_COMMIT_REF_SLUG` and `CI_PIPELINE_ID` to create unique MR branches and avoid conflicts.
 - **Git configuration**: Automatically configures Git to use GitLab token for accessing private repositories.
 - **MR cleanup**: Deletes existing MR branch before pushing to avoid conflicts when re-running the pipeline.
+- **No report files**: Uses `--no-report` flag to keep the repository clean without generating report.json/report.md.
 
 ## Example pipeline
 
@@ -40,7 +42,7 @@ workflow:
     - when: never
 
 variables:
-  AGRONOMIST_VERSION: "v0.4.10"
+  AGRONOMIST_VERSION: "v0.5.0"
   AGRONOMIST_ROOT: "."
   AGRONOMIST_RESOLVER: "git"
   AGRONOMIST_CONFIG: ".agronomist.yaml"
@@ -57,11 +59,11 @@ update:
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_COMMIT_REF_NAME == "main"'
       when: always
   script:
-    - apt-get update && apt-get install -y git curl
+    - apt-get update -qq && apt-get install -y -qq git curl
     - |
       WHEEL="agronomist-${AGRONOMIST_VERSION#v}-py3-none-any.whl"
-      curl -L -o "$WHEEL" "https://github.com/Ops-Talks/agronomist/releases/download/${AGRONOMIST_VERSION}/${WHEEL}"
-      pip install "$WHEEL"
+      curl -sSL -o "$WHEEL" "https://github.com/Ops-Talks/agronomist/releases/download/${AGRONOMIST_VERSION}/${WHEEL}"
+      pip install -q "$WHEEL"
     - |
       if [ -n "$GITLAB_TOKEN" ]; then
         git config --global url."https://oauth2:${GITLAB_TOKEN}@${CI_SERVER_HOST}/".insteadOf "https://${CI_SERVER_HOST}/"
@@ -72,16 +74,21 @@ update:
       export MR_BRANCH
       export MR_TITLE
     - |
-      TOKEN_ARG=""
       if [ -n "$GITLAB_TOKEN" ]; then
-        TOKEN_ARG="$TOKEN_ARG --gitlab-token $GITLAB_TOKEN"
+        echo "Validating GitLab token..."
+        agronomist update --root "$AGRONOMIST_ROOT" \
+          --config "$AGRONOMIST_CONFIG" \
+          --resolver "$AGRONOMIST_RESOLVER" \
+          --gitlab-token "$GITLAB_TOKEN" \
+          --validate-token \
+          --no-report
+      else
+        echo "No GITLAB_TOKEN set. Running without token..."
+        agronomist update --root "$AGRONOMIST_ROOT" \
+          --config "$AGRONOMIST_CONFIG" \
+          --resolver "$AGRONOMIST_RESOLVER" \
+          --no-report
       fi
-      agronomist update --root "$AGRONOMIST_ROOT" \
-        --config "$AGRONOMIST_CONFIG" \
-        --resolver "$AGRONOMIST_RESOLVER" \
-        --output report.json \
-        --markdown report.md \
-        $TOKEN_ARG
     - |
       if [ -z "$GITLAB_TOKEN" ]; then
         echo "GITLAB_TOKEN not set. Skipping MR creation."
@@ -97,10 +104,6 @@ update:
       git config user.name "agronomist-bot"
       git checkout -b "$MR_BRANCH"
       git add -u
-      git add report.json
-      if [ -f report.md ]; then
-        git add report.md
-      fi
       git commit -m "$MR_TITLE"
       git remote set-url origin "https://oauth2:${GITLAB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git"
       git push origin --delete "$MR_BRANCH" 2>/dev/null || true

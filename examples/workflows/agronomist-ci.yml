@@ -16,13 +16,13 @@ jobs:
 
       - name: Install Agronomist
         run: |
-          AGRONOMIST_VERSION="v0.4.6"
+          AGRONOMIST_VERSION="v0.5.0"
           WHEEL="agronomist-${AGRONOMIST_VERSION#v}-py3-none-any.whl"
           curl -L -o "$WHEEL" "https://github.com/Ops-Talks/agronomist/releases/download/${AGRONOMIST_VERSION}/${WHEEL}"
           pip install "$WHEEL"
 
       - name: Run Agronomist
-        run: agronomist update --root . --output report.json
+        run: agronomist update --root . --no-report
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -36,4 +36,3 @@ jobs:
           add-paths: |
             **/*.hcl
             **/*.tf
-            report.json

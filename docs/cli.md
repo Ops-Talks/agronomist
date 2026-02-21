@@ -54,8 +54,7 @@ Scans Terraform/OpenTofu files, identifies available module version updates, and
 | Option | Description | Default |
 |--------|-------------|---------|
 | `--output` | Path to write JSON report. | `report.json` |
-| `--markdown` | Path to write human-readable Markdown report. If omitted, no Markdown is generated. | Not set |
-
+| `--markdown` | Path to write human-readable Markdown report. If omitted, no Markdown is generated. | Not set || `--no-report` | Skip generating report files (useful for CI/CD pipelines). | `false` |
 ## Resolution Strategies
 
 The `--resolver` option determines how Agronomist queries for the latest module version:
@@ -180,4 +179,7 @@ agronomist update --markdown UPDATES.md --output report.json
 
 # Update specific directory with token
 agronomist update --root ./terraform --resolver github --github-token $GITHUB_TOKEN
+
+# Update without generating report files (useful for CI/CD)
+agronomist update --no-report
 ```
