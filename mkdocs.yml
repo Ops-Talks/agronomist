@@ -1,0 +1,63 @@
+site_name: Agronomist
+site_description: Documentation for Agronomist
+site_url: https://ops-talks.github.io/agronomist/
+repo_url: https://github.com/Ops-Talks/agronomist
+repo_name: Ops-Talks/agronomist
+
+theme:
+  name: material
+  language: en
+  palette:
+    - scheme: default
+      primary: deep orange
+      accent: teal
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: blue grey
+      accent: amber
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.top
+    - content.code.copy
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - CLI: cli.md
+  - Configuration: configuration.md
+  - Resolvers: resolvers.md
+  - Reports: reports.md
+  - GitHub Action: github-action.md
+  - GitLab CI: gitlab-ci.md
+  - Architecture: architecture.md
+  - API: api.md
+  - Development: development.md
+  - Troubleshooting: troubleshooting.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.superfences
+  - toc:
+      permalink: true
+  - codehilite
+
+plugins:
+  - search
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/Ops-Talks/agronomist
+      name: GitHub Ops-Talks/agronomist
+    - icon: fontawesome/solid/box-archive
+      link: https://github.com/orgs/Ops-Talks/repositories
+      name: Ops-Talks Projects

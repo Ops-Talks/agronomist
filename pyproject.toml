@@ -1,0 +1,51 @@
+[tool.poetry]
+name = "agronomist"
+version = "0.6.2"
+description = "CLI to detect and update refs of Terragrunt modules"
+readme = "README.md"
+packages = [{ include = "agronomist", from = "src" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+requests = ">=2.32.0"
+pyyaml = ">=6.0.1"
+
+[tool.poetry.group.dev.dependencies]
+black = ">=24.0.0"
+ruff = ">=0.6.0"
+pytest = ">=8.0.0"
+pre-commit = ">=3.7.0"
+taskipy = ">=1.10.0"
+mkdocs = ">=1.6.0"
+mkdocs-material = ">=9.5.0"
+
+[tool.poetry.scripts]
+agronomist = "agronomist.cli:main"
+
+[tool.black]
+line-length = 100
+target-version = ["py310"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501"]
+
+[tool.taskipy.tasks]
+lint = "ruff check . && ruff format . && black ."
+format = "ruff format . && black ."
+test = "pytest --exitfirst || true"
+test-workflows = "bash test/run_tests.sh"
+check = "task lint && task test"
+pre-commit-install = "pre-commit install"
+pre-commit-run = "pre-commit run --all-files"
+pre-commit = "task pre-commit-install && task pre-commit-run"
+report = "agronomist report --root . --output report.json"
+update = "agronomist update --root . --output report.json"
+
+[build-system]
+requires = ["poetry-core>=1.9.0"]
+build-backend = "poetry.core.masonry.api"

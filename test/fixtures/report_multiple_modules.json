@@ -1,0 +1,53 @@
+{
+  "root": ".",
+  "updates": [
+    {
+      "module": "weyderfs/terraform-aws-modules//vpc/security-group@infra/main.tf",
+      "base_module": "weyderfs/terraform-aws-modules//vpc/security-group",
+      "file": "infra/main.tf",
+      "current_ref": "v1.2.0",
+      "latest_ref": "v1.3.0",
+      "repo_url": "https://github.com/weyderfs/terraform-aws-modules.git",
+      "files": ["infra/main.tf"],
+      "replacements": [
+        {
+          "from": "git::https://github.com/weyderfs/terraform-aws-modules.git//vpc/security-group?ref=v1.2.0",
+          "to": "git::https://github.com/weyderfs/terraform-aws-modules.git//vpc/security-group?ref=v1.3.0"
+        }
+      ],
+      "category": "aws"
+    },
+    {
+      "module": "hashicorp/terraform-provider-aws@infra/versions.tf",
+      "base_module": "hashicorp/terraform-provider-aws",
+      "file": "infra/versions.tf",
+      "current_ref": "5.0.0",
+      "latest_ref": "5.1.0",
+      "repo_url": "https://github.com/hashicorp/terraform-provider-aws.git",
+      "files": ["infra/versions.tf"],
+      "replacements": [
+        {
+          "from": "version = \"~> 5.0.0\"",
+          "to": "version = \"~> 5.1.0\""
+        }
+      ],
+      "category": "aws"
+    },
+    {
+      "module": "terraform-aws-modules/rds/aws@infra/database.tf",
+      "base_module": "terraform-aws-modules/rds/aws",
+      "file": "infra/database.tf",
+      "current_ref": "v3.0.0",
+      "latest_ref": "v3.1.0",
+      "repo_url": "https://github.com/terraform-aws-modules/rds.git",
+      "files": ["infra/database.tf"],
+      "replacements": [
+        {
+          "from": "git::https://github.com/terraform-aws-modules/rds.git?ref=v3.0.0",
+          "to": "git::https://github.com/terraform-aws-modules/rds.git?ref=v3.1.0"
+        }
+      ],
+      "category": "database"
+    }
+  ]
+}

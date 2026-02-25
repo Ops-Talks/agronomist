@@ -1,0 +1,89 @@
+name: Test Workflows
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'examples/workflows/**'
+      - 'test/**'
+      - '.github/workflows/test-workflows.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'examples/workflows/**'
+      - 'test/**'
+  workflow_dispatch: {}
+
+jobs:
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y bats jq
+
+      - name: Run unit tests
+        run: |
+          bats test/unit/*.bats
+
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq git
+
+      - name: Run integration tests
+        run: |
+          bash test/integration/test_multi_pr_flow.sh
+
+  workflow-validation:
+    name: Validate Workflow Syntax
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate GitHub Actions workflow
+        run: |
+          # Check YAML syntax
+          python3 -c "import yaml; yaml.safe_load(open('examples/workflows/agronomist-ci.yml'))"
+
+      - name: Validate GitLab CI workflow
+        run: |
+          # Check YAML syntax
+          python3 -c "import yaml; yaml.safe_load(open('examples/workflows/.gitlab-ci.yml'))"
+
+      - name: Install yq for advanced validation
+        run: |
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+
+      - name: Validate jq queries in workflows
+        run: |
+          # Extract and test jq queries from workflows
+          echo '{"updates":[{"module":"test/module","files":["test.tf"]}]}' | \
+            jq -r '.updates[].module' | grep -q "test/module"
+          
+          echo '{"updates":[{"module":"test/module","files":["test.tf"]}]}' | \
+            jq -r --arg mod "test/module" '.updates[] | select(.module==$mod) | .files[]' | \
+            grep -q "test.tf"
+
+  shellcheck:
+    name: Shellcheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run shellcheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
+          find test -name "*.sh" -exec shellcheck {} \;

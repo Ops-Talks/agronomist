@@ -1,0 +1,37 @@
+{
+  "root": ".",
+  "updates": [
+    {
+      "module": "weyderfs/terraform-aws-modules//vpc/security-group@infra/main.tf",
+      "base_module": "weyderfs/terraform-aws-modules//vpc/security-group",
+      "file": "infra/main.tf",
+      "current_ref": "v1.2.0",
+      "latest_ref": "v1.3.0",
+      "repo_url": "https://github.com/weyderfs/terraform-aws-modules.git",
+      "files": ["infra/main.tf"],
+      "replacements": [
+        {
+          "from": "git::https://github.com/weyderfs/terraform-aws-modules.git//vpc/security-group?ref=v1.2.0",
+          "to": "git::https://github.com/weyderfs/terraform-aws-modules.git//vpc/security-group?ref=v1.3.0"
+        }
+      ],
+      "category": "aws"
+    },
+    {
+      "module": "weyderfs/terraform-aws-modules//vpc/security-group@infra/modules/networking/security.tf",
+      "base_module": "weyderfs/terraform-aws-modules//vpc/security-group",
+      "file": "infra/modules/networking/security.tf",
+      "current_ref": "v1.2.0",
+      "latest_ref": "v1.3.0",
+      "repo_url": "https://github.com/weyderfs/terraform-aws-modules.git",
+      "files": ["infra/modules/networking/security.tf"],
+      "replacements": [
+        {
+          "from": "git::https://github.com/weyderfs/terraform-aws-modules.git//vpc/security-group?ref=v1.2.0",
+          "to": "git::https://github.com/weyderfs/terraform-aws-modules.git//vpc/security-group?ref=v1.3.0"
+        }
+      ],
+      "category": "aws"
+    }
+  ]
+}

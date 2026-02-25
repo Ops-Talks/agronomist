@@ -1,0 +1,38 @@
+categories:
+  - name: aws
+    repo_patterns:
+      - "*/terraform-aws-*"
+      - "*/opentofu-aws-*"
+      - "*/tofu-aws-*"
+  - name: database
+    repo_patterns:
+      - "*/terraform-*-mysql-*"
+      - "*/opentofu-*-mysql-*"
+      - "*/tofu-*-mysql-*"
+      - "*/terraform-*-mariadb-*"
+      - "*/opentofu-*-mariadb-*"
+      - "*/tofu-*-mariadb-*"      
+      - "*/terraform-*-postgres-*"
+      - "*/opentofu-*-postgres-*"
+      - "*/tofu-*-postgres-*"
+  - name: security
+    repo_patterns:
+      - "*/terraform-*-security-*"
+      - "*/opentofu-*-security-*"
+      - "*/tofu-*-security-*"
+  - name: monitoring
+    repo_patterns:
+      - "*/terraform-*-monitoring-*"
+      - "*/opentofu-*-monitoring-*"
+      - "*/tofu-*-monitoring-*"
+
+# Optional: Blacklist to exclude specific resources from scanning
+# blacklist:
+#   repos:
+#     - "*/terraform-legacy-*"
+#     - "*/deprecated-*"
+#   modules:
+#     - "old-modules/*"
+#   files:
+#     - "**/legacy/**"
+#     - "**/deprecated/**"
