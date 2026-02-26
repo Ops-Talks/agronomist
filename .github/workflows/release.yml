@@ -28,6 +28,11 @@ jobs:
       - name: Install dependencies
         run: poetry install --with dev
 
+      - name: Set version from tag
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          poetry version "$VERSION"
+
       - name: Build package
         run: poetry build
 
