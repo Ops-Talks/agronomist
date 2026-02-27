@@ -1,7 +1,7 @@
 # Agronomist
 
 <div align="center">
-  <img src="../assets/agronomist-logo.svg" width="400" alt="Agronomist Logo">
+  <img src="assets/agronomist-logo.svg" width="400" alt="Agronomist Logo">
 </div>
 
 Agronomist continuously monitors and reports on module updates, ensuring your IaC stays current, secure, and maintainable with minimal effort.
