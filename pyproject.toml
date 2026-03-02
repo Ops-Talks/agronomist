@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "agronomist"
-version = "1.1.1"
+version = "1.1.2"
 description = "CLI to detect and update refs of Terragrunt modules"
 readme = "README.md"
 packages = [{ include = "agronomist", from = "src" }]
@@ -23,6 +23,7 @@ eradicate = ">=2.3.0"
 types-PyYAML = ">=6.0.0"
 types-requests = ">=2.32.0"
 pytest-cov = "^7.0.0"
+pytest-benchmark = "^5.2.3"
 
 [tool.poetry.scripts]
 agronomist = "agronomist.cli:main"
