@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "agronomist"
-version = "1.1.0"
+version = "1.1.1"
 description = "CLI to detect and update refs of Terragrunt modules"
 readme = "README.md"
 packages = [{ include = "agronomist", from = "src" }]
