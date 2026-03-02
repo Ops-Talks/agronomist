@@ -1,10 +1,10 @@
 # Agronomist
 
 [![Quality Checks](https://github.com/Ops-Talks/agronomist/actions/workflows/quality.yml/badge.svg)](https://github.com/Ops-Talks/agronomist/actions/workflows/quality.yml)
-[![codecov](https://codecov.io/gh/Ops-Talks/agronomist/graph/badge.svg)](https://codecov.io/gh/Ops-Talks/agronomist)
+[![codecov](https://codecov.io/gh/Ops-Talks/agronomist/graph/badge.svg)](https://app.codecov.io/gh/Ops-Talks/agronomist)
 [![GitHub Release](https://img.shields.io/github/v/release/Ops-Talks/agronomist)](https://github.com/Ops-Talks/agronomist/releases/latest)
-[![GitHub Stars](https://img.shields.io/github/stars/Ops-Talks/agronomist?style=social)](https://github.com/Ops-Talks/agronomist/stargazers)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/downloads/)
+[![GitHub Stars](https://img.shields.io/github/stars/Ops-Talks/agronomist?style=social)](https://github.com/Ops-Talks/agronomist/stargazers)
 
 > Automate your Module version management for your Terragrunt/OpenTofu/Terraform infrastructure.
 
