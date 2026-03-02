@@ -57,6 +57,20 @@ Scans Terraform/OpenTofu files, identifies available module version updates, and
 | `--markdown` | Path to write human-readable Markdown report. If omitted, no Markdown is generated. | Not set |
 | `--no-report` | Skip generating report files (useful for CI/CD pipelines). | `false` |
 
+### Performance Options
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--timeout` | Request timeout in seconds for API calls and `git ls-remote` operations. | `20` |
+| `--workers` | Number of parallel workers used to resolve versions concurrently. Higher values reduce wall-clock time when scanning many distinct upstream modules. | `10` |
+
+### Logging Options
+
+| Option | Description |
+|--------|-------------|
+| `--verbose`, `-v` | Enable `DEBUG`-level logging. Shows every HTTP request, git call, and resolution decision. |
+| `--quiet` | Suppress `INFO` output. Only warnings and errors are printed. Mutually exclusive with `--verbose`. |
+
 ## Resolution Strategies
 
 The `--resolver` option determines how Agronomist queries for the latest module version:

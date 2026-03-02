@@ -24,7 +24,7 @@ class TestGitHubClient:
         client = GitHubClient(base_url="https://api.github.com")
         assert client.timeout == 20
 
-    @patch("agronomist.github.requests.get")
+    @patch("requests.Session.get")
     def test_latest_release_tag_success(self, mock_get):
         """Test successfully retrieving latest release."""
         mock_response = MagicMock()
@@ -38,7 +38,7 @@ class TestGitHubClient:
         assert result == "v1.2.3"
         mock_get.assert_called_once()
 
-    @patch("agronomist.github.requests.get")
+    @patch("requests.Session.get")
     def test_latest_release_tag_not_found(self, mock_get):
         """Test handling 404 response."""
         mock_response = MagicMock()
@@ -50,7 +50,7 @@ class TestGitHubClient:
 
         assert result is None
 
-    @patch("agronomist.github.requests.get")
+    @patch("requests.Session.get")
     def test_latest_release_tag_unauthorized(self, mock_get):
         """Test handling 401 unauthorized."""
         mock_response = MagicMock()
@@ -62,7 +62,7 @@ class TestGitHubClient:
 
         assert result is None
 
-    @patch("agronomist.github.requests.get")
+    @patch("requests.Session.get")
     def test_latest_release_tag_request_error(self, mock_get):
         """Test handling request errors."""
         import requests
@@ -74,7 +74,7 @@ class TestGitHubClient:
 
         assert result is None
 
-    @patch("agronomist.github.requests.get")
+    @patch("requests.Session.get")
     def test_validate_token_success(self, mock_get):
         """Test token validation succeeds."""
         mock_response = MagicMock()
@@ -86,7 +86,7 @@ class TestGitHubClient:
 
         assert result is True
 
-    @patch("agronomist.github.requests.get")
+    @patch("requests.Session.get")
     def test_validate_token_invalid(self, mock_get):
         """Test token validation fails for invalid token."""
         mock_response = MagicMock()
@@ -98,7 +98,7 @@ class TestGitHubClient:
 
         assert result is False
 
-    @patch("agronomist.github.requests.get")
+    @patch("requests.Session.get")
     def test_validate_token_without_token(self, mock_get):
         """Test token validation returns true when no token."""
         client = GitHubClient(base_url="https://api.github.com")
@@ -109,7 +109,7 @@ class TestGitHubClient:
         # Should not make any requests
         mock_get.assert_not_called()
 
-    @patch("agronomist.github.requests.get")
+    @patch("requests.Session.get")
     def test_headers_with_token(self, mock_get):
         """Test that token is included in headers."""
         mock_response = MagicMock()
@@ -125,7 +125,7 @@ class TestGitHubClient:
         assert "headers" in call_kwargs
         assert "Authorization" in call_kwargs["headers"]
 
-    @patch("agronomist.github.requests.get")
+    @patch("requests.Session.get")
     def test_latest_tag_success(self, mock_get):
         """Test successfully retrieving latest tag."""
         mock_response = MagicMock()
@@ -138,7 +138,7 @@ class TestGitHubClient:
 
         assert result == "v9.9.9"
 
-    @patch("agronomist.github.requests.get")
+    @patch("requests.Session.get")
     def test_latest_tag_empty_list(self, mock_get):
         """Test latest_tag returns None when tag list is empty."""
         mock_response = MagicMock()
@@ -151,7 +151,7 @@ class TestGitHubClient:
 
         assert result is None
 
-    @patch("agronomist.github.requests.get")
+    @patch("requests.Session.get")
     def test_latest_tag_forbidden(self, mock_get):
         """Test latest_tag handles 403 response."""
         mock_response = MagicMock()
@@ -163,7 +163,7 @@ class TestGitHubClient:
 
         assert result is None
 
-    @patch("agronomist.github.requests.get")
+    @patch("requests.Session.get")
     def test_latest_tag_request_error(self, mock_get):
         """Test latest_tag handles request exceptions."""
         import requests

@@ -1,12 +1,30 @@
 from __future__ import annotations
 
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from urllib.parse import urlparse
 
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 logger = logging.getLogger(__name__)
+
+
+def _build_session(retries: int, backoff_factor: float) -> requests.Session:
+    """Return a requests.Session with automatic retry + exponential backoff."""
+    session = requests.Session()
+    retry = Retry(
+        total=retries,
+        backoff_factor=backoff_factor,
+        status_forcelist=[429, 500, 502, 503, 504],
+        allowed_methods=["GET"],
+        raise_on_status=False,
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
+    return session
 
 
 @dataclass
@@ -14,6 +32,12 @@ class GitLabClient:
     base_url: str
     token: str | None = None
     timeout: int = 20
+    retries: int = 3
+    backoff_factor: float = 0.5
+    _session: requests.Session = field(init=False, repr=False)
+
+    def __post_init__(self) -> None:
+        self._session = _build_session(self.retries, self.backoff_factor)
 
     @staticmethod
     def detect_gitlab_host(repo_url: str) -> str | None:
@@ -31,7 +55,7 @@ class GitLabClient:
         url = f"{self.base_url}/api/v4/user"
         headers = {"PRIVATE-TOKEN": self.token}
         try:
-            response = requests.get(url, headers=headers, timeout=self.timeout)
+            response = self._session.get(url, headers=headers, timeout=self.timeout)
             if response.status_code == 401:
                 logger.error("GitLab token invalid or expired")
                 return False
@@ -53,7 +77,7 @@ class GitLabClient:
     def latest_tag(self, project_id: str) -> str | None:
         url = f"{self.base_url}/api/v4/projects/{project_id}/repository/tags"
         try:
-            response = requests.get(
+            response = self._session.get(
                 url,
                 headers=self._headers(),
                 timeout=self.timeout,

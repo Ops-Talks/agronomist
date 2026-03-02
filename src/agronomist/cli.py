@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import concurrent.futures
 import fnmatch
 import logging
 import os
@@ -82,6 +83,30 @@ examples:
         action="store_true",
         help="Skip generating report files (useful for CI/CD pipelines)",
     )
+    report_parser.add_argument(
+        "--timeout",
+        type=int,
+        default=20,
+        help="Request timeout in seconds for API and git operations (default: 20)",
+    )
+    report_parser.add_argument(
+        "--workers",
+        type=int,
+        default=10,
+        help="Number of parallel workers for version resolution (default: 10)",
+    )
+    verbose_group = report_parser.add_mutually_exclusive_group()
+    verbose_group.add_argument(
+        "--verbose",
+        "-v",
+        action="store_true",
+        help="Enable verbose (DEBUG) logging",
+    )
+    verbose_group.add_argument(
+        "--quiet",
+        action="store_true",
+        help="Suppress informational output (WARNING level only)",
+    )
 
     update_parser = subparsers.add_parser(
         "update", help="Update Terraform modules to their latest versions and generate report"
@@ -128,6 +153,30 @@ examples:
         action="store_true",
         help="Skip generating report files (useful for CI/CD pipelines)",
     )
+    update_parser.add_argument(
+        "--timeout",
+        type=int,
+        default=20,
+        help="Request timeout in seconds for API and git operations (default: 20)",
+    )
+    update_parser.add_argument(
+        "--workers",
+        type=int,
+        default=10,
+        help="Number of parallel workers for version resolution (default: 10)",
+    )
+    verbose_group_u = update_parser.add_mutually_exclusive_group()
+    verbose_group_u.add_argument(
+        "--verbose",
+        "-v",
+        action="store_true",
+        help="Enable verbose (DEBUG) logging",
+    )
+    verbose_group_u.add_argument(
+        "--quiet",
+        action="store_true",
+        help="Suppress informational output (WARNING level only)",
+    )
 
     args = parser.parse_args(argv)
 
@@ -155,15 +204,31 @@ def _collect_updates(
     latest_ref_fn: Callable[[SourceRef], str | None],
     sources: list[SourceRef],
     category_rules: list,
+    max_workers: int = 10,
 ) -> list[dict[str, object]]:
-    by_repo: dict[str, str | None] = {}
-    updates: list[dict[str, object]] = []
-
+    # Collect one representative SourceRef per unique repo
+    unique_repos: dict[str, SourceRef] = {}
     for source in sources:
-        if source.repo not in by_repo:
-            by_repo[source.repo] = latest_ref_fn(source)
+        if source.repo not in unique_repos:
+            unique_repos[source.repo] = source
 
-        latest_ref = by_repo[source.repo]
+    # Fetch latest refs in parallel
+    by_repo: dict[str, str | None] = {}
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+        future_to_repo = {
+            executor.submit(latest_ref_fn, src): repo for repo, src in unique_repos.items()
+        }
+        for future in concurrent.futures.as_completed(future_to_repo):
+            repo = future_to_repo[future]
+            try:
+                by_repo[repo] = future.result()
+            except Exception as exc:  # noqa: BLE001
+                logger.warning(f"Failed to resolve latest ref for {repo}: {exc}")
+                by_repo[repo] = None
+
+    updates: list[dict[str, object]] = []
+    for source in sources:
+        latest_ref = by_repo.get(source.repo)
         if not latest_ref or latest_ref == source.ref:
             continue
 
@@ -214,8 +279,9 @@ def _print_category_summary(updates: list[dict[str, object]]) -> None:
 def main(argv: list[str] | None = None) -> int:
     args = _parse_args(argv or sys.argv[1:])
 
+    log_level = logging.DEBUG if args.verbose else (logging.WARNING if args.quiet else logging.INFO)
     logging.basicConfig(
-        level=logging.INFO,
+        level=log_level,
         format="%(levelname)s: %(message)s",
     )
 
@@ -231,9 +297,13 @@ def main(argv: list[str] | None = None) -> int:
 
     github_token = args.github_token or os.environ.get("GITHUB_TOKEN") or args.token
     gitlab_token = args.gitlab_token or os.environ.get("GITLAB_TOKEN") or args.token
-    github_client = GitHubClient(base_url=args.github_base_url, token=github_token)
-    gitlab_client = GitLabClient(base_url="https://gitlab.com", token=gitlab_token)
-    git_client = GitClient()
+    github_client = GitHubClient(
+        base_url=args.github_base_url, token=github_token, timeout=args.timeout
+    )
+    gitlab_client = GitLabClient(
+        base_url="https://gitlab.com", token=gitlab_token, timeout=args.timeout
+    )
+    git_client = GitClient(timeout=args.timeout)
 
     if args.validate_token:
         validated_any = False
@@ -283,7 +353,7 @@ def main(argv: list[str] | None = None) -> int:
 
         return None
 
-    updates = _collect_updates(_latest_ref, sources, config.categories)
+    updates = _collect_updates(_latest_ref, sources, config.categories, max_workers=args.workers)
 
     if updates:
         if not args.no_report:

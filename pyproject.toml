@@ -8,6 +8,7 @@ packages = [{ include = "agronomist", from = "src" }]
 [tool.poetry.dependencies]
 python = ">=3.10,<4.0"
 requests = ">=2.32.0"
+urllib3 = ">=2.0.0"
 pyyaml = ">=6.0.1"
 
 [tool.poetry.group.dev.dependencies]
@@ -110,7 +111,7 @@ output = "coverage.xml"
 [tool.taskipy.tasks]
 lint = "ruff check . && ruff format . && black . && mypy src/"
 format = "ruff format . && black . && eradicate --recursive --in-place ."
-test = "pytest --cov=src/agronomist --cov-report=term-missing --cov-report=html --cov-report=xml --exitfirst || true"
+test = "pytest --cov=src/agronomist --cov-report=term-missing --cov-report=html --cov-report=xml --junitxml=junit.xml -o junit_family=legacy --exitfirst || true"
 test-workflows = "bash test/run_tests.sh"
 test-coverage = "pytest --cov=src/agronomist --cov-report=term-missing --cov-report=html"
 check = "task lint && task security && task test"

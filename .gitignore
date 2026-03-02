@@ -213,4 +213,5 @@ __marimo__/
 docs/design.md
 report.json
 report.md
+junit.xml
 .benchmarks/

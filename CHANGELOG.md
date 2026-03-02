@@ -13,6 +13,13 @@ _Target release date: 2026-03-02_
 
 ### Added
 
+- **`src/agronomist/exceptions.py`**: New module with a hierarchy of typed custom exceptions — `AgronomistError` (base), `NetworkError`, `AuthenticationError`, `ResolverError`, and `ConfigError`.
+- **Retry with exponential backoff** in `GitHubClient` and `GitLabClient`: requests are now routed through a `requests.Session` with a `urllib3.util.retry.Retry` adapter (3 retries, 0.5 s backoff factor, retries on HTTP 429/500/502/503/504).
+- **`--timeout` flag** (default: 20 s) on both `report` and `update` subcommands: propagated to `GitHubClient`, `GitLabClient`, and `GitClient`.
+- **`--workers` flag** (default: 10) on both subcommands: controls the `ThreadPoolExecutor` pool size used for parallel version resolution.
+- **`--verbose` / `-v` flag**: sets the log level to `DEBUG`.
+- **`--quiet` flag**: suppresses `INFO` output (sets log level to `WARNING`). Mutually exclusive with `--verbose`.
+- **Parallel version resolution** in `_collect_updates()`: unique repos are now resolved concurrently via `concurrent.futures.ThreadPoolExecutor`, giving significant speed-up when scanning repositories that reference many distinct upstream modules.
 - **Python test suite** (`test/unit/python/`): 171 pytest tests covering all core modules — scanner, git, github, gitlab, markdown, report, updater, config, and CLI. Includes benchmark tests via `pytest-benchmark`.
 - **Static analysis pipeline**: mypy, bandit, and eradicate integrated into the `check` task and pre-commit hooks.
 - **Coverage reporting**: `pytest-cov` configured with branch coverage, HTML report output to `htmlcov/`, and per-module missing-line reporting.

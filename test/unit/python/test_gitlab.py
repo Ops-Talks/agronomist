@@ -24,7 +24,7 @@ class TestGitLabClient:
         client = GitLabClient(base_url="https://gitlab.com")
         assert client.timeout == 20
 
-    @patch("agronomist.gitlab.requests.get")
+    @patch("requests.Session.get")
     def test_latest_tag_success(self, mock_get):
         """Test successfully retrieving latest tag."""
         mock_response = MagicMock()
@@ -38,7 +38,7 @@ class TestGitLabClient:
         assert result == "v1.2.3"
         mock_get.assert_called_once()
 
-    @patch("agronomist.gitlab.requests.get")
+    @patch("requests.Session.get")
     def test_latest_tag_not_found(self, mock_get):
         """Test handling 404 response."""
         mock_response = MagicMock()
@@ -50,7 +50,7 @@ class TestGitLabClient:
 
         assert result is None
 
-    @patch("agronomist.gitlab.requests.get")
+    @patch("requests.Session.get")
     def test_latest_tag_unauthorized(self, mock_get):
         """Test handling 401 unauthorized."""
         mock_response = MagicMock()
@@ -62,7 +62,7 @@ class TestGitLabClient:
 
         assert result is None
 
-    @patch("agronomist.gitlab.requests.get")
+    @patch("requests.Session.get")
     def test_latest_tag_empty_response(self, mock_get):
         """Test handling empty response."""
         mock_response = MagicMock()
@@ -75,7 +75,7 @@ class TestGitLabClient:
 
         assert result is None
 
-    @patch("agronomist.gitlab.requests.get")
+    @patch("requests.Session.get")
     def test_validate_token_success(self, mock_get):
         """Test token validation succeeds."""
         mock_response = MagicMock()
@@ -87,7 +87,7 @@ class TestGitLabClient:
 
         assert result is True
 
-    @patch("agronomist.gitlab.requests.get")
+    @patch("requests.Session.get")
     def test_validate_token_invalid(self, mock_get):
         """Test token validation fails for invalid token."""
         mock_response = MagicMock()
@@ -99,7 +99,7 @@ class TestGitLabClient:
 
         assert result is False
 
-    @patch("agronomist.gitlab.requests.get")
+    @patch("requests.Session.get")
     def test_validate_token_without_token(self, mock_get):
         """Test token validation returns true when no token."""
         client = GitLabClient(base_url="https://gitlab.com")
@@ -130,7 +130,7 @@ class TestGitLabClient:
 
         assert result is None
 
-    @patch("agronomist.gitlab.requests.get")
+    @patch("requests.Session.get")
     def test_latest_ref_success(self, mock_get):
         """Test latest_ref delegates to latest_tag."""
         mock_response = MagicMock()
