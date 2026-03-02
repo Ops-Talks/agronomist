@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-import subprocess
+import subprocess  # nosec: B404, B603
 from dataclasses import dataclass
 
 logger = logging.getLogger(__name__)
@@ -20,7 +20,7 @@ class GitClient:
             repo_url,
         ]
         try:
-            result = subprocess.run(
+            result = subprocess.run(  # nosec B603
                 cmd,
                 check=True,
                 capture_output=True,

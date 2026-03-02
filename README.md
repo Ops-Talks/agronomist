@@ -1,6 +1,9 @@
 # Agronomist
 
-> Automate Module version management for your Terragrunt/OpenTofu/Terraform infrastructure.
+[![Quality Checks](https://github.com/Ops-Talks/agronomist/actions/workflows/quality.yml/badge.svg)](https://github.com/Ops-Talks/agronomist/actions/workflows/quality.yml)
+[![codecov](https://codecov.io/gh/Ops-Talks/agronomist/graph/badge.svg)](https://codecov.io/gh/Ops-Talks/agronomist)
+
+> Automate your Module version management for your Terragrunt/OpenTofu/Terraform infrastructure.
 
 Agronomist continuously monitors and reports on module updates, ensuring your IaC stays current, secure, and maintainable with minimal effort.
 

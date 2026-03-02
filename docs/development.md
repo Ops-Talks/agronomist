@@ -1,5 +1,9 @@
 # Development
 
+This guide is for contributors working on Agronomist itself. It covers environment setup, available tasks, code style, testing, and the contribution workflow.
+
+If you are looking for usage instructions as an end user, see [Getting Started](getting-started.md). For internal design decisions and module descriptions, see [Architecture](architecture.md).
+
 ## Prerequisites
 
 Before setting up the development environment, ensure you have:
@@ -33,7 +37,7 @@ poetry install
 This installs:
 
 - **Core dependencies**: `requests`, `pyyaml`
-- **Dev dependencies**: `ruff`, `black`, `pytest`, `pre-commit`, `taskipy`, `mkdocs`, `mkdocs-material`
+- **Dev dependencies**: `ruff`, `black`, `mypy`, `bandit`, `eradicate`, `pytest`, `pytest-cov`, `pytest-benchmark`, `pre-commit`, `taskipy`, `zensical`
 
 ### 2. Verify Installation
 
@@ -49,10 +53,14 @@ Agronomist uses **taskipy** for convenient task management. All tasks are define
 
 | Task | Command | Description |
 |------|---------|-------------|
-| `lint` | `poetry run task lint` | Run ruff check, ruff format, and black |
-| `format` | `poetry run task format` | Auto-format code (ruff + black) |
-| `test` | `poetry run task test` | Run pytest test suite |
-| `check` | `poetry run task check` | Run linters + tests (recommended before commit) |
+| `lint` | `poetry run task lint` | Run ruff check, ruff format, black, and mypy |
+| `format` | `poetry run task format` | Auto-format code and remove dead code (ruff + black + eradicate) |
+| `test` | `poetry run task test` | Run pytest test suite with coverage |
+| `test-coverage` | `poetry run task test-coverage` | Run pytest with strict coverage (no --exitfirst) |
+| `security` | `poetry run task security` | Run security checks (bandit + eradicate) |
+| `check` | `poetry run task check` | Run linters + security + tests (recommended before commit) |
+| `bandit` | `poetry run task bandit` | Run bandit security scanner |
+| `mypy` | `poetry run task mypy` | Run mypy static type checker |
 | `pre-commit-install` | `poetry run task pre-commit-install` | Install pre-commit hooks |
 | `pre-commit-run` | `poetry run task pre-commit-run` | Run pre-commit on all files |
 | `pre-commit` | `poetry run task pre-commit` | Install and run pre-commit hooks |
@@ -62,14 +70,17 @@ Agronomist uses **taskipy** for convenient task management. All tasks are define
 ### Quick Start
 
 ```sh
-# Format and lint code
+# Run lint + security + tests
 poetry run task check
 
 # Install pre-commit hooks
 poetry run task pre-commit-install
 
-# Run only tests
+# Run tests only
 poetry run task test
+
+# Run tests with coverage report
+poetry run task test-coverage
 ```
 
 ## Linting and Formatting
@@ -78,6 +89,9 @@ poetry run task test
 
 - **ruff** - Fast Python linter (checks style, imports, bugs)
 - **black** - Code formatter (enforces consistent style)
+- **mypy** - Static type checker (enforces type annotations)
+- **bandit** - Security scanner (detects common vulnerabilities)
+- **eradicate** - Dead code detector
 
 ### Configuration
 
@@ -126,7 +140,9 @@ poetry run pytest tests/test_cli.py
 ### Run Tests with Coverage
 
 ```sh
-poetry run pytest --cov=agronomist --cov-report=html
+make coverage
+# or
+poetry run pytest --cov=src/agronomist --cov-report=html
 ```
 
 ### Test Configuration
@@ -212,7 +228,7 @@ Both methods generate:
 ### Build Docs Locally
 
 ```sh
-poetry run mkdocs serve
+poetry run zensical serve
 ```
 
 Starts a local server at `http://localhost:8000` with live reloading.
@@ -225,7 +241,7 @@ make docs-serve
 
 ### Features
 
-- Built with **MkDocs** + **Material Theme**
+- Built with **Zensical** + **Material Theme**
 - Source files: `docs/`
 - Auto-generated navigation from directory structure
 
@@ -292,10 +308,14 @@ make help              # Show all available targets
 make build             # Build locally with Poetry
 make build-docker      # Build in Docker (recommended)
 make clean             # Remove build artifacts
-make lint              # Run linters
-make format            # Format code
+make lint              # Run linters (ruff, black, mypy)
+make format            # Format code and remove dead code
 make test              # Run tests
-make check             # Lint + test
+make coverage          # Run tests with coverage report
+make test-coverage     # Alias for coverage
+make run-tests         # Alias for test
+make security          # Run security checks (bandit, eradicate)
+make check             # Run linters + security + tests
 make docs-serve        # Serve documentation locally
 make pre-commit        # Run pre-commit hooks
 make release TAG=vX.Y.Z # Create release tag
@@ -312,65 +332,24 @@ agronomist/
 │       ├── config.py           # Configuration loader (categories & blacklist)
 │       ├── models.py           # Data models (SourceRef, etc.)
 │       ├── scanner.py          # File scanner
-│       ├── categorizer.py      # Update categorizer
-│       ├── resolver*.py        # Version resolvers (git, github, gitlab)
-│       ├── reporter.py         # Report generation
-│       └── updater.py          # Update application
-├── tests/                      # Test suite
+│       ├── git.py              # Git resolver
+│       ├── github.py           # GitHub API resolver
+│       ├── gitlab.py           # GitLab API resolver
+│       ├── report.py           # JSON report generation
+│       ├── markdown.py         # Markdown report generation
+│       └── updater.py          # In-place file update application
+├── test/
+│   ├── fixtures/               # Test fixtures (report.json samples)
+│   ├── integration/            # Shell integration tests
+│   └── unit/
+│       ├── python/             # Python test suite (pytest, 171 tests)
+│       └── test_multi_pr.bats  # BATS shell tests
 ├── docs/                       # Documentation (MkDocs)
-├── pyproject.toml             # Project metadata and dependencies
-├── Makefile                   # Build and development targets
-├── Dockerfile                 # Docker build configuration
-├── .github/workflows/         # GitHub Actions workflows
+├── pyproject.toml              # Project metadata and dependencies
+├── Makefile                    # Build and development targets
+├── Dockerfile                  # Docker build configuration
+├── .github/workflows/          # GitHub Actions workflows
 └── README.md
-```
-
-## Troubleshooting
-
-### Poetry Lock Issues
-
-If `poetry install` fails:
-
-```sh
-rm poetry.lock
-poetry install
-```
-
-### Pre-commit Hook Failures
-
-If hooks fail unexpectedly:
-
-```sh
-# Check hook configuration
-cat .pre-commit-config.yaml
-
-# Run hooks with verbose output
-poetry run pre-commit run --all-files --verbose
-
-# Bypass and commit (temporary, not recommended)
-git commit --no-verify
-```
-
-### Import Errors When Running Tests
-
-Ensure you're using the Poetry environment:
-
-```sh
-# Wrong (system Python):
-python -m pytest
-
-# Correct (Poetry venv):
-poetry run pytest
-```
-
-### Docker Build Issues
-
-```sh
-# Clean Docker state
-docker system prune -a
-
-# Rebuild with verbose output
-make build-docker VERBOSE=1
 ```
 
 ## Code Style Guidelines

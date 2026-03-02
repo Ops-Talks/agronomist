@@ -13,6 +13,30 @@ repos:
     hooks:
       - id: black
 
+  # Type checking with Mypy
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.8.0
+    hooks:
+      - id: mypy
+        args: [--no-implicit-optional, --check-untyped-defs]
+        additional_dependencies: [types-all]
+
+  # Security checks with Bandit
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.5
+    hooks:
+      - id: bandit
+        args: [--skip, B101,B601]
+        exclude: ^test/
+
+  # Remove dead code with Eradicate
+  - repo: https://github.com/asottile/eradicate
+    rev: 2.3.0
+    hooks:
+      - id: eradicate
+        args: [--recursive, --error]
+        exclude: ^test/
+
   # Shell script validation
   - repo: https://github.com/shellcheck-py/shellcheck-py
     rev: v0.10.0.1

@@ -1,329 +1,217 @@
-# Testing Guide
+# Testing
 
-This guide covers the testing infrastructure for Agronomist workflows, including unit tests, integration tests, and CI/CD validation.
+This guide covers the test suite for contributors to Agronomist. The project has two test layers: a **Python test suite** (primary) run with pytest, and a **shell test suite** (secondary) run with BATS that validates CI workflow scripts.
 
-## Overview
+---
 
-The test suite ensures that the multi-PR workflow logic functions correctly across different scenarios:
+## Python test suite (pytest)
 
-- **Unit Tests**: Test individual bash functions and jq queries
-- **Integration Tests**: Test the complete multi-PR flow end-to-end
-- **Workflow Validation**: Validate YAML syntax and shell scripts
+The pytest suite is the primary test layer. It covers scanner logic, resolver behavior, report generation, configuration loading, and updater correctness.
 
-## Test Structure
+### Prerequisites
+
+Install dependencies using Poetry:
+
+```sh
+poetry install
+```
+
+### Run all Python tests
+
+```sh
+poetry run task test
+```
+
+This runs pytest with coverage enabled. The shorthand task is defined in `pyproject.toml` under `[tool.taskipy.tasks]`.
+
+### Run with coverage report
+
+```sh
+poetry run task test-coverage
+```
+
+This runs the full suite and enforces a coverage threshold. Use it before submitting a pull request.
+
+### Run a specific test file or test
+
+```sh
+# Single file
+poetry run pytest test/unit/python/test_scanner.py
+
+# Single test function
+poetry run pytest test/unit/python/test_scanner.py::test_parse_git_source
+```
+
+### Run with verbose output
+
+```sh
+poetry run pytest -v
+```
+
+### Understand the output
+
+A passing run reports a summary line like:
+
+```
+171 passed in 2.34s
+```
+
+Coverage output follows if you ran `task test-coverage`.
+
+---
+
+## Writing new Python tests
+
+Test files live under `test/unit/python/`. Use `pytest` conventions:
+
+- File names must match `test_*.py`.
+- Test functions must start with `test_`.
+- Use `pytest.fixture` for shared setup.
+- Prefer small, focused tests over large integration-style test functions.
+
+Example fixture-based test:
+
+```python
+import pytest
+from agronomist.scanner import _parse_git_source
+
+def test_parse_git_source_with_module():
+    source = "git::https://github.com/org/repo.git//modules/vpc?ref=v1.2.3"
+    ref = _parse_git_source(source)
+    assert ref is not None
+    assert ref.ref == "v1.2.3"
+    assert ref.module == "modules/vpc"
+```
+
+---
+
+## Full check (lint + security + tests)
+
+Before opening a pull request, run:
+
+```sh
+poetry run task check
+```
+
+This runs, in order:
+
+1. `ruff check` and `ruff format` — linting and style
+2. `black` — code formatting
+3. `mypy` — static type checking
+4. `bandit` — security scanning
+5. `eradicate` — dead code detection
+6. `pytest` with coverage — full test suite
+
+---
+
+## Shell test suite (BATS)
+
+The BATS suite validates shell logic used in the multi-PR CI workflow scripts. It is secondary to the Python suite and requires additional system tooling.
+
+### Test structure
 
 ```
 test/
-├── unit/                       # BATS unit tests
-│   └── test_multi_pr.bats     # Multi-PR logic tests
-├── integration/                # Integration tests
-│   └── test_multi_pr_flow.sh  # End-to-end workflow simulation
-└── fixtures/                   # Test data
+├── unit/
+│   ├── test_file_based_updates.bats   # File-based update logic
+│   └── test_multi_pr.bats             # Multi-PR branch/PR creation logic
+├── integration/
+│   └── test_multi_pr_flow.sh          # End-to-end workflow simulation
+└── fixtures/
+    ├── report_empty.json
     ├── report_single_module.json
-    ├── report_multiple_modules.json
-    └── report_empty.json
+    └── report_multiple_modules.json
 ```
 
-## Prerequisites
+### Install BATS dependencies
 
-### Install Test Dependencies
-
-**Using Makefile (Recommended):**
-```bash
+```sh
 make install-test-deps
 ```
 
-**Manual Installation:**
+Or manually:
 
-**macOS:**
-```bash
+```sh
+# Ubuntu / Debian
+sudo apt-get install -y bats jq shellcheck git
+
+# macOS
 brew install bats-core jq shellcheck
 ```
 
-**Ubuntu/Debian:**
-```bash
-sudo apt-get update
-sudo apt-get install -y bats jq shellcheck git
-```
+### Run BATS tests
 
-**Windows (WSL):**
-```bash
-sudo apt-get update
-sudo apt-get install -y bats jq shellcheck git
-```
-
-## Running Tests
-
-### Run All Tests
-```bash
-make test
-```
-
-### Run Unit Tests Only
-```bash
-make test-unit
-# or
+```sh
+# All BATS tests
 bats test/unit/*.bats
+
+# Single file
+bats test/unit/test_multi_pr.bats
+
+# Filter by name
+bats test/unit/test_multi_pr.bats --filter "branch naming"
 ```
 
-### Run Integration Tests Only
-```bash
-make test-integration
-# or
+### Run integration tests
+
+```sh
 bash test/integration/test_multi_pr_flow.sh
 ```
 
-### Run Linting
-```bash
-make lint
+This creates a temporary Git repository, applies fixture data, and validates branch creation behavior end-to-end.
+
+---
+
+## Fixtures
+
+Located in `test/fixtures/`. Used by both BATS and integration tests to represent different report shapes.
+
+| File | Description |
+|------|-------------|
+| `report_empty.json` | Report with no updates (`{"updates": []}`) |
+| `report_single_module.json` | One module with one file |
+| `report_multiple_modules.json` | Three modules across multiple files |
+
+---
+
+## Common issues
+
+**pytest not found:**
+
+```sh
+poetry install
 ```
 
-## Unit Tests
+**Import errors in tests:**
 
-Unit tests use [BATS (Bash Automated Testing System)](https://github.com/bats-core/bats-core) to test individual components.
+Always run pytest through Poetry:
 
-### Example Test Cases
+```sh
+# Correct
+poetry run pytest
 
-**Extract modules from JSON:**
-```bash
-@test "extract unique modules from report.json" {
-    modules=$(jq -r '.updates[].module' report.json | sort -u)
-    module_count=$(echo "$modules" | wc -l)
-    [ "$module_count" -eq 2 ]
-}
+# Wrong (uses system Python, missing dependencies)
+python -m pytest
 ```
 
-**Branch naming:**
-```bash
-@test "create valid branch name from module with slashes" {
-    module="weyderfs/terraform-aws-modules//vpc/security-group"
-    branch_name="agronomist/update-$(echo "$module" | sed 's/\//-/g')"
-    [ "$branch_name" = "agronomist/update-weyderfs-terraform-aws-modules--vpc-security-group" ]
-}
-```
+**BATS not found:**
 
-### Running Individual Tests
-```bash
-bats test/unit/test_multi_pr.bats --filter "extract modules"
-```
-
-## Integration Tests
-
-Integration tests simulate the complete multi-PR workflow:
-
-1. Create test Git repository
-2. Add files with old module versions
-3. Simulate Agronomist updates
-4. Execute multi-PR logic
-5. Validate branches and commits
-
-### Test Scenarios
-
-- **Multiple Modules**: Creates 3 separate branches for 3 different modules
-- **Single Module**: Validates single-module workflow
-- **Empty Report**: Handles case with no updates
-
-### Output Example
-
-```bash
-[INFO] Starting multi-PR integration tests
-[INFO] Setting up test repository in /tmp/tmp.abc123
-[INFO] Test repository initialized
-[INFO] Simulating agronomist update
-[INFO] Files updated
-[INFO] Testing multi-PR logic with report_multiple_modules.json
-[INFO] Found 3 unique modules
-[INFO] Created temporary commit: a1b2c3d
-[INFO] Processing module: weyderfs/terraform-aws-modules//vpc/security-group
-[INFO] Created branch: agronomist/update-weyderfs-terraform-aws-modules--vpc-security-group
-[INFO] Processing module: hashicorp/terraform-provider-aws
-[INFO] Created branch: agronomist/update-hashicorp-terraform-provider-aws
-[INFO] Processing module: terraform-aws-modules/rds/aws
-[INFO] Created branch: agronomist/update-terraform-aws-modules-rds-aws
-[INFO] Processed 3 modules successfully
-[INFO] All integration tests passed! ✓
-```
-
-## Test Fixtures
-
-Fixtures are located in `test/fixtures/` and provide sample `report.json` files:
-
-### Single Module (`report_single_module.json`)
-```json
-{
-  "updates": [
-    {
-      "module": "weyderfs/terraform-aws-modules//vpc/security-group",
-      "current_ref": "v1.2.0",
-      "latest_ref": "v1.3.0",
-      "files": ["infra/main.tf"]
-    }
-  ]
-}
-```
-
-### Multiple Modules (`report_multiple_modules.json`)
-```json
-{
-  "updates": [
-    {"module": "module-a", "files": ["file1.tf"]},
-    {"module": "module-b", "files": ["file2.tf"]},
-    {"module": "module-c", "files": ["file3.tf"]}
-  ]
-}
-```
-
-### Empty Report (`report_empty.json`)
-```json
-{
-  "updates": []
-}
-```
-
-## CI/CD Integration
-
-Tests run automatically on GitHub Actions:
-
-### Workflow: `.github/workflows/test-workflows.yml`
-
-**Triggers:**
-- Push to `main` or `develop` branches
-- Pull requests to `main`
-- Changes to `examples/workflows/**` or `test/**`
-- Manual workflow dispatch
-
-**Jobs:**
-1. **unit-tests**: Runs BATS unit tests
-2. **integration-tests**: Runs integration test suite
-3. **workflow-validation**: Validates YAML syntax
-4. **shellcheck**: Lints shell scripts
-
-### View Test Results
-
-```bash
-# View latest test run
-gh run list --workflow=test-workflows.yml
-
-# View specific run
-gh run view <run-id>
-```
-
-## Writing New Tests
-
-### Adding Unit Tests
-
-Create new test in `test/unit/test_multi_pr.bats`:
-
-```bash
-@test "describe what you're testing" {
-    # Setup
-    expected_value="something"
-    
-    # Execute
-    actual_value=$(your_command_here)
-    
-    # Assert
-    [ "$actual_value" = "$expected_value" ]
-}
-```
-
-### Adding Integration Tests
-
-Add new test function in `test/integration/test_multi_pr_flow.sh`:
-
-```bash
-test_your_scenario() {
-    log_info "Testing your scenario"
-    
-    # Setup test data
-    # Run logic
-    # Validate results
-    
-    if [ condition ]; then
-        log_error "Test failed"
-        return 1
-    fi
-    
-    log_info "Test passed"
-    return 0
-}
-```
-
-Call from `main()`:
-
-```bash
-if ! test_your_scenario; then
-    log_error "Your scenario test failed"
-    exit 1
-fi
-```
-
-## Debugging Tests
-
-### Enable Verbose Output
-
-**BATS:**
-```bash
-bats --verbose-run test/unit/test_multi_pr.bats
-```
-
-**Integration:**
-```bash
-bash -x test/integration/test_multi_pr_flow.sh
-```
-
-### Keep Test Artifacts
-
-Modify `cleanup()` in integration test:
-
-```bash
-cleanup() {
-    log_info "Test directory: $TEST_DIR"
-    # Comment out to keep artifacts:
-    # rm -rf "$TEST_DIR"
-}
-```
-
-## Common Issues
-
-### BATS not found
-```bash
+```sh
 make install-test-deps
 ```
 
-### jq command not found
-```bash
+**jq not found:**
+
+```sh
 sudo apt-get install jq
-# or
-brew install jq
 ```
 
-### Permission denied
-```bash
-chmod +x test/integration/test_multi_pr_flow.sh
-```
-
-## Best Practices
-
-1. **Isolation**: Each test should be independent
-2. **Cleanup**: Always clean up test artifacts
-3. **Assertions**: Use clear, descriptive assertions
-4. **Fixtures**: Use fixtures for complex test data
-5. **Documentation**: Comment complex test logic
-
-## Contributing Tests
-
-When contributing workflow changes:
-
-1. ✅ Add unit tests for new bash functions
-2. ✅ Add integration tests for new workflows
-3. ✅ Update fixtures if report structure changes
-4. ✅ Run `make test` before submitting PR
-5. ✅ Ensure CI passes
+---
 
 ## Resources
 
-- [BATS Documentation](https://bats-core.readthedocs.io/)
-- [jq Manual](https://stedolan.github.io/jq/manual/)
-- [ShellCheck Wiki](https://github.com/koalaman/shellcheck/wiki)
-- [Bash Testing Tutorial](https://github.com/bats-core/bats-core#tutorial)
+- [pytest documentation](https://docs.pytest.org/)
+- [pytest-cov documentation](https://pytest-cov.readthedocs.io/)
+- [BATS documentation](https://bats-core.readthedocs.io/)
+- [jq manual](https://jqlang.github.io/jq/manual/)
+

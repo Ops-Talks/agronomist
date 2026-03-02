@@ -21,7 +21,7 @@ class GitLabClient:
             parsed = urlparse(repo_url)
             if "gitlab" in parsed.netloc:
                 return f"{parsed.scheme}://{parsed.netloc}"
-        except Exception:
+        except Exception:  # nosec B110
             pass
         return None
 
@@ -57,7 +57,7 @@ class GitLabClient:
                 url,
                 headers=self._headers(),
                 timeout=self.timeout,
-                params={"per_page": 1, "sort": "updated_desc"},
+                params={"per_page": 1, "sort": "updated_desc"},  # type: ignore[arg-type]
             )
             if response.status_code == 404:
                 return None

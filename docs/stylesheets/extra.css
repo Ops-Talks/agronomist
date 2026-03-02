@@ -1,0 +1,50 @@
+/* ============================================================
+   Deep orange theme — light mode (default scheme)
+   ============================================================ */
+[data-md-color-primary="deep-orange"],
+[data-md-color-scheme="default"] {
+  --md-primary-fg-color:        #ff6e42;
+  --md-primary-fg-color--light: #ff8a66;
+  --md-primary-fg-color--dark:  #f4511f;
+  --md-primary-bg-color:        #ffffff;
+  --md-primary-bg-color--light: rgba(255, 255, 255, 0.7);
+  --md-accent-fg-color:         #00bda4;
+}
+
+/* Header background: force primary color */
+[data-md-color-primary="deep-orange"] .md-header,
+[data-md-color-scheme="default"] .md-header {
+  background-color: #ff6e42 !important;
+  color: #ffffff !important;
+}
+
+[data-md-color-primary="deep-orange"] .md-tabs,
+[data-md-color-scheme="default"] .md-tabs {
+  background-color: #f4511f !important;
+  color: #ffffff !important;
+}
+
+/* ============================================================
+   Blue grey theme — dark mode (slate scheme)
+   ============================================================ */
+[data-md-color-primary="blue-grey"],
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color:        #546d78;
+  --md-primary-fg-color--light: #607c8a;
+  --md-primary-fg-color--dark:  #455a63;
+  --md-primary-bg-color:        #ffffff;
+  --md-primary-bg-color--light: rgba(255, 255, 255, 0.7);
+  --md-accent-fg-color:         #fa0;
+}
+
+[data-md-color-primary="blue-grey"] .md-header,
+[data-md-color-scheme="slate"] .md-header {
+  background-color: #546d78 !important;
+  color: #ffffff !important;
+}
+
+[data-md-color-primary="blue-grey"] .md-tabs,
+[data-md-color-scheme="slate"] .md-tabs {
+  background-color: #455a63 !important;
+  color: #ffffff !important;
+}

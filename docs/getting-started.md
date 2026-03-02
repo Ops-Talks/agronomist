@@ -1,27 +1,33 @@
 # Getting Started
 
+This guide covers installing Agronomist and running your first scan against an infrastructure repository.
+
+If you want to contribute to or develop Agronomist itself, see [Development](development.md) instead.
+
 ## Requirements
 
 - Python 3.10 or newer
-- Git installed (used for `git ls-remote`)
-- GitHub token recommended to avoid rate limits when using `--resolver github` (`GITHUB_TOKEN` or `--github-token`)
-- GitLab token recommended for private GitLab repositories when using `--resolver auto` (`GITLAB_TOKEN` or `--gitlab-token`)
+- Git installed and available on your `PATH` (used by the default `git` resolver)
+- A GitHub token is recommended when using `--resolver github` to avoid API rate limits (`GITHUB_TOKEN` environment variable or `--github-token` flag)
+- A GitLab token is required for private GitLab repositories when using `--resolver auto` (`GITLAB_TOKEN` environment variable or `--gitlab-token` flag)
 
 ## Install
 
 ### Using pipx (recommended)
 
-#### From GitHub Releases (pre-built)
+`pipx` installs Agronomist in an isolated environment and makes the `agronomist` command globally available.
 
-Download the latest version from [Releases](https://github.com/Ops-Talks/agronomist/releases):
+#### From a release wheel
+
+Download the latest `.whl` from the [Releases page](https://github.com/Ops-Talks/agronomist/releases) and install it:
 
 ```sh
 pipx install agronomist-X.Y.Z-py3-none-any.whl
 ```
 
-#### From Source (build locally)
+#### Build from source with Docker
 
-##### With Make (simplest)
+The Docker build produces a wheel without requiring a specific local Python version:
 
 ```sh
 git clone https://github.com/Ops-Talks/agronomist.git
@@ -30,7 +36,7 @@ make build-docker
 pipx install dist/agronomist-*-py3-none-any.whl
 ```
 
-##### With Poetry
+#### Build from source with Poetry
 
 ```sh
 git clone https://github.com/Ops-Talks/agronomist.git
@@ -39,59 +45,72 @@ poetry build
 pipx install dist/agronomist-*-py3-none-any.whl
 ```
 
-### For local development
-
-If you want to develop the project:
+### Verify the installation
 
 ```sh
-poetry install
+agronomist --help
 ```
 
 ## Run a report
 
-### With pipx
+The `report` command scans your infrastructure files and produces a JSON report of available module updates. No files are modified.
 
 ```sh
-agronomist report --root . --output report.json
-```
+# Scan the current directory
+agronomist report
 
-### With poetry
+# Scan a specific directory
+agronomist report --root ./infrastructure
 
-```sh
-poetry run agronomist report --root . --output report.json
+# Write the JSON report to a custom path
+agronomist report --root ./infrastructure --output updates.json
+
+# Also generate a human-readable Markdown summary
+agronomist report --root ./infrastructure --output updates.json --markdown updates.md
 ```
 
 ## Apply updates
 
-### With pipx
+The `update` command applies the identified version changes directly to your source files and also produces a JSON report.
 
 ```sh
-agronomist update --root . --output report.json
+# Apply updates in the current directory
+agronomist update
+
+# Apply updates in a specific directory
+agronomist update --root ./infrastructure --output updates.json
 ```
 
-### With poetry
+!!! warning
+    Review the generated report before applying updates to production infrastructure. The `report` command is always safe — it never modifies files.
+
+## Set up a configuration file
+
+Place a `.agronomist.yaml` file in your repository root to configure category rules and blacklists. Agronomist loads it automatically.
+
+See [Configuration](configuration.md) for the full file format and options.
+
+## Authenticate with GitHub or GitLab
+
+Export your tokens as environment variables before running Agronomist:
 
 ```sh
-poetry run agronomist update --root . --output report.json
+export GITHUB_TOKEN="ghp_..."
+export GITLAB_TOKEN="glpat-..."
 ```
 
-## Generate Markdown report
-
-### With pipx
+Alternatively, pass them as flags:
 
 ```sh
-agronomist report --root . --markdown report.md --output report.json
-```
-
-### With poetry
-
-```sh
-poetry run agronomist report --root . --markdown report.md --output report.json
+agronomist report --github-token ghp_... --root ./infrastructure
 ```
 
 ## Next steps
 
-- Review [CLI](cli.md) options
-- Configure categories in [Configuration](configuration.md)
-- CI runs `poetry run task check` on pushes to `main` and on pull requests.
-- Releases are created by pushing a SemVer tag (e.g. `v0.3.8`).
+- [CLI Reference](cli.md) — complete list of options and flags.
+- [Configuration](configuration.md) — configure category tagging and blacklists.
+- [Resolvers](resolvers.md) — choose between Git, GitHub API, and GitLab API resolvers.
+- [Reports](reports.md) — understand the report output format.
+- [GitHub Action](github-action.md) — run Agronomist automatically in GitHub Actions.
+- [GitLab CI](gitlab-ci.md) — run Agronomist and create merge requests in GitLab CI.
+

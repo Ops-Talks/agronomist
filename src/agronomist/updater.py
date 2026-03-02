@@ -1,12 +1,14 @@
 from __future__ import annotations
 
+from typing import Any, cast
+
 
 def apply_updates(root: str, updates: list[dict[str, object]]) -> list[str]:
     touched: list[str] = []
 
     updates_by_file: dict[str, list[dict[str, object]]] = {}
     for update in updates:
-        for file_path in update["files"]:
+        for file_path in cast(list[str], update["files"]):
             updates_by_file.setdefault(file_path, []).append(update)
 
     for file_path, file_updates in updates_by_file.items():
@@ -19,7 +21,7 @@ def apply_updates(root: str, updates: list[dict[str, object]]) -> list[str]:
 
         new_content = content
         for update in file_updates:
-            for replacement in update["replacements"]:
+            for replacement in cast(list[Any], update["replacements"]):
                 new_content = new_content.replace(replacement["from"], replacement["to"], 1)
 
         if new_content != content:

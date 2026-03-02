@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "agronomist"
-version = "1.0.5"
+version = "1.1.0"
 description = "CLI to detect and update refs of Terragrunt modules"
 readme = "README.md"
 packages = [{ include = "agronomist", from = "src" }]
@@ -16,8 +16,13 @@ ruff = ">=0.6.0"
 pytest = ">=8.0.0"
 pre-commit = ">=3.7.0"
 taskipy = ">=1.10.0"
-mkdocs = ">=1.6.0"
-mkdocs-material = ">=9.5.0"
+zensical = "^0.0.24"
+bandit = ">=1.7.5"
+mypy = ">=1.8.0"
+eradicate = ">=2.3.0"
+types-PyYAML = ">=6.0.0"
+types-requests = ">=2.32.0"
+pytest-cov = "^7.0.0"
 
 [tool.poetry.scripts]
 agronomist = "agronomist.cli:main"
@@ -34,12 +39,85 @@ target-version = "py310"
 select = ["E", "F", "I", "UP", "B"]
 ignore = ["E501"]
 
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = false
+warn_unused_configs = true
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+check_untyped_defs = false
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+follow_imports = "normal"
+ignore_missing_imports = false
+implicit_optional = true
+allow_untyped_defs = true
+allow_untyped_calls = true
+
+[tool.bandit]
+exclude_dirs = ["test", ".venv"]
+skips = []
+
+[tool.eradicate]
+remove_all_unused_imports = true
+remove_unused_variables = true
+remove_argslist = false
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["test/unit/python"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --strict-markers --tb=short"
+markers = [
+    "unit: Mark test as a unit test",
+    "integration: Mark test as an integration test",
+    "slow: Mark test as slow running"
+]
+
+[tool.coverage.run]
+branch = true
+omit = [
+    "*/tests/*",
+    "*/test_*.py",
+    "*/__init__.py",
+    "*/site-packages/*"
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "^\\s*\\.\\.\\.\\s*$"
+]
+precision = 2
+show_missing = true
+
+[tool.coverage.html]
+directory = "htmlcov"
+
+[tool.coverage.xml]
+output = "coverage.xml"
+
 [tool.taskipy.tasks]
-lint = "ruff check . && ruff format . && black ."
-format = "ruff format . && black ."
-test = "pytest --exitfirst || true"
+lint = "ruff check . && ruff format . && black . && mypy src/"
+format = "ruff format . && black . && eradicate --recursive --in-place ."
+test = "pytest --cov=src/agronomist --cov-report=term-missing --cov-report=html --cov-report=xml --exitfirst || true"
 test-workflows = "bash test/run_tests.sh"
-check = "task lint && task test"
+test-coverage = "pytest --cov=src/agronomist --cov-report=term-missing --cov-report=html"
+check = "task lint && task security && task test"
+bandit = "bandit -r src/ --skip B101,B601"
+mypy = "mypy src/"
+eradicate = "eradicate --recursive --error ."
+eradicate-fix = "eradicate --recursive --in-place ."
+security = "task bandit && task eradicate"
 pre-commit-install = "pre-commit install"
 pre-commit-run = "pre-commit run --all-files"
 pre-commit = "task pre-commit-install && task pre-commit-run"

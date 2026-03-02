@@ -193,7 +193,7 @@ def _collect_updates(
         if category:
             update["category"] = category
 
-        updates.append(update)
+        updates.append(update)  # type: ignore[arg-type]
 
     return updates
 
@@ -204,7 +204,7 @@ def _print_category_summary(updates: list[dict[str, object]]) -> None:
 
     counts: dict[str, int] = {}
     for update in updates:
-        category = update.get("category", "uncategorized")
+        category = str(update.get("category", "uncategorized"))
         counts[category] = counts.get(category, 0) + 1
 
     summary = ", ".join(f"{name}: {count}" for name, count in sorted(counts.items()))

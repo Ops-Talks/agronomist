@@ -1,18 +1,22 @@
-.PHONY: help build clean build-docker run-tests lint format test-workflows test-unit test-integration install-test-deps
+.PHONY: help build clean build-docker run-tests lint format test coverage test-coverage check security docs-serve release install-dev install-test-deps test-workflows test-unit test-integration pre-commit
 
 help:
 	@echo "Agronomist - Available targets:"
 	@echo "  make build              - Build package locally with Poetry"
 	@echo "  make build-docker       - Build package in Docker container"
 	@echo "  make clean              - Remove dist/ and build artifacts"
-	@echo "  make lint               - Run linters (ruff, black)"
-	@echo "  make format             - Format code"
+	@echo "  make lint               - Run linters (ruff, black, mypy)"
+	@echo "  make format             - Format code and remove dead code"
+	@echo "  make security           - Run security checks (bandit, eradicate)"
 	@echo "  make test               - Run tests"
+	@echo "  make coverage           - Run tests with coverage report"
+	@echo "  make test-coverage      - Alias for coverage"
+	@echo "  make run-tests          - Alias for test"
 	@echo "  make test-workflows     - Run workflow tests (unit + integration)"
 	@echo "  make test-unit          - Run workflow unit tests"
 	@echo "  make test-integration   - Run workflow integration tests"
 	@echo "  make install-test-deps  - Install workflow test dependencies"
-	@echo "  make check              - Run linters + tests"
+	@echo "  make check              - Run linters + security + tests"
 	@echo "  make docs-serve         - Serve documentation locally"
 	@echo "  make release TAG=v0.3.0 - Create Git tag and trigger release"
 
@@ -43,11 +47,21 @@ format:
 test:
 	poetry run task test
 
+run-tests: test
+
+coverage:
+	poetry run task test-coverage
+
+test-coverage: coverage
+
 check:
 	poetry run task check
 
+security:
+	poetry run task security
+
 docs-serve:
-	poetry run mkdocs serve
+	poetry run zensical serve
 
 release:
 	@if [ -z "$(TAG)" ]; then \
