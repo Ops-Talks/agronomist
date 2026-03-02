@@ -568,6 +568,28 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#performance-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Performance Options
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logging-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Logging Options
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1214,6 +1236,28 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#performance-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Performance Options
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logging-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Logging Options
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1523,6 +1567,47 @@
 <td><code>--no-report</code></td>
 <td>Skip generating report files (useful for CI/CD pipelines).</td>
 <td><code>false</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="performance-options">Performance Options<a class="headerlink" href="#performance-options" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--timeout</code></td>
+<td>Request timeout in seconds for API calls and <code>git ls-remote</code> operations.</td>
+<td><code>20</code></td>
+</tr>
+<tr>
+<td><code>--workers</code></td>
+<td>Number of parallel workers used to resolve versions concurrently. Higher values reduce wall-clock time when scanning many distinct upstream modules.</td>
+<td><code>10</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="logging-options">Logging Options<a class="headerlink" href="#logging-options" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--verbose</code>, <code>-v</code></td>
+<td>Enable <code>DEBUG</code>-level logging. Shows every HTTP request, git call, and resolution decision.</td>
+</tr>
+<tr>
+<td><code>--quiet</code></td>
+<td>Suppress <code>INFO</code> output. Only warnings and errors are printed. Mutually exclusive with <code>--verbose</code>.</td>
 </tr>
 </tbody>
 </table>
