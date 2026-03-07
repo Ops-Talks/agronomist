@@ -3,7 +3,31 @@
 import tempfile
 from pathlib import Path
 
+from agronomist.models import Replacement, UpdateEntry
 from agronomist.updater import apply_updates
+
+
+def _mk_update(
+    *,
+    files: list[str],
+    replacements: list[tuple[str, str]],
+    category: str | None = None,
+) -> UpdateEntry:
+    """Build a minimal UpdateEntry for testing."""
+    return UpdateEntry(
+        repo="org/repo",
+        repo_host="github.com",
+        repo_url="https://github.com/org/repo.git",
+        module="root@main.tf",
+        base_module=None,
+        file=files[0],
+        current_ref="v1.0.0",
+        latest_ref="v2.0.0",
+        strategy="latest",
+        files=files,
+        replacements=[Replacement(old=r[0], new=r[1]) for r in replacements],
+        category=category,
+    )
 
 
 class TestApplyUpdates:
@@ -16,16 +40,16 @@ class TestApplyUpdates:
             test_file.write_text('source = "git::https://github.com/org/repo.git?ref=v1.0.0"')
 
             updates = [
-                {
-                    "files": ["main.tf"],
-                    "replacements": [
-                        {
-                            "from": "git::https://github.com/org/repo.git?ref=v1.0.0",
-                            "to": "git::https://github.com/org/repo.git?ref=v1.1.0",
-                        }
+                _mk_update(
+                    files=["main.tf"],
+                    replacements=[
+                        (
+                            "git::https://github.com/org/repo.git?ref=v1.0.0",
+                            "git::https://github.com/org/repo.git?ref=v1.1.0",
+                        )
                     ],
-                    "category": "example",
-                }
+                    category="example",
+                )
             ]
 
             result_files = apply_updates(temp_dir, updates)
@@ -45,14 +69,11 @@ class TestApplyUpdates:
             )
 
             updates = [
-                {
-                    "files": ["main.tf"],
-                    "replacements": [
-                        {"from": "ref=v1", "to": "ref=v1.1"},
-                        {"from": "ref=v2", "to": "ref=v2.1"},
-                    ],
-                    "category": "example",
-                }
+                _mk_update(
+                    files=["main.tf"],
+                    replacements=[("ref=v1", "ref=v1.1"), ("ref=v2", "ref=v2.1")],
+                    category="example",
+                )
             ]
 
             result_files = apply_updates(temp_dir, updates)
@@ -71,11 +92,11 @@ class TestApplyUpdates:
             file2.write_text('source = "v1.0.0"')
 
             updates = [
-                {
-                    "files": ["main.tf", "vpc.tf"],
-                    "replacements": [{"from": "v1.0.0", "to": "v2.0.0"}],
-                    "category": "example",
-                }
+                _mk_update(
+                    files=["main.tf", "vpc.tf"],
+                    replacements=[("v1.0.0", "v2.0.0")],
+                    category="example",
+                )
             ]
 
             result_files = apply_updates(temp_dir, updates)
@@ -92,11 +113,11 @@ class TestApplyUpdates:
             test_file.write_text('source = "v1.0.0"')
 
             updates = [
-                {
-                    "files": ["main.tf"],
-                    "replacements": [{"from": "v1.0.0", "to": "v2.0.0"}],
-                    "category": "example",
-                }
+                _mk_update(
+                    files=["main.tf"],
+                    replacements=[("v1.0.0", "v2.0.0")],
+                    category="example",
+                )
             ]
 
             result_files = apply_updates(temp_dir, updates)
@@ -124,11 +145,11 @@ class TestApplyUpdates:
             test_file.write_text('source = "v1.0.0"')
 
             updates = [
-                {
-                    "files": ["main.tf"],
-                    "replacements": [{"from": "nonexistent", "to": "v2.0.0"}],
-                    "category": "example",
-                }
+                _mk_update(
+                    files=["main.tf"],
+                    replacements=[("nonexistent", "v2.0.0")],
+                    category="example",
+                )
             ]
 
             result_files = apply_updates(temp_dir, updates)
@@ -140,11 +161,11 @@ class TestApplyUpdates:
         """Test that missing files are skipped without error."""
         with tempfile.TemporaryDirectory() as temp_dir:
             updates = [
-                {
-                    "files": ["nonexistent.tf"],
-                    "replacements": [{"from": "v1.0.0", "to": "v2.0.0"}],
-                    "category": "example",
-                }
+                _mk_update(
+                    files=["nonexistent.tf"],
+                    replacements=[("v1.0.0", "v2.0.0")],
+                    category="example",
+                )
             ]
 
             result_files = apply_updates(temp_dir, updates)
@@ -154,11 +175,11 @@ class TestApplyUpdates:
         """Test that path traversal attempts are blocked."""
         with tempfile.TemporaryDirectory() as temp_dir:
             updates = [
-                {
-                    "files": ["../../etc/passwd"],
-                    "replacements": [{"from": "root", "to": "hacked"}],
-                    "category": "malicious",
-                }
+                _mk_update(
+                    files=["../../etc/passwd"],
+                    replacements=[("root", "hacked")],
+                    category="malicious",
+                )
             ]
 
             result_files = apply_updates(temp_dir, updates)
@@ -174,14 +195,14 @@ class TestApplyUpdates:
             )
 
             updates = [
-                {
-                    "files": ["main.tf"],
-                    "replacements": [{"from": "ref=v1.0.0", "to": "ref=v1.1.0"}],
-                },
-                {
-                    "files": ["main.tf"],
-                    "replacements": [{"from": "ref=v2.0.0", "to": "ref=v2.1.0"}],
-                },
+                _mk_update(
+                    files=["main.tf"],
+                    replacements=[("ref=v1.0.0", "ref=v1.1.0")],
+                ),
+                _mk_update(
+                    files=["main.tf"],
+                    replacements=[("ref=v2.0.0", "ref=v2.1.0")],
+                ),
             ]
 
             result_files = apply_updates(temp_dir, updates)

@@ -8,6 +8,8 @@ from __future__ import annotations
 
 from typing import Any
 
+from .fileutil import atomic_write
+
 
 def _group_by_repo(
     updates: list[dict[str, Any]],
@@ -142,5 +144,4 @@ def write_markdown(path: str, report: dict[str, Any]) -> None:
         report: Report dict to render.
     """
     markdown = generate_markdown(report)
-    with open(path, "w", encoding="utf-8") as handle:
-        handle.write(markdown)
+    atomic_write(path, markdown)

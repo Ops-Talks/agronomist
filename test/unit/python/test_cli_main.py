@@ -6,7 +6,7 @@ from unittest.mock import MagicMock, patch
 
 from agronomist.cli import _categorize, _collect_updates, _print_category_summary, main
 from agronomist.config import Blacklist, CategoryRule, Config
-from agronomist.models import SourceRef
+from agronomist.models import SourceRef, UpdateEntry
 
 
 def _mk_source(
@@ -94,8 +94,8 @@ class TestCliHelpers:
         updates = _collect_updates(latest_ref_fn, [source1, source2], [])
         assert len(calls) == 1
         assert len(updates) == 2
-        assert updates[0]["module"] == "root@a.tf"
-        assert updates[1]["module"] == "root@b.tf"
+        assert updates[0].module == "root@a.tf"
+        assert updates[1].module == "root@b.tf"
 
     def test_collect_updates_applies_category(self):
         source = _mk_source(
@@ -110,14 +110,47 @@ class TestCliHelpers:
         ]
 
         updates = _collect_updates(lambda _s: "v2.0.0", [source], rules)
-        assert updates[0]["category"] == "aws"
+        assert updates[0].category == "aws"
 
     def test_print_category_summary_with_updates(self, capsys):
         _print_category_summary(
             [
-                {"category": "network"},
-                {"category": "network"},
-                {"category": "security"},
+                UpdateEntry(
+                    repo="org/a",
+                    repo_host="github.com",
+                    repo_url="u",
+                    module="m1",
+                    base_module=None,
+                    file="a.tf",
+                    current_ref="v1",
+                    latest_ref="v2",
+                    strategy="latest",
+                    category="network",
+                ),
+                UpdateEntry(
+                    repo="org/b",
+                    repo_host="github.com",
+                    repo_url="u",
+                    module="m2",
+                    base_module=None,
+                    file="b.tf",
+                    current_ref="v1",
+                    latest_ref="v2",
+                    strategy="latest",
+                    category="network",
+                ),
+                UpdateEntry(
+                    repo="org/c",
+                    repo_host="github.com",
+                    repo_url="u",
+                    module="m3",
+                    base_module=None,
+                    file="c.tf",
+                    current_ref="v1",
+                    latest_ref="v2",
+                    strategy="latest",
+                    category="security",
+                ),
             ]
         )
         out = capsys.readouterr().out
@@ -418,4 +451,115 @@ class TestCliMain:
 
         assert result == 0
         gh_client.latest_ref.assert_called_once()
+        git_client.latest_ref.assert_called_once()
+
+    def test_collect_updates_handles_resolver_exception(self):
+        """Test that _collect_updates logs and skips on exception."""
+        source = _mk_source(
+            repo="org/repo",
+            repo_url="https://github.com/org/repo.git",
+            repo_host="github.com",
+            ref="v1.0.0",
+        )
+
+        def exploding_fn(_s: SourceRef) -> str | None:
+            raise RuntimeError("API timeout")
+
+        updates = _collect_updates(exploding_fn, [source], [])
+        assert updates == []
+
+    @patch("agronomist.cli.GitClient")
+    @patch("agronomist.cli.GitLabClient")
+    @patch("agronomist.cli.GitHubClient")
+    @patch("agronomist.cli.scan_sources")
+    @patch("agronomist.cli.load_config")
+    def test_main_validate_token_no_token_provided(
+        self,
+        mock_load_config,
+        mock_scan_sources,
+        mock_gh_cls,
+        mock_gl_cls,
+        _mock_git_cls,
+        capsys,
+    ):
+        """Test --validate-token with no token skips validation."""
+        mock_load_config.return_value = self._config()
+        mock_scan_sources.return_value = []
+
+        gh_client = MagicMock()
+        mock_gh_cls.return_value = gh_client
+        gl_client = MagicMock()
+        mock_gl_cls.return_value = gl_client
+
+        result = main(["report", "--validate-token"])
+
+        assert result == 0
+        gh_client.validate_token.assert_not_called()
+        gl_client.validate_token.assert_not_called()
+        out = capsys.readouterr().out
+        assert "No token provided" in out
+
+    @patch("agronomist.cli.GitClient")
+    @patch("agronomist.cli.GitLabClient")
+    @patch("agronomist.cli.GitHubClient")
+    @patch("agronomist.cli.scan_sources")
+    @patch("agronomist.cli.load_config")
+    def test_main_custom_timeout_and_workers(
+        self,
+        mock_load_config,
+        mock_scan_sources,
+        mock_gh_cls,
+        mock_gl_cls,
+        mock_git_cls,
+    ):
+        """Test that --timeout and --workers are passed correctly."""
+        mock_load_config.return_value = self._config()
+        mock_scan_sources.return_value = []
+
+        result = main(["report", "--timeout", "60", "--workers", "5"])
+
+        assert result == 0
+        mock_gh_cls.assert_called_once()
+        call_kwargs = mock_gh_cls.call_args
+        assert call_kwargs[1]["timeout"] == 60
+
+    @patch("agronomist.cli.GitClient")
+    @patch("agronomist.cli.GitLabClient")
+    @patch("agronomist.cli.GitHubClient")
+    @patch("agronomist.cli.scan_sources")
+    @patch("agronomist.cli.load_config")
+    def test_main_resolver_auto_gitlab_returns_none_falls_back_to_git(
+        self,
+        mock_load_config,
+        mock_scan_sources,
+        mock_gh_cls,
+        mock_gl_cls,
+        mock_git_cls,
+    ):
+        """Test auto resolver falls back to git when GitLab returns None."""
+        mock_load_config.return_value = self._config()
+        source = _mk_source(
+            repo="org/repo",
+            repo_url="https://gitlab.com/org/repo.git",
+            repo_host="gitlab.com",
+            ref="v1.0.0",
+        )
+        mock_scan_sources.return_value = [source]
+
+        gh_client = MagicMock()
+        mock_gh_cls.return_value = gh_client
+
+        gl_client = MagicMock()
+        gl_client.latest_ref.return_value = None
+        mock_gl_cls.return_value = gl_client
+        mock_gl_cls.detect_gitlab_host.return_value = "gitlab.com"
+
+        git_client = MagicMock()
+        git_client.latest_ref.return_value = "v3.0.0"
+        mock_git_cls.return_value = git_client
+
+        result = main(["report", "--resolver", "auto", "--no-report"])
+
+        assert result == 0
+        gl_client.latest_ref.assert_called_once()
         git_client.latest_ref.assert_called_once()

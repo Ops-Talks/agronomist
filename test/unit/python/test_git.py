@@ -116,10 +116,7 @@ class TestGitClient:
     def test_latest_ref_skips_peeled_tags(self, mock_run):
         """Test that ^{} peeled tag lines are skipped."""
         mock_result = MagicMock()
-        mock_result.stdout = (
-            "abc123\trefs/tags/v1.0.0^{}\n"
-            "def456\trefs/tags/v0.9.0\n"
-        )
+        mock_result.stdout = "abc123\trefs/tags/v1.0.0^{}\ndef456\trefs/tags/v0.9.0\n"
         mock_run.return_value = mock_result
 
         client = GitClient()

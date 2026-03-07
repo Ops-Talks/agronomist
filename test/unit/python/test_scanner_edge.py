@@ -14,6 +14,22 @@ class TestScannerEdgeCases:
         source = "git::https://?ref=v1.0.0"
         assert _parse_git_source(source) is None
 
+    def test_parse_git_source_strips_dot_git_suffix(self):
+        """Test that .git suffix is stripped from repo path."""
+        source = "git::https://github.com/org/repo.git?ref=v1.0.0"
+        result = _parse_git_source(source)
+        assert result is not None
+        assert result.repo == "org/repo"
+        assert not result.repo.endswith(".git")
+
+    def test_parse_git_source_without_dot_git_suffix(self):
+        """Test parsing URL without .git suffix."""
+        source = "https://github.com/org/repo//modules/vpc?ref=v2.0.0"
+        result = _parse_git_source(source)
+        assert result is not None
+        assert result.repo == "org/repo"
+        assert result.module == "modules/vpc"
+
     def test_scan_sources_uses_default_include_patterns(self, temp_dir):
         infra_dir = Path(temp_dir) / "infra"
         infra_dir.mkdir()
@@ -64,3 +80,58 @@ class TestScannerEdgeCases:
 
         assert len(results) == 1
         assert results[0].repo == "org/repo"
+
+    def test_scan_sources_with_explicit_empty_include(self, temp_dir):
+        """Test that empty include list uses defaults."""
+        infra_dir = Path(temp_dir) / "infra"
+        infra_dir.mkdir()
+        tf_file = infra_dir / "main.tf"
+        tf_file.write_text(
+            'module "x" { source = "git::https://github.com/org/repo.git?ref=v1.0.0" }'
+        )
+
+        results = scan_sources(temp_dir, include=[])
+        assert len(results) == 1
+
+    def test_scan_sources_multiple_refs_same_repo(self, temp_dir):
+        """Test scanning file with multiple refs to same repo."""
+        infra_dir = Path(temp_dir) / "infra"
+        infra_dir.mkdir()
+        tf_file = infra_dir / "main.tf"
+        tf_file.write_text(
+            'module "a" { source = "git::https://github.com/org/repo.git?ref=v1.0.0" }\n'
+            'module "b" { source = "git::https://github.com/org/repo.git?ref=v2.0.0" }\n'
+        )
+
+        results = scan_sources(temp_dir)
+        assert len(results) == 2
+        refs = {r.ref for r in results}
+        assert refs == {"v1.0.0", "v2.0.0"}
+
+    def test_scan_sources_blacklist_repos_pattern(self, temp_dir):
+        """Test that blacklist_repos filters by glob pattern."""
+        infra_dir = Path(temp_dir) / "infra"
+        infra_dir.mkdir()
+        tf_file = infra_dir / "main.tf"
+        tf_file.write_text(
+            'module "a" { source = "git::https://github.com/internal/infra.git?ref=v1.0.0" }\n'
+            'module "b" { source = "git::https://github.com/public/vpc.git?ref=v1.0.0" }\n'
+        )
+
+        results = scan_sources(temp_dir, blacklist_repos=["internal/*"])
+        assert len(results) == 1
+        assert results[0].repo == "public/vpc"
+
+    def test_scan_sources_blacklist_modules_pattern(self, temp_dir):
+        """Test that blacklist_modules filters matching modules."""
+        infra_dir = Path(temp_dir) / "infra"
+        infra_dir.mkdir()
+        tf_file = infra_dir / "main.tf"
+        tf_file.write_text(
+            'module "a" { source = "git::https://github.com/org/repo.git//modules/old?ref=v1.0.0" }\n'
+            'module "b" { source = "git::https://github.com/org/repo.git//modules/new?ref=v1.0.0" }\n'
+        )
+
+        results = scan_sources(temp_dir, blacklist_modules=["modules/old"])
+        assert len(results) == 1
+        assert results[0].module == "modules/new"

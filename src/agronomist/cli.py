@@ -21,7 +21,7 @@ from .git import GitClient
 from .github import GitHubClient
 from .gitlab import GitLabClient
 from .markdown import write_markdown
-from .models import SourceRef
+from .models import Replacement, SourceRef, UpdateEntry
 from .report import build_report, write_report
 from .scanner import scan_sources
 from .updater import apply_updates
@@ -184,7 +184,7 @@ def _collect_updates(
     sources: list[SourceRef],
     category_rules: list,
     max_workers: int = 10,
-) -> list[dict[str, object]]:
+) -> list[UpdateEntry]:
     """Resolve latest refs and build the list of updates.
 
     Resolves each unique repository in parallel, then compares
@@ -198,7 +198,8 @@ def _collect_updates(
         max_workers: Thread pool size.
 
     Returns:
-        A list of update dicts ready for reporting or applying.
+        A list of UpdateEntry instances ready for reporting
+        or applying.
     """
     unique_repos: dict[str, SourceRef] = {}
     for source in sources:
@@ -226,7 +227,7 @@ def _collect_updates(
                 )
                 by_repo[repo] = None
 
-    updates: list[dict[str, object]] = []
+    updates: list[UpdateEntry] = []
     for source in sources:
         latest_ref = by_repo.get(source.repo)
         if not latest_ref or latest_ref == source.ref:
@@ -237,31 +238,30 @@ def _collect_updates(
         module_id = source.module if source.module else "root"
         unique_module = f"{module_id}@{source.file_path}"
 
-        update = {
-            "repo": source.repo,
-            "repo_host": source.repo_host,
-            "repo_url": source.repo_url,
-            "module": unique_module,
-            "base_module": source.module,
-            "file": source.file_path,
-            "current_ref": source.ref,
-            "latest_ref": latest_ref,
-            "strategy": "latest",
-            "files": [source.file_path],
-            "replacements": [{"from": source.raw, "to": new_source}],
-        }
-
         category = _categorize(category_rules, source.repo, source.module)
-        if category:
-            update["category"] = category
 
-        updates.append(update)  # type: ignore[arg-type]
+        entry = UpdateEntry(
+            repo=source.repo,
+            repo_host=source.repo_host,
+            repo_url=source.repo_url,
+            module=unique_module,
+            base_module=source.module,
+            file=source.file_path,
+            current_ref=source.ref,
+            latest_ref=latest_ref,
+            strategy="latest",
+            files=[source.file_path],
+            replacements=[Replacement(old=source.raw, new=new_source)],
+            category=category if category else None,
+        )
+
+        updates.append(entry)
 
     return updates
 
 
 def _print_category_summary(
-    updates: list[dict[str, object]],
+    updates: list[UpdateEntry],
 ) -> None:
     """Print a one-line summary of update counts per category."""
     if not updates:
@@ -269,7 +269,7 @@ def _print_category_summary(
 
     counts: dict[str, int] = {}
     for update in updates:
-        category = str(update.get("category", "uncategorized"))
+        category = update.category or "uncategorized"
         counts[category] = counts.get(category, 0) + 1
 
     summary = ", ".join(f"{name}: {count}" for name, count in sorted(counts.items()))
@@ -442,7 +442,8 @@ def main(argv: list[str] | None = None) -> int:
 
     if updates:
         if not args.no_report:
-            report = build_report(args.root, updates)
+            update_dicts = [u.to_dict() for u in updates]
+            report = build_report(args.root, update_dicts)
             write_report(args.output, report)
 
             if args.markdown:

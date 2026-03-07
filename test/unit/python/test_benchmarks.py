@@ -4,6 +4,7 @@ import tempfile
 from pathlib import Path
 
 from agronomist.markdown import generate_markdown, write_markdown
+from agronomist.models import Replacement, UpdateEntry
 from agronomist.report import build_report, write_report
 from agronomist.scanner import _match_any, _parse_git_source, scan_sources
 from agronomist.updater import apply_updates
@@ -181,15 +182,19 @@ class TestUpdaterBenchmarks:
             )
 
             updates = [
-                {
-                    "files": ["main.tf"],
-                    "replacements": [
-                        {
-                            "from": "v1.0.0",
-                            "to": "v2.0.0",
-                        }
-                    ],
-                }
+                UpdateEntry(
+                    repo="test/module",
+                    repo_host="github.com",
+                    repo_url="https://github.com/test/module.git",
+                    module="root@main.tf",
+                    base_module=None,
+                    file="main.tf",
+                    current_ref="v1.0.0",
+                    latest_ref="v2.0.0",
+                    strategy="latest",
+                    files=["main.tf"],
+                    replacements=[Replacement(old="v1.0.0", new="v2.0.0")],
+                )
             ]
 
             result = benchmark(apply_updates, tmpdir, updates)
@@ -206,15 +211,19 @@ class TestUpdaterBenchmarks:
                     f'module "mod{i}" {{\n  source = "git::https://github.com/test/module.git?ref=v1.0.{i}"\n}}'
                 )
                 updates.append(
-                    {
-                        "files": [f"main_{i}.tf"],
-                        "replacements": [
-                            {
-                                "from": f"v1.0.{i}",
-                                "to": f"v2.0.{i}",
-                            }
-                        ],
-                    }
+                    UpdateEntry(
+                        repo="test/module",
+                        repo_host="github.com",
+                        repo_url="https://github.com/test/module.git",
+                        module=f"root@main_{i}.tf",
+                        base_module=None,
+                        file=f"main_{i}.tf",
+                        current_ref=f"v1.0.{i}",
+                        latest_ref=f"v2.0.{i}",
+                        strategy="latest",
+                        files=[f"main_{i}.tf"],
+                        replacements=[Replacement(old=f"v1.0.{i}", new=f"v2.0.{i}")],
+                    )
                 )
 
             result = benchmark(apply_updates, tmpdir, updates)

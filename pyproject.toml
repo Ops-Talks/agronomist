@@ -12,7 +12,6 @@ urllib3 = ">=2.0.0"
 pyyaml = ">=6.0.1"
 
 [tool.poetry.group.dev.dependencies]
-black = ">=24.0.0"
 ruff = ">=0.6.0"
 pytest = ">=8.0.0"
 pre-commit = ">=3.7.0"
@@ -28,10 +27,6 @@ pytest-benchmark = "^5.2.3"
 
 [tool.poetry.scripts]
 agronomist = "agronomist.cli:main"
-
-[tool.black]
-line-length = 100
-target-version = ["py310"]
 
 [tool.ruff]
 line-length = 100
@@ -107,8 +102,8 @@ directory = "htmlcov"
 output = "coverage.xml"
 
 [tool.taskipy.tasks]
-lint = "ruff check . && ruff format . && black . && mypy src/"
-format = "ruff format . && black . && eradicate --recursive --in-place ."
+lint = "ruff check . && ruff format . && mypy src/"
+format = "ruff format . && eradicate --recursive --in-place ."
 test = "pytest --cov=src/agronomist --cov-report=term-missing --cov-report=html --cov-report=xml --junitxml=junit.xml -o junit_family=legacy --exitfirst || true"
 test-workflows = "bash test/run_tests.sh"
 test-coverage = "pytest --cov=src/agronomist --cov-report=term-missing --cov-report=html"

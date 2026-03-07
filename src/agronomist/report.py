@@ -5,6 +5,8 @@ from __future__ import annotations
 import json
 from datetime import datetime, timezone
 
+from .fileutil import atomic_write
+
 
 def build_report(
     root: str,
@@ -40,6 +42,5 @@ def write_report(
         path: Destination file path.
         report: The report dict to write.
     """
-    with open(path, "w", encoding="utf-8") as handle:
-        json.dump(report, handle, indent=2, sort_keys=True)
-        handle.write("\n")
+    content = json.dumps(report, indent=2, sort_keys=True) + "\n"
+    atomic_write(path, content)

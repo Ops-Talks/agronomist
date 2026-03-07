@@ -354,7 +354,10 @@ agronomist/
 
 ## Code Style Guidelines
 
-- **Line length**: 100 characters
+- **Line length**: 100 characters -- chosen over PEP 8's 79-character default to
+  reduce artificial line breaks in function signatures and long strings while still
+  fitting comfortably in side-by-side diffs and modern editor layouts.  Both ``ruff``
+  and the project formatter enforce this limit.
 - **Imports**: Organized via ruff (auto-formatted)
 - **Python version**: 3.10+
 - **Type hints**: Encouraged (Python 3.10+ supports modern syntax)
