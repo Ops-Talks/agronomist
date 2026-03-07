@@ -34,7 +34,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install Agronomist
         run: |
-          AGRONOMIST_VERSION="v0.5.3"
+          AGRONOMIST_VERSION="v1.1.3"
           WHEEL="agronomist-${AGRONOMIST_VERSION#v}-py3-none-any.whl"
           curl -L -o "$WHEEL" "https://github.com/Ops-Talks/agronomist/releases/download/${AGRONOMIST_VERSION}/${WHEEL}"
           pip install "$WHEEL"

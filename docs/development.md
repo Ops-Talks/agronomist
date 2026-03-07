@@ -37,7 +37,7 @@ poetry install
 This installs:
 
 - **Core dependencies**: `requests`, `pyyaml`
-- **Dev dependencies**: `ruff`, `black`, `mypy`, `bandit`, `eradicate`, `pytest`, `pytest-cov`, `pytest-benchmark`, `pre-commit`, `taskipy`, `zensical`
+- **Dev dependencies**: `ruff`, `mypy`, `bandit`, `eradicate`, `pytest`, `pytest-cov`, `pytest-benchmark`, `pre-commit`, `taskipy`, `zensical`
 
 ### 2. Verify Installation
 
@@ -53,8 +53,8 @@ Agronomist uses **taskipy** for convenient task management. All tasks are define
 
 | Task | Command | Description |
 |------|---------|-------------|
-| `lint` | `poetry run task lint` | Run ruff check, ruff format, black, and mypy |
-| `format` | `poetry run task format` | Auto-format code and remove dead code (ruff + black + eradicate) |
+| `lint` | `poetry run task lint` | Run ruff check, ruff format, and mypy |
+| `format` | `poetry run task format` | Auto-format code and remove dead code (ruff format + eradicate) |
 | `test` | `poetry run task test` | Run pytest test suite with coverage |
 | `test-coverage` | `poetry run task test-coverage` | Run pytest with strict coverage (no --exitfirst) |
 | `security` | `poetry run task security` | Run security checks (bandit + eradicate) |
@@ -87,24 +87,19 @@ poetry run task test-coverage
 
 ### Tools
 
-- **ruff** - Fast Python linter (checks style, imports, bugs)
-- **black** - Code formatter (enforces consistent style)
+- **ruff** - Fast Python linter and formatter (checks style, imports, bugs, and enforces consistent formatting)
 - **mypy** - Static type checker (enforces type annotations)
 - **bandit** - Security scanner (detects common vulnerabilities)
 - **eradicate** - Dead code detector
 
 ### Configuration
 
-Both tools are configured in `pyproject.toml`:
+Tool settings are configured in `pyproject.toml`:
 
 ```toml
 [tool.ruff]
 line-length = 100
 target-version = "py310"
-
-[tool.black]
-line-length = 100
-target-version = ["py310"]
 ```
 
 ### Manual Commands
@@ -115,9 +110,6 @@ poetry run ruff check .
 
 # Auto-format with ruff
 poetry run ruff format .
-
-# Auto-format with black
-poetry run black .
 
 # Combined check and format (via task)
 poetry run task check
@@ -308,7 +300,7 @@ make help              # Show all available targets
 make build             # Build locally with Poetry
 make build-docker      # Build in Docker (recommended)
 make clean             # Remove build artifacts
-make lint              # Run linters (ruff, black, mypy)
+make lint              # Run linters (ruff check, ruff format, mypy)
 make format            # Format code and remove dead code
 make test              # Run tests
 make coverage          # Run tests with coverage report
@@ -330,19 +322,22 @@ agronomist/
 │       ├── __init__.py
 │       ├── cli.py              # CLI entry point
 │       ├── config.py           # Configuration loader (categories & blacklist)
-│       ├── models.py           # Data models (SourceRef, etc.)
-│       ├── scanner.py          # File scanner
+│       ├── exceptions.py       # Custom exception hierarchy
+│       ├── fileutil.py         # Shared file-writing utilities (atomic write)
 │       ├── git.py              # Git resolver
 │       ├── github.py           # GitHub API resolver
 │       ├── gitlab.py           # GitLab API resolver
-│       ├── report.py           # JSON report generation
+│       ├── http.py             # Shared HTTP session builder (retry & backoff)
 │       ├── markdown.py         # Markdown report generation
+│       ├── models.py           # Data models (SourceRef, UpdateEntry, Replacement)
+│       ├── report.py           # JSON report generation
+│       ├── scanner.py          # File scanner
 │       └── updater.py          # In-place file update application
 ├── test/
 │   ├── fixtures/               # Test fixtures (report.json samples)
 │   ├── integration/            # Shell integration tests
 │   └── unit/
-│       ├── python/             # Python test suite (pytest, 171 tests)
+│       ├── python/             # Python test suite (pytest, 235 tests)
 │       └── test_multi_pr.bats  # BATS shell tests
 ├── docs/                       # Documentation (MkDocs)
 ├── pyproject.toml              # Project metadata and dependencies

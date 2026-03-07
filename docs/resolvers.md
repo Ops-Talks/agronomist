@@ -103,7 +103,7 @@ agronomist report --root ./infrastructure --resolver auto
 
 **Self-hosted GitLab:**
 
-The GitLab resolver uses `GL_HOST` or the URL embedded in each `source` string. Tokens are passed via `--gitlab-token` or `GITLAB_TOKEN`.
+The GitLab resolver detects GitLab hosts by inspecting the hostname in each module's `source` URL. Tokens are passed via `--gitlab-token` or the `GITLAB_TOKEN` environment variable.
 
 **Limitations:**
 

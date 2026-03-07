@@ -42,7 +42,7 @@ workflow:
     - when: never
 
 variables:
-  AGRONOMIST_VERSION: "v0.5.0"
+  AGRONOMIST_VERSION: "v1.1.3"
   AGRONOMIST_ROOT: "."
   AGRONOMIST_RESOLVER: "git"
   AGRONOMIST_CONFIG: ".agronomist.yaml"
