@@ -1,3 +1,9 @@
+"""Git CLI resolver for determining the latest tag.
+
+Shells out to ``git ls-remote --tags`` and parses the output
+to find the most recent version-sorted tag.
+"""
+
 from __future__ import annotations
 
 import logging
@@ -9,9 +15,27 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class GitClient:
+    """Resolver that uses the local ``git`` binary.
+
+    Attributes:
+        timeout: Maximum seconds to wait for ``git ls-remote``.
+    """
+
     timeout: int = 20
 
     def latest_ref(self, repo_url: str) -> str | None:
+        """Return the latest tag from a remote repository.
+
+        Runs ``git ls-remote --tags --sort=-v:refname`` and
+        returns the first non-peeled tag (skips ``^{}`` lines).
+
+        Parameters:
+            repo_url: Full URL of the remote Git repository.
+
+        Returns:
+            The tag name (without ``refs/tags/`` prefix),
+            or None when no tags exist or on any error.
+        """
         cmd = [
             "git",
             "ls-remote",
@@ -28,19 +52,26 @@ class GitClient:
                 timeout=self.timeout,
             )
         except subprocess.TimeoutExpired:
-            logger.error(f"Git ls-remote for {repo_url} timed out")
+            logger.error("Git ls-remote for %s timed out", repo_url)
             return None
         except subprocess.CalledProcessError as e:
             if "not found" in e.stderr or "fatal:" in e.stderr:
-                logger.warning(f"Git: repository {repo_url} not found or no access")
+                logger.warning(
+                    "Git: repository %s not found or no access",
+                    repo_url,
+                )
             else:
-                logger.warning(f"Git ls-remote failed for {repo_url}: {e.stderr}")
+                logger.warning(
+                    "Git ls-remote failed for %s: %s",
+                    repo_url,
+                    e.stderr,
+                )
             return None
         except FileNotFoundError:
             logger.error("Git not installed or not in PATH")
             return None
         except Exception as e:
-            logger.error(f"Unexpected error running git ls-remote: {e}")
+            logger.error("Unexpected error running git ls-remote: %s", e)
             return None
 
         for line in result.stdout.splitlines():

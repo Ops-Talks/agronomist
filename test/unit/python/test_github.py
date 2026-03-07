@@ -199,3 +199,47 @@ class TestGitHubClient:
 
         assert result == "v1.8.0"
         mock_tag.assert_called_once_with("example/repo")
+
+    @patch("requests.Session.get")
+    def test_validate_token_forbidden(self, mock_get):
+        """Test token validation returns false on 403 forbidden."""
+        mock_response = MagicMock()
+        mock_response.status_code = 403
+        mock_get.return_value = mock_response
+
+        client = GitHubClient(base_url="https://api.github.com", token="bad-token")
+        result = client.validate_token()
+
+        assert result is False
+
+    @patch("requests.Session.get")
+    def test_validate_token_request_exception(self, mock_get):
+        """Test token validation handles request exceptions."""
+        import requests
+
+        mock_get.side_effect = requests.RequestException("Connection refused")
+
+        client = GitHubClient(base_url="https://api.github.com", token="some-token")
+        result = client.validate_token()
+
+        assert result is False
+
+    def test_headers_without_token(self):
+        """Test _headers returns Accept header only without token."""
+        client = GitHubClient(base_url="https://api.github.com")
+        headers = client._headers()
+
+        assert "Accept" in headers
+        assert "Authorization" not in headers
+
+    @patch("requests.Session.get")
+    def test_latest_release_tag_forbidden(self, mock_get):
+        """Test handling 403 forbidden for release tag."""
+        mock_response = MagicMock()
+        mock_response.status_code = 403
+        mock_get.return_value = mock_response
+
+        client = GitHubClient(base_url="https://api.github.com")
+        result = client.latest_release_tag("example/repo")
+
+        assert result is None

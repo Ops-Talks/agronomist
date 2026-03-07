@@ -1,33 +1,34 @@
+"""GitHub API client for resolving module versions.
+
+Uses the GitHub REST API to query the latest release or tag
+for a given repository. Falls back from releases to tags when
+no published release exists.
+"""
+
 from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
 
 import requests
-from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
+
+from .http import build_session
 
 logger = logging.getLogger(__name__)
 
 
-def _build_session(retries: int, backoff_factor: float) -> requests.Session:
-    """Return a requests.Session with automatic retry + exponential backoff."""
-    session = requests.Session()
-    retry = Retry(
-        total=retries,
-        backoff_factor=backoff_factor,
-        status_forcelist=[429, 500, 502, 503, 504],
-        allowed_methods=["GET"],
-        raise_on_status=False,
-    )
-    adapter = HTTPAdapter(max_retries=retry)
-    session.mount("http://", adapter)
-    session.mount("https://", adapter)
-    return session
-
-
 @dataclass
 class GitHubClient:
+    """Client that resolves the latest version via GitHub API.
+
+    Attributes:
+        base_url: GitHub API base URL (supports Enterprise).
+        token: Optional Bearer token for authentication.
+        timeout: HTTP request timeout in seconds.
+        retries: Number of automatic retries on transient errors.
+        backoff_factor: Exponential backoff multiplier.
+    """
+
     base_url: str
     token: str | None = None
     timeout: int = 20
@@ -36,9 +37,16 @@ class GitHubClient:
     _session: requests.Session = field(init=False, repr=False)
 
     def __post_init__(self) -> None:
-        self._session = _build_session(self.retries, self.backoff_factor)
+        """Initialize the HTTP session with retry settings."""
+        self._session = build_session(self.retries, self.backoff_factor)
 
     def validate_token(self) -> bool:
+        """Verify that the configured token is valid.
+
+        Returns:
+            True if the token is valid or no token is set,
+            False if the API rejects the token.
+        """
         if not self.token:
             return True
         url = f"{self.base_url}/user"
@@ -54,56 +62,109 @@ class GitHubClient:
             response.raise_for_status()
             return True
         except requests.RequestException as e:
-            logger.error(f"Error validating GitHub token: {e}")
+            logger.error("Error validating GitHub token: %s", e)
             return False
 
-    def _headers(self) -> dict:
-        headers = {"Accept": "application/vnd.github+json"}
+    def _headers(self) -> dict[str, str]:
+        """Build default request headers.
+
+        Returns:
+            A dict containing the Accept header and, when a
+            token is configured, the Authorization header.
+        """
+        headers: dict[str, str] = {
+            "Accept": "application/vnd.github+json",
+        }
         if self.token:
             headers["Authorization"] = f"Bearer {self.token}"
         return headers
 
     def latest_release_tag(self, repo: str) -> str | None:
+        """Fetch the tag name of the latest published release.
+
+        Parameters:
+            repo: Repository in ``owner/name`` format.
+
+        Returns:
+            The ``tag_name`` string, or None on any error.
+        """
         url = f"{self.base_url}/repos/{repo}/releases/latest"
         try:
-            response = self._session.get(url, headers=self._headers(), timeout=self.timeout)
+            response = self._session.get(
+                url,
+                headers=self._headers(),
+                timeout=self.timeout,
+            )
             if response.status_code == 404:
                 return None
             if response.status_code == 401:
-                logger.warning(f"GitHub: unauthorized access to {repo} (401)")
+                logger.warning(
+                    "GitHub: unauthorized access to %s (401)",
+                    repo,
+                )
                 return None
             if response.status_code == 403:
-                logger.warning(f"GitHub: access denied to {repo} (403)")
+                logger.warning("GitHub: access denied to %s (403)", repo)
                 return None
             response.raise_for_status()
             data = response.json()
-            return data.get("tag_name")
+            return str(data.get("tag_name"))
         except requests.RequestException as e:
-            logger.warning(f"Error fetching release tag for {repo}: {e}")
+            logger.warning(
+                "Error fetching release tag for %s: %s",
+                repo,
+                e,
+            )
             return None
 
     def latest_tag(self, repo: str) -> str | None:
+        """Fetch the name of the most recent tag.
+
+        Parameters:
+            repo: Repository in ``owner/name`` format.
+
+        Returns:
+            The tag name string, or None on any error.
+        """
         url = f"{self.base_url}/repos/{repo}/tags"
         try:
-            response = self._session.get(url, headers=self._headers(), timeout=self.timeout)
+            response = self._session.get(
+                url,
+                headers=self._headers(),
+                timeout=self.timeout,
+            )
             if response.status_code == 404:
                 return None
             if response.status_code == 401:
-                logger.warning(f"GitHub: unauthorized access to {repo} (401)")
+                logger.warning(
+                    "GitHub: unauthorized access to %s (401)",
+                    repo,
+                )
                 return None
             if response.status_code == 403:
-                logger.warning(f"GitHub: access denied to {repo} (403)")
+                logger.warning("GitHub: access denied to %s (403)", repo)
                 return None
             response.raise_for_status()
             data = response.json()
             if not data:
                 return None
-            return data[0].get("name")
+            return str(data[0].get("name"))
         except requests.RequestException as e:
-            logger.warning(f"Error fetching tags for {repo}: {e}")
+            logger.warning("Error fetching tags for %s: %s", repo, e)
             return None
 
     def latest_ref(self, repo: str) -> str | None:
+        """Return the latest version ref for a repository.
+
+        Prefers the latest GitHub Release tag. If none exists,
+        falls back to the most recent Git tag.
+
+        Parameters:
+            repo: Repository in ``owner/name`` format.
+
+        Returns:
+            The tag name string, or None if unavailable.
+        """
         tag = self.latest_release_tag(repo)
         if tag:
             return tag

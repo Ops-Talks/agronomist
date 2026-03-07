@@ -103,6 +103,8 @@ The `--resolver` option determines how Agronomist queries for the latest module 
 - `GITHUB_TOKEN` - Default authentication token for GitHub API. Used when `--github-token` is not specified.
 - `GITLAB_TOKEN` - Default authentication token for GitLab API. Used when `--gitlab-token` is not specified.
 
+> **Security note:** Prefer environment variables (`GITHUB_TOKEN`, `GITLAB_TOKEN`) over the `--token`, `--github-token`, and `--gitlab-token` CLI flags.  Arguments passed on the command line may be visible in shell history, process listings (`ps`), and CI/CD logs.  Environment variables avoid this exposure.
+
 ## Exit Codes
 
 - `0` - Success

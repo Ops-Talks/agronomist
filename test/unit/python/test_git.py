@@ -111,3 +111,56 @@ class TestGitClient:
         assert client1 is not client2
         assert hasattr(client1, "latest_ref")
         assert hasattr(client2, "latest_ref")
+
+    @patch("agronomist.git.subprocess.run")
+    def test_latest_ref_skips_peeled_tags(self, mock_run):
+        """Test that ^{} peeled tag lines are skipped."""
+        mock_result = MagicMock()
+        mock_result.stdout = (
+            "abc123\trefs/tags/v1.0.0^{}\n"
+            "def456\trefs/tags/v0.9.0\n"
+        )
+        mock_run.return_value = mock_result
+
+        client = GitClient()
+        result = client.latest_ref("https://github.com/example/repo.git")
+
+        assert result == "v0.9.0"
+
+    @patch("agronomist.git.subprocess.run")
+    def test_latest_ref_empty_output(self, mock_run):
+        """Test that empty git output returns None."""
+        mock_result = MagicMock()
+        mock_result.stdout = ""
+        mock_run.return_value = mock_result
+
+        client = GitClient()
+        result = client.latest_ref("https://github.com/example/repo.git")
+
+        assert result is None
+
+    @patch("agronomist.git.subprocess.run")
+    def test_latest_ref_malformed_lines(self, mock_run):
+        """Test that malformed lines without tab separator are skipped."""
+        mock_result = MagicMock()
+        mock_result.stdout = "malformed_line_no_tab\nabc123\trefs/tags/v1.0.0\n"
+        mock_run.return_value = mock_result
+
+        client = GitClient()
+        result = client.latest_ref("https://github.com/example/repo.git")
+
+        assert result == "v1.0.0"
+
+    @patch("agronomist.git.subprocess.run")
+    def test_latest_ref_called_process_error_generic_stderr(self, mock_run):
+        """Test CalledProcessError with generic stderr message."""
+        import subprocess
+
+        mock_error = subprocess.CalledProcessError(1, "cmd")
+        mock_error.stderr = "some other error"
+        mock_run.side_effect = mock_error
+
+        client = GitClient()
+        result = client.latest_ref("https://github.com/example/repo.git")
+
+        assert result is None

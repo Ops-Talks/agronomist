@@ -1,3 +1,10 @@
+"""File scanner that discovers Git-sourced Terraform modules.
+
+Walks a directory tree, matches Terraform/HCL files, and
+extracts ``source = "git::..."`` references along with their
+version refs.
+"""
+
 from __future__ import annotations
 
 import fnmatch
@@ -10,15 +17,37 @@ from .models import SourceRef
 
 _SOURCE_RE = re.compile(r"source\s*=\s*(['\"])(?P<source>[^'\"]+)\1")
 _GIT_SOURCE_RE = re.compile(
-    r"(?:git::)?(?P<url>https?://[^?]+?)(?:\.git)?(?P<module>//[^?]+)?\?ref=(?P<ref>[^&]+)"
+    r"(?:git::)?(?P<url>https?://[^?]+?)" r"(?:\.git)?(?P<module>//[^?]+)?" r"\?ref=(?P<ref>[^&]+)"
 )
 
 
 def _match_any(path: str, patterns: Iterable[str]) -> bool:
+    """Return True if *path* matches any of the glob *patterns*.
+
+    Parameters:
+        path: The file path string to test.
+        patterns: An iterable of ``fnmatch``-style patterns.
+
+    Returns:
+        True when at least one pattern matches.
+    """
     return any(fnmatch.fnmatch(path, pattern) for pattern in patterns)
 
 
 def _parse_git_source(source: str) -> SourceRef | None:
+    """Parse a Git module source string into a SourceRef.
+
+    Handles URLs with or without the ``git::`` prefix and
+    optional ``//module`` sub-paths.
+
+    Parameters:
+        source: Raw source value from a Terraform file.
+
+    Returns:
+        A SourceRef with an empty ``file_path`` (to be filled
+        by the caller), or None if the string is not a valid
+        Git source.
+    """
     match = _GIT_SOURCE_RE.search(source)
     if not match:
         return None
@@ -55,6 +84,20 @@ def scan_sources(
     blacklist_modules: list[str] | None = None,
     blacklist_files: list[str] | None = None,
 ) -> list[SourceRef]:
+    """Walk *root* and collect all Git module source refs.
+
+    Parameters:
+        root: Directory to scan recursively.
+        include: Glob patterns for files to include
+            (defaults to ``["**/*.hcl", "**/*.tf"]``).
+        exclude: Glob patterns for files to skip.
+        blacklist_repos: Repo patterns to ignore.
+        blacklist_modules: Module patterns to ignore.
+        blacklist_files: File-path patterns to ignore.
+
+    Returns:
+        A list of SourceRef objects found in matching files.
+    """
     include = include or ["**/*.hcl", "**/*.tf"]
     exclude = exclude or []
     blacklist_repos = blacklist_repos or []

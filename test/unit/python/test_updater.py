@@ -135,3 +135,58 @@ class TestApplyUpdates:
 
             # No changes made
             assert result_files == []
+
+    def test_apply_updates_file_not_found(self):
+        """Test that missing files are skipped without error."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            updates = [
+                {
+                    "files": ["nonexistent.tf"],
+                    "replacements": [{"from": "v1.0.0", "to": "v2.0.0"}],
+                    "category": "example",
+                }
+            ]
+
+            result_files = apply_updates(temp_dir, updates)
+            assert result_files == []
+
+    def test_apply_updates_path_traversal_blocked(self):
+        """Test that path traversal attempts are blocked."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            updates = [
+                {
+                    "files": ["../../etc/passwd"],
+                    "replacements": [{"from": "root", "to": "hacked"}],
+                    "category": "malicious",
+                }
+            ]
+
+            result_files = apply_updates(temp_dir, updates)
+            assert result_files == []
+
+    def test_apply_updates_multiple_updates_same_file(self):
+        """Test multiple update entries targeting the same file."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            test_file = Path(temp_dir) / "main.tf"
+            test_file.write_text(
+                'source1 = "git::https://github.com/org/a.git?ref=v1.0.0"\n'
+                'source2 = "git::https://github.com/org/b.git?ref=v2.0.0"'
+            )
+
+            updates = [
+                {
+                    "files": ["main.tf"],
+                    "replacements": [{"from": "ref=v1.0.0", "to": "ref=v1.1.0"}],
+                },
+                {
+                    "files": ["main.tf"],
+                    "replacements": [{"from": "ref=v2.0.0", "to": "ref=v2.1.0"}],
+                },
+            ]
+
+            result_files = apply_updates(temp_dir, updates)
+            assert "main.tf" in result_files
+
+            content = test_file.read_text()
+            assert "ref=v1.1.0" in content
+            assert "ref=v2.1.0" in content

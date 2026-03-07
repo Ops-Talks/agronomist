@@ -142,3 +142,73 @@ class TestGitLabClient:
         result = client.latest_ref("https://gitlab.com/mygroup/myproject.git")
 
         assert result == "v2.0.0"
+
+    @patch("requests.Session.get")
+    def test_validate_token_forbidden(self, mock_get):
+        """Test token validation returns false on 403 forbidden."""
+        mock_response = MagicMock()
+        mock_response.status_code = 403
+        mock_get.return_value = mock_response
+
+        client = GitLabClient(base_url="https://gitlab.com", token="bad-token")
+        result = client.validate_token()
+
+        assert result is False
+
+    @patch("requests.Session.get")
+    def test_validate_token_request_exception(self, mock_get):
+        """Test token validation handles request exceptions."""
+        import requests
+
+        mock_get.side_effect = requests.RequestException("Connection refused")
+
+        client = GitLabClient(base_url="https://gitlab.com", token="some-token")
+        result = client.validate_token()
+
+        assert result is False
+
+    @patch("requests.Session.get")
+    def test_latest_tag_forbidden(self, mock_get):
+        """Test handling 403 forbidden response for tags."""
+        mock_response = MagicMock()
+        mock_response.status_code = 403
+        mock_get.return_value = mock_response
+
+        client = GitLabClient(base_url="https://gitlab.com")
+        result = client.latest_tag("mygroup%2Fmyproject")
+
+        assert result is None
+
+    @patch("requests.Session.get")
+    def test_latest_tag_request_exception(self, mock_get):
+        """Test handling request exceptions for tags."""
+        import requests
+
+        mock_get.side_effect = requests.RequestException("Timeout")
+
+        client = GitLabClient(base_url="https://gitlab.com")
+        result = client.latest_tag("mygroup%2Fmyproject")
+
+        assert result is None
+
+    def test_latest_ref_invalid_url(self):
+        """Test latest_ref with an invalid URL returns None."""
+        client = GitLabClient(base_url="https://gitlab.com")
+        result = client.latest_ref("not-a-url")
+
+        assert result is None
+
+    def test_headers_without_token(self):
+        """Test _headers returns empty dict without token."""
+        client = GitLabClient(base_url="https://gitlab.com")
+        headers = client._headers()
+
+        assert headers == {}
+
+    def test_headers_with_token(self):
+        """Test _headers includes PRIVATE-TOKEN with token."""
+        client = GitLabClient(base_url="https://gitlab.com", token="my-token")
+        headers = client._headers()
+
+        assert "PRIVATE-TOKEN" in headers
+        assert headers["PRIVATE-TOKEN"] == "my-token"

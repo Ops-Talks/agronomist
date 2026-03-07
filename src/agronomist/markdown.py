@@ -1,9 +1,25 @@
+"""Markdown report generator for Agronomist.
+
+Converts the JSON report structure into a human-readable
+Markdown document organised by repository and module.
+"""
+
 from __future__ import annotations
 
 from typing import Any
 
 
-def _group_by_repo(updates: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
+def _group_by_repo(
+    updates: list[dict[str, Any]],
+) -> dict[str, list[dict[str, Any]]]:
+    """Group update entries by repository name.
+
+    Parameters:
+        updates: List of update dicts.
+
+    Returns:
+        A dict mapping repo names to their updates.
+    """
     by_repo: dict[str, list[dict[str, Any]]] = {}
     for update in updates:
         repo = update.get("repo", "unknown")
@@ -13,10 +29,22 @@ def _group_by_repo(updates: list[dict[str, Any]]) -> dict[str, list[dict[str, An
     return by_repo
 
 
-def _group_by_module(updates: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
+def _group_by_module(
+    updates: list[dict[str, Any]],
+) -> dict[str, list[dict[str, Any]]]:
+    """Group update entries by module name.
+
+    Falls back from ``base_module`` to ``module`` for backward
+    compatibility.
+
+    Parameters:
+        updates: List of update dicts.
+
+    Returns:
+        A dict mapping module names to their updates.
+    """
     by_module: dict[str, list[dict[str, Any]]] = {}
     for update in updates:
-        # Use base_module for display grouping, fall back to module for backward compatibility
         module = update.get("base_module") or update.get("module", "root")
         if module not in by_module:
             by_module[module] = []
@@ -25,6 +53,15 @@ def _group_by_module(updates: list[dict[str, Any]]) -> dict[str, list[dict[str, 
 
 
 def generate_markdown(report: dict[str, Any]) -> str:
+    """Render a full Markdown report from a report dict.
+
+    Parameters:
+        report: Report dict containing ``updates``,
+            ``generated_at``, and ``root``.
+
+    Returns:
+        A Markdown-formatted string.
+    """
     updates = report.get("updates", [])
     if not updates:
         return "# Agronomist Report\n\nNo updates available.\n"
@@ -98,6 +135,12 @@ def generate_markdown(report: dict[str, Any]) -> str:
 
 
 def write_markdown(path: str, report: dict[str, Any]) -> None:
+    """Write the Markdown report to a file.
+
+    Parameters:
+        path: Destination file path.
+        report: Report dict to render.
+    """
     markdown = generate_markdown(report)
     with open(path, "w", encoding="utf-8") as handle:
         handle.write(markdown)
