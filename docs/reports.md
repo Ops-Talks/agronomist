@@ -4,7 +4,7 @@ Agronomist can produce JSON and Markdown reports.
 
 ## JSON report
 
-The JSON report is always produced and written to `--output`.
+The JSON report is produced by default and written to `--output`. Use `--no-report` to skip report file generation.
 
 Example structure:
 

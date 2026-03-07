@@ -5,7 +5,7 @@ help:
 	@echo "  make build              - Build package locally with Poetry"
 	@echo "  make build-docker       - Build package in Docker container"
 	@echo "  make clean              - Remove dist/ and build artifacts"
-	@echo "  make lint               - Run linters (ruff, black, mypy)"
+	@echo "  make lint               - Run linters (ruff check, ruff format, mypy)"
 	@echo "  make format             - Format code and remove dead code"
 	@echo "  make security           - Run security checks (bandit, eradicate)"
 	@echo "  make test               - Run tests"
@@ -29,7 +29,7 @@ build-docker:
 	docker create --name agronomist-tmp agronomist-build
 	docker cp agronomist-tmp:/build/dist . 
 	docker rm agronomist-tmp
-	@echo "✓ Build complete!"
+	@echo "Build complete!"
 	@ls -lh dist/
 
 clean:

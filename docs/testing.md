@@ -53,7 +53,7 @@ poetry run pytest -v
 A passing run reports a summary line like:
 
 ```
-171 passed in 2.34s
+235 passed in 4.62s
 ```
 
 Coverage output follows if you ran `task test-coverage`.
@@ -95,12 +95,11 @@ poetry run task check
 
 This runs, in order:
 
-1. `ruff check` and `ruff format` — linting and style
-2. `black` — code formatting
-3. `mypy` — static type checking
-4. `bandit` — security scanning
-5. `eradicate` — dead code detection
-6. `pytest` with coverage — full test suite
+1. `ruff check` and `ruff format` -- linting and style
+2. `mypy` -- static type checking
+3. `bandit` -- security scanning
+4. `eradicate` -- dead code detection
+5. `pytest` with coverage -- full test suite
 
 ---
 
