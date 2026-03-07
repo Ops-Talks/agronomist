@@ -1641,6 +1641,9 @@
 <li><code>GITHUB_TOKEN</code> - Default authentication token for GitHub API. Used when <code>--github-token</code> is not specified.</li>
 <li><code>GITLAB_TOKEN</code> - Default authentication token for GitLab API. Used when <code>--gitlab-token</code> is not specified.</li>
 </ul>
+<blockquote>
+<p><strong>Security note:</strong> Prefer environment variables (<code>GITHUB_TOKEN</code>, <code>GITLAB_TOKEN</code>) over the <code>--token</code>, <code>--github-token</code>, and <code>--gitlab-token</code> CLI flags.  Arguments passed on the command line may be visible in shell history, process listings (<code>ps</code>), and CI/CD logs.  Environment variables avoid this exposure.</p>
+</blockquote>
 <h2 id="exit-codes">Exit Codes<a class="headerlink" href="#exit-codes" title="Permanent link">&para;</a></h2>
 <ul>
 <li><code>0</code> - Success</li>
