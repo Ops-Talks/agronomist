@@ -2208,7 +2208,10 @@
 </span></code></pre></div>
 <h2 id="code-style-guidelines">Code Style Guidelines<a class="headerlink" href="#code-style-guidelines" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Line length</strong>: 100 characters</li>
+<li><strong>Line length</strong>: 100 characters -- chosen over PEP 8's 79-character default to
+  reduce artificial line breaks in function signatures and long strings while still
+  fitting comfortably in side-by-side diffs and modern editor layouts.  Both <code>ruff</code>
+  and the project formatter enforce this limit.</li>
 <li><strong>Imports</strong>: Organized via ruff (auto-formatted)</li>
 <li><strong>Python version</strong>: 3.10+</li>
 <li><strong>Type hints</strong>: Encouraged (Python 3.10+ supports modern syntax)</li>
