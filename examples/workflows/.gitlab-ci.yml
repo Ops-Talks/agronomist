@@ -99,9 +99,24 @@ update:
       for module in $modules; do
         echo "Processing module: $module"
 
-        # Create branch name from module
-        branch_name="agronomist/update-$(echo "$module" | sed 's/\//-/g')"
-        echo "Branch name: $branch_name"
+        # Build a short, intuitive branch name:
+        # use only the base module (before @) + 8-char hash for uniqueness
+        base_module_id="$(echo "$module" | cut -d'@' -f1)"
+        safe_base="$(echo "$base_module_id" | sed 's/[/@]/-/g')"
+        if [ "${#safe_base}" -gt 50 ]; then
+          safe_base="${safe_base:0:50}"
+        fi
+        module_hash="$(printf '%s' "$module" | sha256sum | cut -c1-8)"
+        branch_name="agronomist/update-${safe_base}-${module_hash}"
+
+        # Look up human-readable name and target version (single jq pass)
+        IFS=$'\t' read -r base_module_label latest_ref <<< "$(jq -r \
+          --arg mod "$module" \
+          '.updates[] | select(.module==$mod) | [(.base_module // (.module | split("@")[0])), .latest_ref] | @tsv' \
+          report.json | head -1)"
+        # Fall back gracefully if jq returned nothing
+        base_module_label="${base_module_label:-$base_module_id}"
+        latest_ref="${latest_ref:-latest}"
 
         # Get files affected by this module
         echo "Fetching files for module..."
@@ -159,7 +174,7 @@ update:
         # Stage and commit changes
         echo "Committing changes..."
         git add providers/
-        git commit -m "[Agronomist] There is a new Module Version" || {
+        git commit -m "[Agronomist] Update ${base_module_label} to ${latest_ref}" || {
           echo "Failed to commit changes"
           git checkout "$base_branch"
           cp /tmp/report.json report.json
@@ -185,7 +200,7 @@ update:
           --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
           --form "source_branch=${branch_name}" \
           --form "target_branch=${MR_TARGET_BRANCH}" \
-          --form "title=[Agronomist] Update ${module}" \
+          --form "title=[Agronomist] Update ${base_module_label} to ${latest_ref}" \
           --form "description=${MR_BODY}" \
           "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/merge_requests" || echo "Failed to create MR"
 
@@ -199,6 +214,12 @@ update:
 
       # Clean up local branches
       for module in $modules; do
-        branch_name="agronomist/update-$(echo "$module" | sed 's/\//-/g')"
+        base_module_id="$(echo "$module" | cut -d'@' -f1)"
+        safe_base="$(echo "$base_module_id" | sed 's/[/@]/-/g')"
+        if [ "${#safe_base}" -gt 50 ]; then
+          safe_base="${safe_base:0:50}"
+        fi
+        module_hash="$(printf '%s' "$module" | sha256sum | cut -c1-8)"
+        branch_name="agronomist/update-${safe_base}-${module_hash}"
         git branch -D "$branch_name" 2>/dev/null || true
       done

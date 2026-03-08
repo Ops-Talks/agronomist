@@ -32,17 +32,27 @@ EOF
 }
 
 @test "create valid branch name from module with slashes" {
-    module="weyderfs/terraform-aws-modules//vpc/security-group"
-    branch_name="agronomist/update-$(echo "$module" | sed 's/\//-/g')"
+    # Full module ID (base_module@filepath) — only the base part is used in the name
+    module="weyderfs/terraform-aws-modules//vpc/security-group@infra/main.tf"
+    base_module_id="$(echo "$module" | cut -d'@' -f1)"
+    safe_base="$(echo "$base_module_id" | sed 's/[/@]/-/g')"
+    if [ "${#safe_base}" -gt 50 ]; then safe_base="${safe_base:0:50}"; fi
+    module_hash="$(printf '%s' "$module" | sha256sum | cut -c1-8)"
+    branch_name="agronomist/update-${safe_base}-${module_hash}"
 
-    [ "$branch_name" = "agronomist/update-weyderfs-terraform-aws-modules--vpc-security-group" ]
+    [ "$branch_name" = "agronomist/update-weyderfs-terraform-aws-modules--vpc-security-group-${module_hash}" ]
 }
 
 @test "create valid branch name from simple module" {
-    module="hashicorp/terraform"
-    branch_name="agronomist/update-$(echo "$module" | sed 's/\//-/g')"
+    # Full module ID with a file path suffix
+    module="hashicorp/terraform@versions.tf"
+    base_module_id="$(echo "$module" | cut -d'@' -f1)"
+    safe_base="$(echo "$base_module_id" | sed 's/[/@]/-/g')"
+    if [ "${#safe_base}" -gt 50 ]; then safe_base="${safe_base:0:50}"; fi
+    module_hash="$(printf '%s' "$module" | sha256sum | cut -c1-8)"
+    branch_name="agronomist/update-${safe_base}-${module_hash}"
 
-    [ "$branch_name" = "agronomist/update-hashicorp-terraform" ]
+    [ "$branch_name" = "agronomist/update-hashicorp-terraform-${module_hash}" ]
 }
 
 @test "extract files for specific module using jq --arg" {
@@ -104,10 +114,33 @@ EOF
 
 @test "handle module names with special characters" {
     module="terraform-aws-modules/vpc/aws"
-    branch_name="agronomist/update-$(echo "$module" | sed 's/\//-/g')"
+    safe_module="$(echo "$module" | sed 's/[/@]/-/g')"
+    branch_name="agronomist/update-${safe_module}"
 
-    # Should not contain slashes
-    echo "$branch_name" | grep -v '/'
+    # The module suffix must not contain slashes or @ symbols
+    echo "$safe_module" | grep -vE '[/@]'
+}
+
+@test "long file path does not inflate branch name" {
+    # The file path after @ is long, but the branch name stays short
+    # because only the base module (before @) is embedded in the name
+    module="cloudwatch-log-group@providers/aws/contoso_000000/dev/us-east-2/cloudwatch-log-group-lambda-app/terragrunt.hcl"
+    base_module_id="$(echo "$module" | cut -d'@' -f1)"
+    safe_base="$(echo "$base_module_id" | sed 's/[/@]/-/g')"
+    if [ "${#safe_base}" -gt 50 ]; then safe_base="${safe_base:0:50}"; fi
+    module_hash="$(printf '%s' "$module" | sha256sum | cut -c1-8)"
+    branch_name="agronomist/update-${safe_base}-${module_hash}"
+
+    # Branch stays well under 80 chars despite the very long file path
+    [ "${#branch_name}" -le 80 ]
+
+    # Must carry the expected prefix and base module name
+    [[ "$branch_name" == agronomist/update-cloudwatch-log-group-* ]]
+
+    # File path components must NOT appear in the branch name
+    [[ "$branch_name" != *providers* ]]
+    [[ "$branch_name" != *contoso* ]]
+    [[ "$branch_name" != *terragrunt* ]]
 }
 
 @test "extract multiple files from same module" {
