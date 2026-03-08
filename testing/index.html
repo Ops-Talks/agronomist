@@ -1298,7 +1298,7 @@
 </span></code></pre></div>
 <h3 id="understand-the-output">Understand the output<a class="headerlink" href="#understand-the-output" title="Permanent link">&para;</a></h3>
 <p>A passing run reports a summary line like:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>171 passed in 2.34s
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>235 passed in 4.62s
 </span></code></pre></div>
 <p>Coverage output follows if you ran <code>task test-coverage</code>.</p>
 <hr />
@@ -1328,12 +1328,11 @@
 </span></code></pre></div>
 <p>This runs, in order:</p>
 <ol>
-<li><code>ruff check</code> and <code>ruff format</code> — linting and style</li>
-<li><code>black</code> — code formatting</li>
-<li><code>mypy</code> — static type checking</li>
-<li><code>bandit</code> — security scanning</li>
-<li><code>eradicate</code> — dead code detection</li>
-<li><code>pytest</code> with coverage — full test suite</li>
+<li><code>ruff check</code> and <code>ruff format</code> -- linting and style</li>
+<li><code>mypy</code> -- static type checking</li>
+<li><code>bandit</code> -- security scanning</li>
+<li><code>eradicate</code> -- dead code detection</li>
+<li><code>pytest</code> with coverage -- full test suite</li>
 </ol>
 <hr />
 <h2 id="shell-test-suite-bats">Shell test suite (BATS)<a class="headerlink" href="#shell-test-suite-bats" title="Permanent link">&para;</a></h2>

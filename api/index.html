@@ -828,6 +828,89 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Common functions and classes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#data-models-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data models (models)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scanner-scanner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scanner (scanner)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration-config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration (config)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolvers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resolvers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#report-and-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Report and output
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#updater" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Updater
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#http-utilities-http" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HTTP utilities (http)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -893,6 +976,89 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Common functions and classes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#data-models-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data models (models)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scanner-scanner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scanner (scanner)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration-config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration (config)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolvers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resolvers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#report-and-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Report and output
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#updater" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Updater
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#http-utilities-http" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HTTP utilities (http)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -923,38 +1089,70 @@
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="kn">from</span><span class="w"> </span><span class="nn">agronomist.gitlab</span><span class="w"> </span><span class="kn">import</span> <span class="n">GitLabClient</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="kn">from</span><span class="w"> </span><span class="nn">agronomist.report</span><span class="w"> </span><span class="kn">import</span> <span class="n">build_report</span><span class="p">,</span> <span class="n">write_report</span>
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="kn">from</span><span class="w"> </span><span class="nn">agronomist.markdown</span><span class="w"> </span><span class="kn">import</span> <span class="n">write_markdown</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="c1"># Load configuration (includes categories and blacklist)</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="n">config</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">(</span><span class="s2">&quot;.agronomist.yaml&quot;</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="c1"># Scan sources with optional blacklist filters</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="n">sources</span> <span class="o">=</span> <span class="n">scan_sources</span><span class="p">(</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="n">root</span><span class="o">=</span><span class="s2">&quot;./infra&quot;</span><span class="p">,</span>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    <span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;.tf&quot;</span><span class="p">],</span>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    <span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;.terraform/&quot;</span><span class="p">],</span>
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    <span class="n">blacklist_repos</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">blacklist</span><span class="o">.</span><span class="n">repos</span><span class="p">,</span>
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    <span class="n">blacklist_modules</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">blacklist</span><span class="o">.</span><span class="n">modules</span><span class="p">,</span>
-</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>    <span class="n">blacklist_files</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">blacklist</span><span class="o">.</span><span class="n">files</span><span class="p">,</span>
-</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="p">)</span>
-</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>
-</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="n">github</span> <span class="o">=</span> <span class="n">GitHubClient</span><span class="p">(</span><span class="n">token</span><span class="o">=</span><span class="s2">&quot;...&quot;</span><span class="p">)</span>
-</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="n">gitlab</span> <span class="o">=</span> <span class="n">GitLabClient</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://gitlab.com&quot;</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="s2">&quot;...&quot;</span><span class="p">)</span>
-</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="n">resolver</span> <span class="o">=</span> <span class="n">GitClient</span><span class="p">()</span>
-</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>
-</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="c1"># Resolve and build a report using custom logic with categories</span>
-</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="n">updates</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Collect updates using resolver</span>
-</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="n">report</span> <span class="o">=</span> <span class="n">build_report</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">updates</span><span class="o">=</span><span class="n">updates</span><span class="p">)</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="kn">from</span><span class="w"> </span><span class="nn">agronomist.updater</span><span class="w"> </span><span class="kn">import</span> <span class="n">apply_updates</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="kn">from</span><span class="w"> </span><span class="nn">agronomist.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">UpdateEntry</span><span class="p">,</span> <span class="n">Replacement</span><span class="p">,</span> <span class="n">SourceRef</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="c1"># Load configuration (includes categories and blacklist)</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="n">config</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">(</span><span class="s2">&quot;.agronomist.yaml&quot;</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="c1"># Scan sources with optional blacklist filters</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="n">sources</span> <span class="o">=</span> <span class="n">scan_sources</span><span class="p">(</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    <span class="n">root</span><span class="o">=</span><span class="s2">&quot;./infra&quot;</span><span class="p">,</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    <span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;.tf&quot;</span><span class="p">],</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    <span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;.terraform/&quot;</span><span class="p">],</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>    <span class="n">blacklist_repos</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">blacklist</span><span class="o">.</span><span class="n">repos</span><span class="p">,</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>    <span class="n">blacklist_modules</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">blacklist</span><span class="o">.</span><span class="n">modules</span><span class="p">,</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>    <span class="n">blacklist_files</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">blacklist</span><span class="o">.</span><span class="n">files</span><span class="p">,</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="p">)</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="n">github</span> <span class="o">=</span> <span class="n">GitHubClient</span><span class="p">(</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>    <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://api.github.com&quot;</span><span class="p">,</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>    <span class="n">token</span><span class="o">=</span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="p">)</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="n">gitlab</span> <span class="o">=</span> <span class="n">GitLabClient</span><span class="p">(</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>    <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://gitlab.com&quot;</span><span class="p">,</span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>    <span class="n">token</span><span class="o">=</span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="p">)</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="n">resolver</span> <span class="o">=</span> <span class="n">GitClient</span><span class="p">()</span>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="c1"># Resolve and build a report using custom logic with categories</span>
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a><span class="n">updates</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Collect UpdateEntry objects using resolver</span>
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a><span class="n">report</span> <span class="o">=</span> <span class="n">build_report</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">updates</span><span class="o">=</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">updates</span><span class="p">])</span>
 </span></code></pre></div>
 <h2 id="common-functions-and-classes">Common functions and classes<a class="headerlink" href="#common-functions-and-classes" title="Permanent link">&para;</a></h2>
+<h3 id="data-models-models">Data models (<code>models</code>)<a class="headerlink" href="#data-models-models" title="Permanent link">&para;</a></h3>
 <ul>
-<li><code>scan_sources</code> Scan files and return discovered sources. Supports optional blacklist filters for repos, modules, and files.</li>
-<li><code>load_config</code> Load configuration from YAML or JSON. Returns a <code>Config</code> object containing category rules and blacklist settings.</li>
-<li><code>GitHubClient</code> Resolve latest release and tags.</li>
-<li><code>GitClient</code> Resolve tags via <code>git ls-remote</code>.</li>
-<li><code>build_report</code> Build the report structure.</li>
-<li><code>write_report</code> Write JSON report to disk.</li>
-<li><code>write_markdown</code> Write Markdown report to disk.</li>
-<li><code>apply_updates</code> Apply updates to files.</li>
+<li><code>SourceRef</code> -- immutable dataclass representing a scanned module reference (file path, repo, host, ref, module).</li>
+<li><code>Replacement</code> -- immutable dataclass for a single source-string substitution pair. Provides <code>to_dict()</code>.</li>
+<li><code>UpdateEntry</code> -- immutable dataclass for a version-update action. Contains repo metadata, current and latest refs, files, replacements, and optional category. Provides <code>to_dict()</code>.</li>
+</ul>
+<h3 id="scanner-scanner">Scanner (<code>scanner</code>)<a class="headerlink" href="#scanner-scanner" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>scan_sources(root, include, exclude, ...)</code> -- scan files and return discovered <code>SourceRef</code> objects. Supports optional blacklist filters for repos, modules, and files.</li>
+</ul>
+<h3 id="configuration-config">Configuration (<code>config</code>)<a class="headerlink" href="#configuration-config" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>load_config(path, root)</code> -- load configuration from YAML or JSON. Returns a <code>Config</code> object containing category rules and blacklist settings.</li>
+</ul>
+<h3 id="resolvers">Resolvers<a class="headerlink" href="#resolvers" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>GitClient(timeout)</code> -- resolve tags via <code>git ls-remote</code>.</li>
+<li><code>GitHubClient(base_url, token, timeout, ...)</code> -- resolve latest release and tags via the GitHub REST API.</li>
+<li><code>GitLabClient(base_url, token, timeout, ...)</code> -- resolve latest tags via the GitLab REST API.</li>
+</ul>
+<h3 id="report-and-output">Report and output<a class="headerlink" href="#report-and-output" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>build_report(root, updates)</code> -- build the JSON-serializable report dict.</li>
+<li><code>write_report(path, report)</code> -- write JSON report to disk (atomic write).</li>
+<li><code>write_markdown(path, report)</code> -- write Markdown report to disk (atomic write).</li>
+</ul>
+<h3 id="updater">Updater<a class="headerlink" href="#updater" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>apply_updates(root, updates)</code> -- apply <code>UpdateEntry</code> replacements to files on disk. Returns a list of modified file paths.</li>
+</ul>
+<h3 id="http-utilities-http">HTTP utilities (<code>http</code>)<a class="headerlink" href="#http-utilities-http" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>build_session(retries, backoff_factor)</code> -- return a <code>requests.Session</code> with automatic retry and exponential backoff.</li>
 </ul>
 <p>Refer to the source in <code>src/agronomist</code> for implementation details.</p>
 

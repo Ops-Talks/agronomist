@@ -1919,7 +1919,7 @@
 <p>This installs:</p>
 <ul>
 <li><strong>Core dependencies</strong>: <code>requests</code>, <code>pyyaml</code></li>
-<li><strong>Dev dependencies</strong>: <code>ruff</code>, <code>black</code>, <code>mypy</code>, <code>bandit</code>, <code>eradicate</code>, <code>pytest</code>, <code>pytest-cov</code>, <code>pytest-benchmark</code>, <code>pre-commit</code>, <code>taskipy</code>, <code>zensical</code></li>
+<li><strong>Dev dependencies</strong>: <code>ruff</code>, <code>mypy</code>, <code>bandit</code>, <code>eradicate</code>, <code>pytest</code>, <code>pytest-cov</code>, <code>pytest-benchmark</code>, <code>pre-commit</code>, <code>taskipy</code>, <code>zensical</code></li>
 </ul>
 <h3 id="2-verify-installation">2. Verify Installation<a class="headerlink" href="#2-verify-installation" title="Permanent link">&para;</a></h3>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>poetry<span class="w"> </span>run<span class="w"> </span>agronomist<span class="w"> </span>--help
@@ -1939,12 +1939,12 @@
 <tr>
 <td><code>lint</code></td>
 <td><code>poetry run task lint</code></td>
-<td>Run ruff check, ruff format, black, and mypy</td>
+<td>Run ruff check, ruff format, and mypy</td>
 </tr>
 <tr>
 <td><code>format</code></td>
 <td><code>poetry run task format</code></td>
-<td>Auto-format code and remove dead code (ruff + black + eradicate)</td>
+<td>Auto-format code and remove dead code (ruff format + eradicate)</td>
 </tr>
 <tr>
 <td><code>test</code></td>
@@ -2019,21 +2019,16 @@
 <h2 id="linting-and-formatting">Linting and Formatting<a class="headerlink" href="#linting-and-formatting" title="Permanent link">&para;</a></h2>
 <h3 id="tools">Tools<a class="headerlink" href="#tools" title="Permanent link">&para;</a></h3>
 <ul>
-<li><strong>ruff</strong> - Fast Python linter (checks style, imports, bugs)</li>
-<li><strong>black</strong> - Code formatter (enforces consistent style)</li>
+<li><strong>ruff</strong> - Fast Python linter and formatter (checks style, imports, bugs, and enforces consistent formatting)</li>
 <li><strong>mypy</strong> - Static type checker (enforces type annotations)</li>
 <li><strong>bandit</strong> - Security scanner (detects common vulnerabilities)</li>
 <li><strong>eradicate</strong> - Dead code detector</li>
 </ul>
 <h3 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h3>
-<p>Both tools are configured in <code>pyproject.toml</code>:</p>
+<p>Tool settings are configured in <code>pyproject.toml</code>:</p>
 <div class="language-toml highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">[tool.ruff]</span>
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">line-length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span>
 </span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">target-version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;py310&quot;</span>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="k">[tool.black]</span>
-</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="n">line-length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span>
-</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="n">target-version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;py310&quot;</span><span class="p">]</span>
 </span></code></pre></div>
 <h3 id="manual-commands">Manual Commands<a class="headerlink" href="#manual-commands" title="Permanent link">&para;</a></h3>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># Check code style</span>
@@ -2042,11 +2037,8 @@
 </span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1"># Auto-format with ruff</span>
 </span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>poetry<span class="w"> </span>run<span class="w"> </span>ruff<span class="w"> </span>format<span class="w"> </span>.
 </span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
-</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="c1"># Auto-format with black</span>
-</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>poetry<span class="w"> </span>run<span class="w"> </span>black<span class="w"> </span>.
-</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>
-</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="c1"># Combined check and format (via task)</span>
-</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>poetry<span class="w"> </span>run<span class="w"> </span>task<span class="w"> </span>check
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="c1"># Combined check and format (via task)</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>poetry<span class="w"> </span>run<span class="w"> </span>task<span class="w"> </span>check
 </span></code></pre></div>
 <h2 id="testing">Testing<a class="headerlink" href="#testing" title="Permanent link">&para;</a></h2>
 <h3 id="run-all-tests">Run All Tests<a class="headerlink" href="#run-all-tests" title="Permanent link">&para;</a></h3>
@@ -2166,7 +2158,7 @@
 </span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>make<span class="w"> </span>build<span class="w">             </span><span class="c1"># Build locally with Poetry</span>
 </span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>make<span class="w"> </span>build-docker<span class="w">      </span><span class="c1"># Build in Docker (recommended)</span>
 </span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a>make<span class="w"> </span>clean<span class="w">             </span><span class="c1"># Remove build artifacts</span>
-</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a>make<span class="w"> </span>lint<span class="w">              </span><span class="c1"># Run linters (ruff, black, mypy)</span>
+</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a>make<span class="w"> </span>lint<span class="w">              </span><span class="c1"># Run linters (ruff check, ruff format, mypy)</span>
 </span><span id="__span-23-6"><a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a>make<span class="w"> </span>format<span class="w">            </span><span class="c1"># Format code and remove dead code</span>
 </span><span id="__span-23-7"><a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a>make<span class="w"> </span><span class="nb">test</span><span class="w">              </span><span class="c1"># Run tests</span>
 </span><span id="__span-23-8"><a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a>make<span class="w"> </span>coverage<span class="w">          </span><span class="c1"># Run tests with coverage report</span>
@@ -2185,26 +2177,29 @@
 </span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a>│       ├── __init__.py
 </span><span id="__span-24-5"><a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a>│       ├── cli.py              # CLI entry point
 </span><span id="__span-24-6"><a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a>│       ├── config.py           # Configuration loader (categories &amp; blacklist)
-</span><span id="__span-24-7"><a id="__codelineno-24-7" name="__codelineno-24-7" href="#__codelineno-24-7"></a>│       ├── models.py           # Data models (SourceRef, etc.)
-</span><span id="__span-24-8"><a id="__codelineno-24-8" name="__codelineno-24-8" href="#__codelineno-24-8"></a>│       ├── scanner.py          # File scanner
+</span><span id="__span-24-7"><a id="__codelineno-24-7" name="__codelineno-24-7" href="#__codelineno-24-7"></a>│       ├── exceptions.py       # Custom exception hierarchy
+</span><span id="__span-24-8"><a id="__codelineno-24-8" name="__codelineno-24-8" href="#__codelineno-24-8"></a>│       ├── fileutil.py         # Shared file-writing utilities (atomic write)
 </span><span id="__span-24-9"><a id="__codelineno-24-9" name="__codelineno-24-9" href="#__codelineno-24-9"></a>│       ├── git.py              # Git resolver
 </span><span id="__span-24-10"><a id="__codelineno-24-10" name="__codelineno-24-10" href="#__codelineno-24-10"></a>│       ├── github.py           # GitHub API resolver
 </span><span id="__span-24-11"><a id="__codelineno-24-11" name="__codelineno-24-11" href="#__codelineno-24-11"></a>│       ├── gitlab.py           # GitLab API resolver
-</span><span id="__span-24-12"><a id="__codelineno-24-12" name="__codelineno-24-12" href="#__codelineno-24-12"></a>│       ├── report.py           # JSON report generation
+</span><span id="__span-24-12"><a id="__codelineno-24-12" name="__codelineno-24-12" href="#__codelineno-24-12"></a>│       ├── http.py             # Shared HTTP session builder (retry &amp; backoff)
 </span><span id="__span-24-13"><a id="__codelineno-24-13" name="__codelineno-24-13" href="#__codelineno-24-13"></a>│       ├── markdown.py         # Markdown report generation
-</span><span id="__span-24-14"><a id="__codelineno-24-14" name="__codelineno-24-14" href="#__codelineno-24-14"></a>│       └── updater.py          # In-place file update application
-</span><span id="__span-24-15"><a id="__codelineno-24-15" name="__codelineno-24-15" href="#__codelineno-24-15"></a>├── test/
-</span><span id="__span-24-16"><a id="__codelineno-24-16" name="__codelineno-24-16" href="#__codelineno-24-16"></a>│   ├── fixtures/               # Test fixtures (report.json samples)
-</span><span id="__span-24-17"><a id="__codelineno-24-17" name="__codelineno-24-17" href="#__codelineno-24-17"></a>│   ├── integration/            # Shell integration tests
-</span><span id="__span-24-18"><a id="__codelineno-24-18" name="__codelineno-24-18" href="#__codelineno-24-18"></a>│   └── unit/
-</span><span id="__span-24-19"><a id="__codelineno-24-19" name="__codelineno-24-19" href="#__codelineno-24-19"></a>│       ├── python/             # Python test suite (pytest, 171 tests)
-</span><span id="__span-24-20"><a id="__codelineno-24-20" name="__codelineno-24-20" href="#__codelineno-24-20"></a>│       └── test_multi_pr.bats  # BATS shell tests
-</span><span id="__span-24-21"><a id="__codelineno-24-21" name="__codelineno-24-21" href="#__codelineno-24-21"></a>├── docs/                       # Documentation (MkDocs)
-</span><span id="__span-24-22"><a id="__codelineno-24-22" name="__codelineno-24-22" href="#__codelineno-24-22"></a>├── pyproject.toml              # Project metadata and dependencies
-</span><span id="__span-24-23"><a id="__codelineno-24-23" name="__codelineno-24-23" href="#__codelineno-24-23"></a>├── Makefile                    # Build and development targets
-</span><span id="__span-24-24"><a id="__codelineno-24-24" name="__codelineno-24-24" href="#__codelineno-24-24"></a>├── Dockerfile                  # Docker build configuration
-</span><span id="__span-24-25"><a id="__codelineno-24-25" name="__codelineno-24-25" href="#__codelineno-24-25"></a>├── .github/workflows/          # GitHub Actions workflows
-</span><span id="__span-24-26"><a id="__codelineno-24-26" name="__codelineno-24-26" href="#__codelineno-24-26"></a>└── README.md
+</span><span id="__span-24-14"><a id="__codelineno-24-14" name="__codelineno-24-14" href="#__codelineno-24-14"></a>│       ├── models.py           # Data models (SourceRef, UpdateEntry, Replacement)
+</span><span id="__span-24-15"><a id="__codelineno-24-15" name="__codelineno-24-15" href="#__codelineno-24-15"></a>│       ├── report.py           # JSON report generation
+</span><span id="__span-24-16"><a id="__codelineno-24-16" name="__codelineno-24-16" href="#__codelineno-24-16"></a>│       ├── scanner.py          # File scanner
+</span><span id="__span-24-17"><a id="__codelineno-24-17" name="__codelineno-24-17" href="#__codelineno-24-17"></a>│       └── updater.py          # In-place file update application
+</span><span id="__span-24-18"><a id="__codelineno-24-18" name="__codelineno-24-18" href="#__codelineno-24-18"></a>├── test/
+</span><span id="__span-24-19"><a id="__codelineno-24-19" name="__codelineno-24-19" href="#__codelineno-24-19"></a>│   ├── fixtures/               # Test fixtures (report.json samples)
+</span><span id="__span-24-20"><a id="__codelineno-24-20" name="__codelineno-24-20" href="#__codelineno-24-20"></a>│   ├── integration/            # Shell integration tests
+</span><span id="__span-24-21"><a id="__codelineno-24-21" name="__codelineno-24-21" href="#__codelineno-24-21"></a>│   └── unit/
+</span><span id="__span-24-22"><a id="__codelineno-24-22" name="__codelineno-24-22" href="#__codelineno-24-22"></a>│       ├── python/             # Python test suite (pytest, 235 tests)
+</span><span id="__span-24-23"><a id="__codelineno-24-23" name="__codelineno-24-23" href="#__codelineno-24-23"></a>│       └── test_multi_pr.bats  # BATS shell tests
+</span><span id="__span-24-24"><a id="__codelineno-24-24" name="__codelineno-24-24" href="#__codelineno-24-24"></a>├── docs/                       # Documentation (MkDocs)
+</span><span id="__span-24-25"><a id="__codelineno-24-25" name="__codelineno-24-25" href="#__codelineno-24-25"></a>├── pyproject.toml              # Project metadata and dependencies
+</span><span id="__span-24-26"><a id="__codelineno-24-26" name="__codelineno-24-26" href="#__codelineno-24-26"></a>├── Makefile                    # Build and development targets
+</span><span id="__span-24-27"><a id="__codelineno-24-27" name="__codelineno-24-27" href="#__codelineno-24-27"></a>├── Dockerfile                  # Docker build configuration
+</span><span id="__span-24-28"><a id="__codelineno-24-28" name="__codelineno-24-28" href="#__codelineno-24-28"></a>├── .github/workflows/          # GitHub Actions workflows
+</span><span id="__span-24-29"><a id="__codelineno-24-29" name="__codelineno-24-29" href="#__codelineno-24-29"></a>└── README.md
 </span></code></pre></div>
 <h2 id="code-style-guidelines">Code Style Guidelines<a class="headerlink" href="#code-style-guidelines" title="Permanent link">&para;</a></h2>
 <ul>
