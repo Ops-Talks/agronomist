@@ -133,14 +133,15 @@ test_multi_pr_logic() {
     for module in $modules; do
         log_info "Processing module: $module"
         
-        # Create branch name: replace /, @ and other special chars with hyphens
-        safe_module="$(echo "$module" | sed 's/[/@]/-/g')"
-        branch_name="agronomist/update-${safe_module}"
-        # Truncate to 100 chars max; append short hash to preserve uniqueness
-        if [ "${#branch_name}" -gt 100 ]; then
-            module_hash="$(printf '%s' "$module" | sha256sum | cut -c1-8)"
-            branch_name="${branch_name:0:91}-${module_hash}"
+        # Build a short, intuitive branch name:
+        # use only the base module (before @) + 8-char hash for uniqueness
+        base_module_id="$(echo "$module" | cut -d'@' -f1)"
+        safe_base="$(echo "$base_module_id" | sed 's/[/@]/-/g')"
+        if [ "${#safe_base}" -gt 50 ]; then
+            safe_base="${safe_base:0:50}"
         fi
+        module_hash="$(printf '%s' "$module" | sha256sum | cut -c1-8)"
+        branch_name="agronomist/update-${safe_base}-${module_hash}"
         
         # Get files for this module
         files=$(jq -r --arg mod "$module" '.updates[] | select(.module==$mod) | .files[]' report.json 2>/dev/null)
@@ -168,9 +169,18 @@ test_multi_pr_logic() {
             continue
         fi
         
+        # Build human-readable commit message (single jq pass)
+        IFS=$'\t' read -r base_module_label latest_ref_label <<< "$(jq -r \
+            --arg mod "$module" \
+            '.updates[] | select(.module==$mod) | [(.base_module // (.module | split("@")[0])), .latest_ref] | @tsv' \
+            report.json | head -1)"
+        # Fall back gracefully if jq returned nothing
+        base_module_label="${base_module_label:-$base_module_id}"
+        latest_ref_label="${latest_ref_label:-latest}"
+
         # Commit
         git add -A
-        git commit -m "[Agronomist] There is a new Module Version"
+        git commit -m "[Agronomist] Update ${base_module_label} to ${latest_ref_label}"
         
         log_info "Created branch: $branch_name"
         

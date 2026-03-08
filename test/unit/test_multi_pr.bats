@@ -32,19 +32,27 @@ EOF
 }
 
 @test "create valid branch name from module with slashes" {
-    module="weyderfs/terraform-aws-modules//vpc/security-group"
-    safe_module="$(echo "$module" | sed 's/[/@]/-/g')"
-    branch_name="agronomist/update-${safe_module}"
+    # Full module ID (base_module@filepath) — only the base part is used in the name
+    module="weyderfs/terraform-aws-modules//vpc/security-group@infra/main.tf"
+    base_module_id="$(echo "$module" | cut -d'@' -f1)"
+    safe_base="$(echo "$base_module_id" | sed 's/[/@]/-/g')"
+    if [ "${#safe_base}" -gt 50 ]; then safe_base="${safe_base:0:50}"; fi
+    module_hash="$(printf '%s' "$module" | sha256sum | cut -c1-8)"
+    branch_name="agronomist/update-${safe_base}-${module_hash}"
 
-    [ "$branch_name" = "agronomist/update-weyderfs-terraform-aws-modules--vpc-security-group" ]
+    [ "$branch_name" = "agronomist/update-weyderfs-terraform-aws-modules--vpc-security-group-${module_hash}" ]
 }
 
 @test "create valid branch name from simple module" {
-    module="hashicorp/terraform"
-    safe_module="$(echo "$module" | sed 's/[/@]/-/g')"
-    branch_name="agronomist/update-${safe_module}"
+    # Full module ID with a file path suffix
+    module="hashicorp/terraform@versions.tf"
+    base_module_id="$(echo "$module" | cut -d'@' -f1)"
+    safe_base="$(echo "$base_module_id" | sed 's/[/@]/-/g')"
+    if [ "${#safe_base}" -gt 50 ]; then safe_base="${safe_base:0:50}"; fi
+    module_hash="$(printf '%s' "$module" | sha256sum | cut -c1-8)"
+    branch_name="agronomist/update-${safe_base}-${module_hash}"
 
-    [ "$branch_name" = "agronomist/update-hashicorp-terraform" ]
+    [ "$branch_name" = "agronomist/update-hashicorp-terraform-${module_hash}" ]
 }
 
 @test "extract files for specific module using jq --arg" {
@@ -113,22 +121,26 @@ EOF
     echo "$safe_module" | grep -vE '[/@]'
 }
 
-@test "branch name is truncated when module identifier is too long" {
-    # Reproduces the real-world example from the issue report
-    module="cloudwatch-log-group@providers-aws-contoso_000000-dev-us-east-2-cloudwatch-log-group-lambda-app-terragrunt.hcl"
-    safe_module="$(echo "$module" | sed 's/[/@]/-/g')"
-    branch_name="agronomist/update-${safe_module}"
+@test "long file path does not inflate branch name" {
+    # The file path after @ is long, but the branch name stays short
+    # because only the base module (before @) is embedded in the name
+    module="cloudwatch-log-group@providers/aws/contoso_000000/dev/us-east-2/cloudwatch-log-group-lambda-app/terragrunt.hcl"
+    base_module_id="$(echo "$module" | cut -d'@' -f1)"
+    safe_base="$(echo "$base_module_id" | sed 's/[/@]/-/g')"
+    if [ "${#safe_base}" -gt 50 ]; then safe_base="${safe_base:0:50}"; fi
+    module_hash="$(printf '%s' "$module" | sha256sum | cut -c1-8)"
+    branch_name="agronomist/update-${safe_base}-${module_hash}"
 
-    if [ "${#branch_name}" -gt 100 ]; then
-        module_hash="$(printf '%s' "$module" | sha256sum | cut -c1-8)"
-        branch_name="${branch_name:0:91}-${module_hash}"
-    fi
+    # Branch stays well under 80 chars despite the very long file path
+    [ "${#branch_name}" -le 80 ]
 
-    # Total length must not exceed 100 characters
-    [ "${#branch_name}" -le 100 ]
+    # Must carry the expected prefix and base module name
+    [[ "$branch_name" == agronomist/update-cloudwatch-log-group-* ]]
 
-    # Must still carry the expected prefix
-    [[ "$branch_name" == agronomist/update-* ]]
+    # File path components must NOT appear in the branch name
+    [[ "$branch_name" != *providers* ]]
+    [[ "$branch_name" != *contoso* ]]
+    [[ "$branch_name" != *terragrunt* ]]
 }
 
 @test "extract multiple files from same module" {
