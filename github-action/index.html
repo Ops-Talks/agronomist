@@ -607,6 +607,34 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#branch-naming" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Branch naming
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Branch naming">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Examples
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -897,6 +925,34 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#branch-naming" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Branch naming
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Branch naming">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Examples
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -957,6 +1013,58 @@
 </span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="w">          </span><span class="nt">GITHUB_TOKEN</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.GITHUB_TOKEN }}</span>
 </span></code></pre></div>
 <p>See <a href="https://github.com/Ops-Talks/agronomist/blob/main/examples/workflows/agronomist-ci.yml">examples/workflows/agronomist-ci.yml</a> for a full example.</p>
+<h2 id="branch-naming">Branch naming<a class="headerlink" href="#branch-naming" title="Permanent link">&para;</a></h2>
+<p>When creating one PR per module, each branch is named:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>agronomist/update-&lt;base-module&gt;-&lt;hash8&gt;
+</span></code></pre></div>
+<ul>
+<li><strong><code>&lt;base-module&gt;</code></strong> — the module name (path before <code>@</code>), with <code>/</code> and <code>@</code> replaced by <code>-</code>, truncated to 50 characters.</li>
+<li><strong><code>&lt;hash8&gt;</code></strong> — first 8 characters of the SHA-256 hash of the full module ID (base module + file path). This ensures two files that reference the same upstream module produce distinct branch names.</li>
+</ul>
+<p>The PR title and commit message use the same pattern: <code>[Agronomist] Update &lt;base-module&gt; to &lt;latest-ref&gt;</code>.</p>
+<h3 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Module ID in <code>report.json</code></th>
+<th>Branch name</th>
+<th>PR title</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>hashicorp/terraform-provider-aws@infra/versions.tf</code></td>
+<td><code>agronomist/update-hashicorp-terraform-provider-aws-ea7332eb</code></td>
+<td><code>[Agronomist] Update hashicorp/terraform-provider-aws to 5.1.0</code></td>
+</tr>
+<tr>
+<td><code>terraform-aws-modules/vpc/aws@infra/network.tf</code></td>
+<td><code>agronomist/update-terraform-aws-modules-vpc-aws-3335a2ca</code></td>
+<td><code>[Agronomist] Update terraform-aws-modules/vpc/aws to v5.2.0</code></td>
+</tr>
+<tr>
+<td><code>terraform-aws-modules/rds/aws@infra/database.tf</code></td>
+<td><code>agronomist/update-terraform-aws-modules-rds-aws-f7fab219</code></td>
+<td><code>[Agronomist] Update terraform-aws-modules/rds/aws to v3.1.0</code></td>
+</tr>
+<tr>
+<td><code>terraform-aws-modules/eks/aws@platform/eks/main.tf</code></td>
+<td><code>agronomist/update-terraform-aws-modules-eks-aws-55583821</code></td>
+<td><code>[Agronomist] Update terraform-aws-modules/eks/aws to v20.0.0</code></td>
+</tr>
+<tr>
+<td><code>cloudwatch-log-group@providers/aws/contoso/dev/us-east-2/cloudwatch-log-group/terragrunt.hcl</code></td>
+<td><code>agronomist/update-cloudwatch-log-group-8bfc52c9</code></td>
+<td><code>[Agronomist] Update cloudwatch-log-group to v1.2.0</code></td>
+</tr>
+<tr>
+<td><code>cloudwatch-log-group@providers/aws/contoso/prod/eu-west-1/cloudwatch-log-group/terragrunt.hcl</code></td>
+<td><code>agronomist/update-cloudwatch-log-group-4e428acf</code></td>
+<td><code>[Agronomist] Update cloudwatch-log-group to v1.2.0</code></td>
+</tr>
+</tbody>
+</table>
+<p>The last two rows show the same upstream module (<code>cloudwatch-log-group</code>) referenced from two different files. Because the hash is derived from the full module ID (including the file path), each file gets a <strong>unique</strong> branch and PR — even though the base module name is identical.</p>
 
 
 
