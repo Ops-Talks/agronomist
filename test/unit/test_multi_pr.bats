@@ -33,14 +33,16 @@ EOF
 
 @test "create valid branch name from module with slashes" {
     module="weyderfs/terraform-aws-modules//vpc/security-group"
-    branch_name="agronomist/update-$(echo "$module" | sed 's/\//-/g')"
+    safe_module="$(echo "$module" | sed 's/[/@]/-/g')"
+    branch_name="agronomist/update-${safe_module}"
 
     [ "$branch_name" = "agronomist/update-weyderfs-terraform-aws-modules--vpc-security-group" ]
 }
 
 @test "create valid branch name from simple module" {
     module="hashicorp/terraform"
-    branch_name="agronomist/update-$(echo "$module" | sed 's/\//-/g')"
+    safe_module="$(echo "$module" | sed 's/[/@]/-/g')"
+    branch_name="agronomist/update-${safe_module}"
 
     [ "$branch_name" = "agronomist/update-hashicorp-terraform" ]
 }
@@ -104,10 +106,29 @@ EOF
 
 @test "handle module names with special characters" {
     module="terraform-aws-modules/vpc/aws"
-    branch_name="agronomist/update-$(echo "$module" | sed 's/\//-/g')"
+    safe_module="$(echo "$module" | sed 's/[/@]/-/g')"
+    branch_name="agronomist/update-${safe_module}"
 
-    # Should not contain slashes
-    echo "$branch_name" | grep -v '/'
+    # The module suffix must not contain slashes or @ symbols
+    echo "$safe_module" | grep -vE '[/@]'
+}
+
+@test "branch name is truncated when module identifier is too long" {
+    # Reproduces the real-world example from the issue report
+    module="cloudwatch-log-group@providers-aws-contoso_000000-dev-us-east-2-cloudwatch-log-group-lambda-app-terragrunt.hcl"
+    safe_module="$(echo "$module" | sed 's/[/@]/-/g')"
+    branch_name="agronomist/update-${safe_module}"
+
+    if [ "${#branch_name}" -gt 100 ]; then
+        module_hash="$(printf '%s' "$module" | sha256sum | cut -c1-8)"
+        branch_name="${branch_name:0:91}-${module_hash}"
+    fi
+
+    # Total length must not exceed 100 characters
+    [ "${#branch_name}" -le 100 ]
+
+    # Must still carry the expected prefix
+    [[ "$branch_name" == agronomist/update-* ]]
 }
 
 @test "extract multiple files from same module" {

@@ -133,8 +133,14 @@ test_multi_pr_logic() {
     for module in $modules; do
         log_info "Processing module: $module"
         
-        # Create branch name
-        branch_name="agronomist/update-$(echo "$module" | sed 's/\//-/g')"
+        # Create branch name: replace /, @ and other special chars with hyphens
+        safe_module="$(echo "$module" | sed 's/[/@]/-/g')"
+        branch_name="agronomist/update-${safe_module}"
+        # Truncate to 100 chars max; append short hash to preserve uniqueness
+        if [ "${#branch_name}" -gt 100 ]; then
+            module_hash="$(printf '%s' "$module" | sha256sum | cut -c1-8)"
+            branch_name="${branch_name:0:91}-${module_hash}"
+        fi
         
         # Get files for this module
         files=$(jq -r --arg mod "$module" '.updates[] | select(.module==$mod) | .files[]' report.json 2>/dev/null)
