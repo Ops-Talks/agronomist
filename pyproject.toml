@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "agronomist"
-version = "1.1.3"
-description = "CLI to detect and update refs of Terraform/Terragrunt modules"
+version = "1.2.7"
+description = "CLI to continuously monitors and reports on module version updates across Terraform and OpenTofu codebases"
 readme = "README.md"
 packages = [{ include = "agronomist", from = "src" }]
 
