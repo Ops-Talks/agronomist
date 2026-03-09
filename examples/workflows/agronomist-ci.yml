@@ -49,6 +49,12 @@ jobs:
             exit 0
           fi
 
+          # Preserve report.json – it is metadata, not a module
+          # update, and must survive the hard-reset below.  Keep it
+          # outside the working tree so no `git add -A` picks it up.
+          report_tmp="/tmp/agronomist-report.json"
+          mv report.json "$report_tmp"
+
           # Create a temporary commit with all changes
           git add -A
           git commit -m "[agronomist] temporary commit with all module updates"
@@ -74,13 +80,13 @@ jobs:
             IFS=$'\t' read -r base_module_label latest_ref <<< "$(jq -r \
               --arg mod "$module" \
               '.updates[] | select(.module==$mod) | [(.base_module // (.module | split("@")[0])), .latest_ref] | @tsv' \
-              report.json | head -1)"
+              "$report_tmp" | head -1)"
             # Fall back gracefully if jq returned nothing
             base_module_label="${base_module_label:-$base_module_id}"
             latest_ref="${latest_ref:-latest}"
 
             # Get files affected by this module
-            files=$(jq -r --arg mod "$module" '.updates[] | select(.module==$mod) | .files[]' report.json 2>/dev/null)
+            files=$(jq -r --arg mod "$module" '.updates[] | select(.module==$mod) | .files[]' "$report_tmp" 2>/dev/null)
             
             if [ -z "$files" ]; then
               echo "No files found for module: $module"
@@ -100,7 +106,7 @@ jobs:
             # Check if there are changes
             if [ -z "$(git diff --cached --name-only)" ] && [ -z "$(git diff --name-only)" ]; then
               echo "No changes for module: $module"
-              git checkout HEAD~0
+              git checkout -
               git branch -D "$branch_name" 2>/dev/null || true
               continue
             fi
@@ -121,5 +127,8 @@ jobs:
             # Return to clean state for next iteration
             git reset --hard HEAD~1
           done
+
+          # Cleanup
+          rm -f "$report_tmp"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

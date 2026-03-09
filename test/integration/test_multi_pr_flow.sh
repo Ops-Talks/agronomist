@@ -118,6 +118,11 @@ test_multi_pr_logic() {
         return 1
     fi
     
+    # Preserve report.json outside the working tree so no
+    # `git add -A` picks it up during per-module commits.
+    report_tmp="/tmp/agronomist-report.json"
+    mv report.json "$report_tmp"
+
     # Create temporary commit with all changes
     git add -A
     git commit -m "[agronomist] temporary commit with all module updates"
@@ -144,7 +149,7 @@ test_multi_pr_logic() {
         branch_name="agronomist/update-${safe_base}-${module_hash}"
         
         # Get files for this module
-        files=$(jq -r --arg mod "$module" '.updates[] | select(.module==$mod) | .files[]' report.json 2>/dev/null)
+        files=$(jq -r --arg mod "$module" '.updates[] | select(.module==$mod) | .files[]' "$report_tmp" 2>/dev/null)
         
         if [ -z "$files" ]; then
             log_warn "No files found for module: $module"
@@ -164,7 +169,7 @@ test_multi_pr_logic() {
         # Check for changes
         if [ -z "$(git diff --cached --name-only)" ] && [ -z "$(git diff --name-only)" ]; then
             log_warn "No changes for module: $module"
-            git checkout HEAD~0
+            git checkout -
             git branch -D "$branch_name" 2>/dev/null || true
             continue
         fi
@@ -173,7 +178,7 @@ test_multi_pr_logic() {
         IFS=$'\t' read -r base_module_label latest_ref_label <<< "$(jq -r \
             --arg mod "$module" \
             '.updates[] | select(.module==$mod) | [(.base_module // (.module | split("@")[0])), .latest_ref] | @tsv' \
-            report.json | head -1)"
+            "$report_tmp" | head -1)"
         # Fall back gracefully if jq returned nothing
         base_module_label="${base_module_label:-$base_module_id}"
         latest_ref_label="${latest_ref_label:-latest}"
