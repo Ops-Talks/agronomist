@@ -6,11 +6,10 @@ to find the most recent version-sorted tag.
 
 from __future__ import annotations
 
-import logging
-import subprocess  # nosec: B404, B603
+import subprocess  # nosec B404, B603
 from dataclasses import dataclass
 
-logger = logging.getLogger(__name__)
+from .exceptions import ResolverError
 
 
 @dataclass
@@ -34,7 +33,11 @@ class GitClient:
 
         Returns:
             The tag name (without ``refs/tags/`` prefix),
-            or None when no tags exist or on any error.
+            or None when no tags exist.
+
+        Raises:
+            ResolverError: When the git command fails due to
+                timeout, missing binary, or process error.
         """
         cmd = [
             "git",
@@ -51,34 +54,36 @@ class GitClient:
                 text=True,
                 timeout=self.timeout,
             )
-        except subprocess.TimeoutExpired:
-            logger.error("Git ls-remote for %s timed out", repo_url)
-            return None
-        except subprocess.CalledProcessError as e:
-            if "not found" in e.stderr or "fatal:" in e.stderr:
-                logger.warning(
-                    "Git: repository %s not found or no access",
-                    repo_url,
-                )
-            else:
-                logger.warning(
-                    "Git ls-remote failed for %s: %s",
-                    repo_url,
-                    e.stderr,
-                )
-            return None
-        except FileNotFoundError:
-            logger.error("Git not installed or not in PATH")
-            return None
-        except Exception as e:
-            logger.error("Unexpected error running git ls-remote: %s", e)
-            return None
+        except subprocess.TimeoutExpired as exc:
+            raise ResolverError(
+                f"Git ls-remote for {repo_url} timed out"
+            ) from exc
+        except subprocess.CalledProcessError as exc:
+            if "not found" in exc.stderr or "fatal:" in exc.stderr:
+                raise ResolverError(
+                    f"Git: repository {repo_url} not found"
+                    " or no access"
+                ) from exc
+            raise ResolverError(
+                f"Git ls-remote failed for {repo_url}:"
+                f" {exc.stderr}"
+            ) from exc
+        except FileNotFoundError as exc:
+            raise ResolverError(
+                "Git not installed or not in PATH"
+            ) from exc
+        except Exception as exc:
+            raise ResolverError(
+                "Unexpected error running git ls-remote:"
+                f" {exc}"
+            ) from exc
 
         for line in result.stdout.splitlines():
             try:
                 _, ref = line.split("\t", 1)
             except ValueError:
                 continue
+            ref = ref.strip()
             if ref.endswith("^{}"):
                 continue
             if ref.startswith("refs/tags/"):

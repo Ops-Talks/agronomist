@@ -75,8 +75,25 @@ report = build_report(root=".", updates=[u.to_dict() for u in updates])
 
 - `apply_updates(root, updates)` -- apply `UpdateEntry` replacements to files on disk. Returns a list of modified file paths.
 
+### Exceptions (`exceptions`)
+
+- `AgronomistError` -- base exception for all Agronomist errors.
+- `NetworkError` -- raised on HTTP/request failure after retries.
+- `AuthenticationError` -- raised when a token is invalid or lacks permissions.
+- `ResolverError` -- raised when a git resolver cannot determine the latest ref.
+- `ConfigError` -- raised when the configuration file is malformed.
+
 ### HTTP utilities (`http`)
 
 - `build_session(retries, backoff_factor)` -- return a `requests.Session` with automatic retry and exponential backoff.
+
+### Version
+
+The installed package version is available programmatically:
+
+```python
+from agronomist import __version__
+print(__version__)  # e.g. "1.2.3"
+```
 
 Refer to the source in `src/agronomist` for implementation details.

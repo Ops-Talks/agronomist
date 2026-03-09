@@ -18,7 +18,7 @@ help:
 	@echo "  make install-test-deps  - Install workflow test dependencies"
 	@echo "  make check              - Run linters + security + tests"
 	@echo "  make docs-serve         - Serve documentation locally"
-	@echo "  make release TAG=v0.3.0 - Create Git tag and trigger release"
+	@echo "  make release TAG=vX.Y.Z - Create Git tag and trigger release"
 
 build:
 	poetry build
@@ -65,7 +65,7 @@ docs-serve:
 
 release:
 	@if [ -z "$(TAG)" ]; then \
-		echo "Error: TAG not specified. Use: make release TAG=v0.3.0"; \
+		echo "Error: TAG not specified. Use: make release TAG=vX.Y.Z"; \
 		exit 1; \
 	fi
 	git tag $(TAG)

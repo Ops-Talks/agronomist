@@ -2,6 +2,9 @@
 
 from unittest.mock import MagicMock, patch
 
+import pytest
+
+from agronomist.exceptions import AuthenticationError, NetworkError
 from agronomist.github import GitHubClient
 
 
@@ -64,15 +67,19 @@ class TestGitHubClient:
 
     @patch("requests.Session.get")
     def test_latest_release_tag_request_error(self, mock_get):
-        """Test handling request errors."""
+        """Test request error raises NetworkError."""
         import requests
 
-        mock_get.side_effect = requests.RequestException("Network error")
+        mock_get.side_effect = requests.RequestException(
+            "Network error",
+        )
 
-        client = GitHubClient(base_url="https://api.github.com")
-        result = client.latest_release_tag("example/repo")
+        client = GitHubClient(
+            base_url="https://api.github.com",
+        )
 
-        assert result is None
+        with pytest.raises(NetworkError):
+            client.latest_release_tag("example/repo")
 
     @patch("requests.Session.get")
     def test_validate_token_success(self, mock_get):
@@ -88,15 +95,20 @@ class TestGitHubClient:
 
     @patch("requests.Session.get")
     def test_validate_token_invalid(self, mock_get):
-        """Test token validation fails for invalid token."""
+        """Test invalid token raises AuthenticationError."""
         mock_response = MagicMock()
         mock_response.status_code = 401
         mock_get.return_value = mock_response
 
-        client = GitHubClient(base_url="https://api.github.com", token="invalid-token")
-        result = client.validate_token()
+        client = GitHubClient(
+            base_url="https://api.github.com",
+            token="invalid-token",
+        )
 
-        assert result is False
+        with pytest.raises(
+            AuthenticationError, match="invalid",
+        ):
+            client.validate_token()
 
     @patch("requests.Session.get")
     def test_validate_token_without_token(self, mock_get):
@@ -165,15 +177,19 @@ class TestGitHubClient:
 
     @patch("requests.Session.get")
     def test_latest_tag_request_error(self, mock_get):
-        """Test latest_tag handles request exceptions."""
+        """Test request error raises NetworkError."""
         import requests
 
-        mock_get.side_effect = requests.RequestException("Network error")
+        mock_get.side_effect = requests.RequestException(
+            "Network error",
+        )
 
-        client = GitHubClient(base_url="https://api.github.com")
-        result = client.latest_tag("example/repo")
+        client = GitHubClient(
+            base_url="https://api.github.com",
+        )
 
-        assert result is None
+        with pytest.raises(NetworkError):
+            client.latest_tag("example/repo")
 
     @patch.object(GitHubClient, "latest_tag")
     @patch.object(GitHubClient, "latest_release_tag")
@@ -202,27 +218,37 @@ class TestGitHubClient:
 
     @patch("requests.Session.get")
     def test_validate_token_forbidden(self, mock_get):
-        """Test token validation returns false on 403 forbidden."""
+        """Test forbidden token raises AuthenticationError."""
         mock_response = MagicMock()
         mock_response.status_code = 403
         mock_get.return_value = mock_response
 
-        client = GitHubClient(base_url="https://api.github.com", token="bad-token")
-        result = client.validate_token()
+        client = GitHubClient(
+            base_url="https://api.github.com",
+            token="bad-token",
+        )
 
-        assert result is False
+        with pytest.raises(
+            AuthenticationError, match="permissions",
+        ):
+            client.validate_token()
 
     @patch("requests.Session.get")
     def test_validate_token_request_exception(self, mock_get):
-        """Test token validation handles request exceptions."""
+        """Test request exception raises AuthenticationError."""
         import requests
 
-        mock_get.side_effect = requests.RequestException("Connection refused")
+        mock_get.side_effect = requests.RequestException(
+            "Connection refused",
+        )
 
-        client = GitHubClient(base_url="https://api.github.com", token="some-token")
-        result = client.validate_token()
+        client = GitHubClient(
+            base_url="https://api.github.com",
+            token="some-token",
+        )
 
-        assert result is False
+        with pytest.raises(AuthenticationError):
+            client.validate_token()
 
     def test_headers_without_token(self):
         """Test _headers returns Accept header only without token."""

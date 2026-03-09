@@ -2,6 +2,9 @@
 
 from unittest.mock import MagicMock, patch
 
+import pytest
+
+from agronomist.exceptions import AuthenticationError, NetworkError
 from agronomist.gitlab import GitLabClient
 
 
@@ -89,15 +92,20 @@ class TestGitLabClient:
 
     @patch("requests.Session.get")
     def test_validate_token_invalid(self, mock_get):
-        """Test token validation fails for invalid token."""
+        """Test invalid token raises AuthenticationError."""
         mock_response = MagicMock()
         mock_response.status_code = 401
         mock_get.return_value = mock_response
 
-        client = GitLabClient(base_url="https://gitlab.com", token="invalid-token")
-        result = client.validate_token()
+        client = GitLabClient(
+            base_url="https://gitlab.com",
+            token="invalid-token",
+        )
 
-        assert result is False
+        with pytest.raises(
+            AuthenticationError, match="invalid",
+        ):
+            client.validate_token()
 
     @patch("requests.Session.get")
     def test_validate_token_without_token(self, mock_get):
@@ -145,27 +153,37 @@ class TestGitLabClient:
 
     @patch("requests.Session.get")
     def test_validate_token_forbidden(self, mock_get):
-        """Test token validation returns false on 403 forbidden."""
+        """Test forbidden token raises AuthenticationError."""
         mock_response = MagicMock()
         mock_response.status_code = 403
         mock_get.return_value = mock_response
 
-        client = GitLabClient(base_url="https://gitlab.com", token="bad-token")
-        result = client.validate_token()
+        client = GitLabClient(
+            base_url="https://gitlab.com",
+            token="bad-token",
+        )
 
-        assert result is False
+        with pytest.raises(
+            AuthenticationError, match="permissions",
+        ):
+            client.validate_token()
 
     @patch("requests.Session.get")
     def test_validate_token_request_exception(self, mock_get):
-        """Test token validation handles request exceptions."""
+        """Test request exception raises AuthenticationError."""
         import requests
 
-        mock_get.side_effect = requests.RequestException("Connection refused")
+        mock_get.side_effect = requests.RequestException(
+            "Connection refused",
+        )
 
-        client = GitLabClient(base_url="https://gitlab.com", token="some-token")
-        result = client.validate_token()
+        client = GitLabClient(
+            base_url="https://gitlab.com",
+            token="some-token",
+        )
 
-        assert result is False
+        with pytest.raises(AuthenticationError):
+            client.validate_token()
 
     @patch("requests.Session.get")
     def test_latest_tag_forbidden(self, mock_get):
@@ -181,15 +199,15 @@ class TestGitLabClient:
 
     @patch("requests.Session.get")
     def test_latest_tag_request_exception(self, mock_get):
-        """Test handling request exceptions for tags."""
+        """Test request exception raises NetworkError."""
         import requests
 
         mock_get.side_effect = requests.RequestException("Timeout")
 
         client = GitLabClient(base_url="https://gitlab.com")
-        result = client.latest_tag("mygroup%2Fmyproject")
 
-        assert result is None
+        with pytest.raises(NetworkError):
+            client.latest_tag("mygroup%2Fmyproject")
 
     def test_latest_ref_invalid_url(self):
         """Test latest_ref with an invalid URL returns None."""

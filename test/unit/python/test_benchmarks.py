@@ -62,9 +62,9 @@ class TestScannerBenchmarks:
             result = benchmark(
                 scan_sources,
                 tmpdir,
-                [],
-                [],
-                None,
+                include=[],
+                exclude=[],
+                blacklist_repos=None,
             )
             assert isinstance(result, list)
 

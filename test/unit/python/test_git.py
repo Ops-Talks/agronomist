@@ -2,6 +2,9 @@
 
 from unittest.mock import MagicMock, patch
 
+import pytest
+
+from agronomist.exceptions import ResolverError
 from agronomist.git import GitClient
 
 
@@ -47,19 +50,21 @@ class TestGitClient:
 
     @patch("agronomist.git.subprocess.run")
     def test_latest_ref_timeout(self, mock_run):
-        """Test timeout handling in git client."""
+        """Test timeout raises ResolverError."""
         import subprocess
 
         mock_run.side_effect = subprocess.TimeoutExpired("cmd", 5)
 
         client = GitClient(timeout=5)
-        result = client.latest_ref("https://github.com/example/repo.git")
 
-        assert result is None
+        with pytest.raises(ResolverError, match="timed out"):
+            client.latest_ref(
+                "https://github.com/example/repo.git"
+            )
 
     @patch("agronomist.git.subprocess.run")
     def test_latest_ref_repository_not_found(self, mock_run):
-        """Test handling repository not found error."""
+        """Test repository not found raises ResolverError."""
         import subprocess
 
         mock_error = subprocess.CalledProcessError(1, "cmd")
@@ -67,29 +72,35 @@ class TestGitClient:
         mock_run.side_effect = mock_error
 
         client = GitClient()
-        result = client.latest_ref("https://github.com/nonexistent/repo.git")
 
-        assert result is None
+        with pytest.raises(ResolverError, match="not found"):
+            client.latest_ref(
+                "https://github.com/nonexistent/repo.git"
+            )
 
     @patch("agronomist.git.subprocess.run")
     def test_latest_ref_git_not_installed(self, mock_run):
-        """Test handling when git is not installed."""
+        """Test missing git binary raises ResolverError."""
         mock_run.side_effect = FileNotFoundError()
 
         client = GitClient()
-        result = client.latest_ref("https://github.com/example/repo.git")
 
-        assert result is None
+        with pytest.raises(ResolverError, match="not installed"):
+            client.latest_ref(
+                "https://github.com/example/repo.git"
+            )
 
     @patch("agronomist.git.subprocess.run")
     def test_latest_ref_generic_exception(self, mock_run):
-        """Test exception handling in git client."""
+        """Test unexpected exception raises ResolverError."""
         mock_run.side_effect = Exception("Network error")
 
         client = GitClient()
-        result = client.latest_ref("https://github.com/example/repo.git")
 
-        assert result is None
+        with pytest.raises(ResolverError, match="Unexpected"):
+            client.latest_ref(
+                "https://github.com/example/repo.git"
+            )
 
     @patch("agronomist.git.subprocess.run")
     def test_latest_ref_strips_whitespace(self, mock_run):
@@ -101,7 +112,7 @@ class TestGitClient:
         client = GitClient()
         result = client.latest_ref("https://github.com/example/repo.git")
 
-        assert result == "v1.2.3" or result is not None
+        assert result == "v1.2.3"
 
     def test_git_client_can_be_instantiated_multiple_times(self):
         """Test GitClient can be instantiated multiple times."""
@@ -149,8 +160,10 @@ class TestGitClient:
         assert result == "v1.0.0"
 
     @patch("agronomist.git.subprocess.run")
-    def test_latest_ref_called_process_error_generic_stderr(self, mock_run):
-        """Test CalledProcessError with generic stderr message."""
+    def test_latest_ref_called_process_error_generic_stderr(
+        self, mock_run,
+    ):
+        """Test CalledProcessError with generic stderr."""
         import subprocess
 
         mock_error = subprocess.CalledProcessError(1, "cmd")
@@ -158,6 +171,8 @@ class TestGitClient:
         mock_run.side_effect = mock_error
 
         client = GitClient()
-        result = client.latest_ref("https://github.com/example/repo.git")
 
-        assert result is None
+        with pytest.raises(ResolverError):
+            client.latest_ref(
+                "https://github.com/example/repo.git"
+            )

@@ -111,6 +111,24 @@ class TestParseArgsReportCommand:
 
         assert args.github_base_url == "https://github.enterprise.com/api/v3"
 
+    def test_parse_args_gitlab_base_url(self):
+        """Test gitlab-base-url argument."""
+        args = _parse_args(
+            [
+                "report",
+                "--gitlab-base-url",
+                "https://gitlab.corp.example.com",
+            ]
+        )
+
+        assert args.gitlab_base_url == "https://gitlab.corp.example.com"
+
+    def test_parse_args_default_gitlab_base_url(self):
+        """Test default gitlab-base-url value."""
+        args = _parse_args(["report"])
+
+        assert args.gitlab_base_url == "https://gitlab.com"
+
 
 class TestParseArgsUpdateCommand:
     """Test CLI argument parsing for update command."""

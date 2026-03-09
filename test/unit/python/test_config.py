@@ -8,6 +8,7 @@ import pytest
 import yaml
 
 from agronomist.config import Blacklist, CategoryRule, load_config
+from agronomist.exceptions import ConfigError
 
 
 class TestCategoryRule:
@@ -227,3 +228,12 @@ class TestLoadConfigEdgeCases:
             assert len(config.categories) == 1
             assert config.categories[0].repo_patterns == []
             assert config.categories[0].module_patterns == []
+
+    def test_load_config_non_dict_raises_config_error(self):
+        """Test that a non-dict YAML file raises ConfigError."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            config_file = Path(temp_dir) / "config.yaml"
+            config_file.write_text("- item1\n- item2\n")
+
+            with pytest.raises(ConfigError, match="mapping"):
+                load_config("config.yaml", temp_dir)

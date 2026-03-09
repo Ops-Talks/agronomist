@@ -6,6 +6,7 @@ from unittest.mock import MagicMock, patch
 
 from agronomist.cli import _categorize, _collect_updates, _print_category_summary, main
 from agronomist.config import Blacklist, CategoryRule, Config
+from agronomist.exceptions import AuthenticationError
 from agronomist.models import SourceRef, UpdateEntry
 
 
@@ -219,7 +220,9 @@ class TestCliMain:
         mock_scan_sources.return_value = []
 
         gh_client = MagicMock()
-        gh_client.validate_token.return_value = False
+        gh_client.validate_token.side_effect = AuthenticationError(
+            "GitHub token invalid or expired"
+        )
         mock_gh_cls.return_value = gh_client
 
         result = main(["report", "--validate-token", "--github-token", "bad"])
@@ -246,7 +249,9 @@ class TestCliMain:
         gh_client = MagicMock()
         gh_client.validate_token.return_value = True
         gl_client = MagicMock()
-        gl_client.validate_token.return_value = False
+        gl_client.validate_token.side_effect = AuthenticationError(
+            "GitLab token invalid or expired"
+        )
         mock_gh_cls.return_value = gh_client
         mock_gl_cls.return_value = gl_client
 

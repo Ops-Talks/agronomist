@@ -14,6 +14,8 @@ from typing import Any
 
 import yaml
 
+from .exceptions import ConfigError
+
 
 @dataclass(frozen=True)
 class CategoryRule:
@@ -120,7 +122,10 @@ def load_config(path: str, root: str) -> Config:
             data = yaml.safe_load(handle) or {}
 
     if not isinstance(data, dict):
-        return empty
+        raise ConfigError(
+            f"Configuration file {full_path} must contain"
+            f" a YAML/JSON mapping, got {type(data).__name__}"
+        )
 
     categories = _normalize_rules(data)
     blacklist_data = data.get("blacklist", {}) or {}

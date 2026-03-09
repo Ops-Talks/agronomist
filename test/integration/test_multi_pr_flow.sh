@@ -217,7 +217,7 @@ test_single_module() {
     local report_file="$FIXTURES_DIR/report_single_module.json"
     cp "$report_file" report.json
     
-    modules=$(jq -r '.updates[].module' report.json | sort -u)
+    modules=$(jq -r '.updates[].base_module' report.json | sort -u)
     module_count=$(echo "$modules" | wc -l)
     
     if [ "$module_count" -ne 1 ]; then

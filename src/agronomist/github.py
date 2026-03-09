@@ -12,6 +12,7 @@ from dataclasses import dataclass, field
 
 import requests
 
+from .exceptions import AuthenticationError, NetworkError
 from .http import build_session
 
 logger = logging.getLogger(__name__)
@@ -44,26 +45,34 @@ class GitHubClient:
         """Verify that the configured token is valid.
 
         Returns:
-            True if the token is valid or no token is set,
-            False if the API rejects the token.
+            True if the token is valid or no token is set.
+
+        Raises:
+            AuthenticationError: When the API rejects the
+                token (401/403) or a network error occurs.
         """
         if not self.token:
             return True
         url = f"{self.base_url}/user"
         headers = {"Authorization": f"Bearer {self.token}"}
         try:
-            response = self._session.get(url, headers=headers, timeout=self.timeout)
+            response = self._session.get(
+                url, headers=headers, timeout=self.timeout,
+            )
             if response.status_code == 401:
-                logger.error("GitHub token invalid or expired")
-                return False
+                raise AuthenticationError(
+                    "GitHub token invalid or expired"
+                )
             if response.status_code == 403:
-                logger.error("GitHub token insufficient permissions")
-                return False
+                raise AuthenticationError(
+                    "GitHub token insufficient permissions"
+                )
             response.raise_for_status()
             return True
-        except requests.RequestException as e:
-            logger.error("Error validating GitHub token: %s", e)
-            return False
+        except requests.RequestException as exc:
+            raise AuthenticationError(
+                f"Error validating GitHub token: {exc}"
+            ) from exc
 
     def _headers(self) -> dict[str, str]:
         """Build default request headers.
@@ -109,13 +118,10 @@ class GitHubClient:
             response.raise_for_status()
             data = response.json()
             return str(data.get("tag_name"))
-        except requests.RequestException as e:
-            logger.warning(
-                "Error fetching release tag for %s: %s",
-                repo,
-                e,
-            )
-            return None
+        except requests.RequestException as exc:
+            raise NetworkError(
+                f"Error fetching release tag for {repo}: {exc}"
+            ) from exc
 
     def latest_tag(self, repo: str) -> str | None:
         """Fetch the name of the most recent tag.
@@ -149,9 +155,10 @@ class GitHubClient:
             if not data:
                 return None
             return str(data[0].get("name"))
-        except requests.RequestException as e:
-            logger.warning("Error fetching tags for %s: %s", repo, e)
-            return None
+        except requests.RequestException as exc:
+            raise NetworkError(
+                f"Error fetching tags for {repo}: {exc}"
+            ) from exc
 
     def latest_ref(self, repo: str) -> str | None:
         """Return the latest version ref for a repository.
@@ -165,7 +172,13 @@ class GitHubClient:
         Returns:
             The tag name string, or None if unavailable.
         """
-        tag = self.latest_release_tag(repo)
-        if tag:
-            return tag
-        return self.latest_tag(repo)
+        try:
+            tag = self.latest_release_tag(repo)
+            if tag:
+                return tag
+        except NetworkError:
+            pass
+        try:
+            return self.latest_tag(repo)
+        except NetworkError:
+            return None

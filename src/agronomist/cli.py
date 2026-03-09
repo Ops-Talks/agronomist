@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import argparse
 import concurrent.futures
-import fnmatch
 import logging
 import os
 import sys
@@ -17,13 +16,14 @@ from collections.abc import Callable
 from urllib.parse import urlparse
 
 from .config import load_config
+from .exceptions import AuthenticationError, ConfigError
 from .git import GitClient
 from .github import GitHubClient
 from .gitlab import GitLabClient
 from .markdown import write_markdown
 from .models import Replacement, SourceRef, UpdateEntry
 from .report import build_report, write_report
-from .scanner import scan_sources
+from .scanner import _match_any, scan_sources
 from .updater import apply_updates
 
 logger = logging.getLogger(__name__)
@@ -41,6 +41,14 @@ def _add_common_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--github-base-url",
         default="https://api.github.com",
+    )
+    parser.add_argument(
+        "--gitlab-base-url",
+        default="https://gitlab.com",
+        help=(
+            "GitLab API base URL "
+            "(default: https://gitlab.com)"
+        ),
     )
     parser.add_argument(
         "--token",
@@ -153,11 +161,6 @@ examples:
     return args
 
 
-def _match_any(value: str, patterns: list[str]) -> bool:
-    """Return True if *value* matches any glob *patterns*."""
-    return any(fnmatch.fnmatch(value, pattern) for pattern in patterns)
-
-
 def _categorize(rules: list, repo: str, module: str | None) -> str | None:
     """Assign a category name to a repo/module pair.
 
@@ -252,7 +255,7 @@ def _collect_updates(
             strategy="latest",
             files=[source.file_path],
             replacements=[Replacement(old=source.raw, new=new_source)],
-            category=category if category else None,
+            category=category,
         )
 
         updates.append(entry)
@@ -299,7 +302,7 @@ def _create_clients(
         timeout=args.timeout,
     )
     gitlab_client = GitLabClient(
-        base_url="https://gitlab.com",
+        base_url=args.gitlab_base_url,
         token=gitlab_token,
         timeout=args.timeout,
     )
@@ -339,12 +342,16 @@ def _validate_tokens(
     validated_any = False
     if github_token:
         validated_any = True
-        if not github_client.validate_token():
+        try:
+            github_client.validate_token()
+        except AuthenticationError:
             logger.error("GitHub token validation failed")
             return False
     if gitlab_token:
         validated_any = True
-        if not gitlab_client.validate_token():
+        try:
+            gitlab_client.validate_token()
+        except AuthenticationError:
             logger.error("GitLab token validation failed")
             return False
     if validated_any:
@@ -374,7 +381,12 @@ def main(argv: list[str] | None = None) -> int:
         format="%(levelname)s: %(message)s",
     )
 
-    config = load_config(args.config, args.root)
+    try:
+        config = load_config(args.config, args.root)
+    except ConfigError as exc:
+        logger.error("Configuration error: %s", exc)
+        return 1
+
     sources = scan_sources(
         args.root,
         include=args.include,

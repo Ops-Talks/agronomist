@@ -34,7 +34,7 @@ For GitHub Enterprise, set `--github-base-url` to your API endpoint (e.g., `http
 
 ## GitLab API issues
 
-For self-hosted GitLab instances, use `--gitlab-token` and ensure the base URL is correct (default: `https://gitlab.com`).
+For self-hosted GitLab instances, set `--gitlab-base-url` to your instance URL and use `--gitlab-token` for authentication.
 
 ## Resolver issues
 

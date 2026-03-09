@@ -46,6 +46,7 @@ Scans Terraform/OpenTofu files, identifies available module version updates, and
 | `--gitlab-token` | Authentication token for GitLab API (PAT - Personal Access Token). Can also be set via `GITLAB_TOKEN` environment variable. | Read from `GITLAB_TOKEN` env var |
 | `--token` | Shared fallback token for GitHub and GitLab APIs when specific tokens are not provided. | Not set |
 | `--github-base-url` | GitHub API base URL (useful for GitHub Enterprise). | `https://api.github.com` |
+| `--gitlab-base-url` | GitLab API base URL (useful for self-hosted GitLab). | `https://gitlab.com` |
 | `--resolver` | Version resolution strategy. See [Resolution Strategies](#resolution-strategies). | `git` |
 | `--validate-token` | Validate API token before processing (useful for CI/CD pipelines). Does not scan if invalid. | `false` |
 
@@ -159,6 +160,17 @@ agronomist report --github-base-url https://github.enterprise.com/api/v3 --resol
 
 # Or pass token directly
 agronomist report --github-base-url https://github.enterprise.com/api/v3 --resolver github --github-token $GITHUB_TOKEN
+```
+
+### Using Self-Hosted GitLab
+
+```sh
+# Point to self-hosted GitLab with token
+export GITLAB_TOKEN="glpat-xxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+agronomist report --gitlab-base-url https://gitlab.company.com --resolver auto
+
+# Or pass token directly
+agronomist report --gitlab-base-url https://gitlab.company.com --resolver auto --gitlab-token $GITLAB_TOKEN
 ```
 
 ### Filtering Files

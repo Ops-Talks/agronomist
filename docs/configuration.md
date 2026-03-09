@@ -113,3 +113,4 @@ blacklist:
 - **Optional patterns**: If `repo_patterns` or `module_patterns` are omitted or empty, they are skipped
 - **Blacklist**: Resources matching blacklist patterns are completely ignored and won't appear in reports or updates
 - **File formats**: Both YAML (`.yaml`, `.yml`) and JSON (`.json`) are supported
+- **Malformed files**: If the configuration file exists but does not contain a YAML/JSON mapping (e.g., it is a plain list), Agronomist exits with an error

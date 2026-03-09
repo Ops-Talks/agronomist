@@ -103,7 +103,7 @@ agronomist report --root ./infrastructure --resolver auto
 
 **Self-hosted GitLab:**
 
-The GitLab resolver detects GitLab hosts by inspecting the hostname in each module's `source` URL. Tokens are passed via `--gitlab-token` or the `GITLAB_TOKEN` environment variable.
+The GitLab resolver detects GitLab hosts by inspecting the hostname in each module's `source` URL. For self-hosted GitLab instances, set `--gitlab-base-url` to your instance URL (e.g., `https://gitlab.company.com`). The resolver also auto-detects the host from each module's source URL. Tokens are passed via `--gitlab-token` or the `GITLAB_TOKEN` environment variable.
 
 **Limitations:**
 
