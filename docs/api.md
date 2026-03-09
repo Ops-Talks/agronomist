@@ -21,8 +21,8 @@ config = load_config(".agronomist.yaml", root=".")
 # Scan sources with optional blacklist filters
 sources = scan_sources(
     root="./infra",
-    include=[".tf"],
-    exclude=[".terraform/"],
+    include=["**/*.tf", "**/*.hcl"],
+    exclude=["**/.terraform/**"],
     blacklist_repos=config.blacklist.repos,
     blacklist_modules=config.blacklist.modules,
     blacklist_files=config.blacklist.files,

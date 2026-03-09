@@ -17,7 +17,9 @@ Example structure:
       "repo": "owner/repo",
       "repo_host": "github.com",
       "repo_url": "https://github.com/owner/repo",
-      "module": "modules/vpc",
+      "module": "modules/vpc@infra/prod/vpc/terragrunt.hcl",
+      "base_module": "modules/vpc",
+      "file": "infra/prod/vpc/terragrunt.hcl",
       "current_ref": "v1.2.0",
       "latest_ref": "v1.4.1",
       "strategy": "latest",
@@ -61,7 +63,7 @@ Example output:
 
 #### Module: `vpc`
 
-**v1.2.0 -> v1.4.1**
+**v1.2.0 → v1.4.1**
 - Category: `aws`
 - Affected files: 1
   - `infra/prod/vpc/terragrunt.hcl`
@@ -70,7 +72,7 @@ Example output:
 
 #### Module: `rds`
 
-**v3.0.0 -> v3.1.0**
+**v3.0.0 → v3.1.0**
 - Category: `database`
 - Affected files: 1
   - `infra/prod/db/terragrunt.hcl`

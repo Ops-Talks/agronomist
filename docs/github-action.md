@@ -16,9 +16,9 @@ When running Agronomist in GitHub Actions, you can use these CLI options:
 - `--no-report` Skip generating report files (useful for CI/CD pipelines).
 - `--validate-token` Validate API token before processing.
 
-## Example Workflow
+## Minimal Example
 
-Install Agronomist from GitHub Releases and run the CLI directly in your workflow:
+The following workflow installs Agronomist from GitHub Releases and applies updates. It does not create pull requests -- use it as a starting point or for simple single-commit workflows:
 
 ```yaml
 name: Agronomist Updates
@@ -34,7 +34,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install Agronomist
         run: |
-          AGRONOMIST_VERSION="v1.1.3"
+          AGRONOMIST_VERSION="v1.2.3"
           WHEEL="agronomist-${AGRONOMIST_VERSION#v}-py3-none-any.whl"
           curl -L -o "$WHEEL" "https://github.com/Ops-Talks/agronomist/releases/download/${AGRONOMIST_VERSION}/${WHEEL}"
           pip install "$WHEEL"
@@ -45,7 +45,16 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-See [examples/workflows/agronomist-ci.yml](https://github.com/Ops-Talks/agronomist/blob/main/examples/workflows/agronomist-ci.yml) for a full example.
+## Full Multi-PR Example
+
+For production use, the recommended workflow creates **one pull request per updated module**. Each branch is named with the module identifier and a short hash, so re-running the pipeline updates existing PRs rather than creating duplicates.
+
+See [examples/workflows/agronomist-ci.yml](https://github.com/Ops-Talks/agronomist/blob/main/examples/workflows/agronomist-ci.yml) for the full workflow that:
+
+- Runs `agronomist update` and generates `report.json`.
+- Iterates over each module in the report using `jq`.
+- Creates a dedicated branch and PR per module via `gh pr create`.
+- Uses SHA-256 hashing to produce deterministic, unique branch names.
 
 ## Branch naming
 

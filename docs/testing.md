@@ -53,10 +53,10 @@ poetry run pytest -v
 A passing run reports a summary line like:
 
 ```
-235 passed in 4.62s
+<N> passed in <T>s
 ```
 
-Coverage output follows if you ran `task test-coverage`.
+The exact count depends on the current test suite. Coverage output follows if you ran `task test-coverage`.
 
 ---
 
@@ -69,10 +69,9 @@ Test files live under `test/unit/python/`. Use `pytest` conventions:
 - Use `pytest.fixture` for shared setup.
 - Prefer small, focused tests over large integration-style test functions.
 
-Example fixture-based test:
+Example test:
 
 ```python
-import pytest
 from agronomist.scanner import _parse_git_source
 
 def test_parse_git_source_with_module():
@@ -95,11 +94,9 @@ poetry run task check
 
 This runs, in order:
 
-1. `ruff check` and `ruff format` -- linting and style
-2. `mypy` -- static type checking
-3. `bandit` -- security scanning
-4. `eradicate` -- dead code detection
-5. `pytest` with coverage -- full test suite
+1. `lint` -- ruff check, ruff format, and mypy (linting, formatting, and static type checking)
+2. `security` -- bandit and eradicate (security scanning and dead code detection)
+3. `test` -- pytest with coverage (full test suite)
 
 ---
 

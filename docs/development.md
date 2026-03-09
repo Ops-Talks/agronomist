@@ -126,7 +126,7 @@ poetry run pytest
 ### Run Specific Test
 
 ```sh
-poetry run pytest tests/test_cli.py
+poetry run pytest test/unit/python/test_cli_basic.py
 ```
 
 ### Run Tests with Coverage
@@ -233,9 +233,9 @@ make docs-serve
 
 ### Features
 
-- Built with **Zensical** + **Material Theme**
+- Built with **MkDocs** using the **Material for MkDocs** theme, served via the **Zensical** wrapper
 - Source files: `docs/`
-- Auto-generated navigation from directory structure
+- Navigation defined in `mkdocs.yml`
 
 ## Release Process
 
@@ -337,7 +337,7 @@ agronomist/
 │   ├── fixtures/               # Test fixtures (report.json samples)
 │   ├── integration/            # Shell integration tests
 │   └── unit/
-│       ├── python/             # Python test suite (pytest, 235 tests)
+│       ├── python/             # Python test suite (pytest)
 │       └── test_multi_pr.bats  # BATS shell tests
 ├── docs/                       # Documentation (MkDocs)
 ├── pyproject.toml              # Project metadata and dependencies

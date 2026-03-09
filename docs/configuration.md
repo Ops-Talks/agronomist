@@ -88,7 +88,7 @@ blacklist:
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `categories` | list | Yes | List of category rules |
+| `categories` | list | No | List of category rules. When absent, all updates are reported without category labels. |
 | `name` | string | Yes | Category name (assigned to matching updates) |
 | `repo_patterns` | list[string] | No | Glob patterns to match repository names/URLs |
 | `module_patterns` | list[string] | No | Glob patterns to match module names |
