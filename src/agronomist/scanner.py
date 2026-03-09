@@ -16,8 +16,20 @@ from urllib.parse import urlparse
 from .models import SourceRef
 
 _SOURCE_RE = re.compile(r"source\s*=\s*(['\"])(?P<source>[^'\"]+)\1")
+
+# Matches HTTPS and ssh:// scheme URLs
 _GIT_SOURCE_RE = re.compile(
-    r"(?:git::)?(?P<url>https?://[^?]+?)" r"(?:\.git)?(?P<module>//[^?]+)?" r"\?ref=(?P<ref>[^&]+)"
+    r"(?:git::)?(?P<url>(?:https?|ssh)://[^?]+?)"
+    r"(?:\.git)?(?P<module>//[^?]+)?"
+    r"\?ref=(?P<ref>[^&]+)"
+)
+
+# Matches SCP-style SSH URLs (git@host:owner/repo)
+_SSH_SCP_RE = re.compile(
+    r"(?:git::)?git@(?P<host>[^:]+):"
+    r"(?P<path>[^?]+?)"
+    r"(?:\.git)?(?P<module>//[^?]+)?"
+    r"\?ref=(?P<ref>[^&]+)"
 )
 
 
@@ -37,8 +49,9 @@ def _match_any(path: str, patterns: Iterable[str]) -> bool:
 def _parse_git_source(source: str) -> SourceRef | None:
     """Parse a Git module source string into a SourceRef.
 
-    Handles URLs with or without the ``git::`` prefix and
-    optional ``//module`` sub-paths.
+    Handles HTTPS, ``ssh://``, and SCP-style SSH URLs, with
+    or without the ``git::`` prefix and optional ``//module``
+    sub-paths.
 
     Parameters:
         source: Raw source value from a Terraform file.
@@ -48,10 +61,33 @@ def _parse_git_source(source: str) -> SourceRef | None:
         by the caller), or None if the string is not a valid
         Git source.
     """
+    # Try HTTPS / ssh:// scheme first
     match = _GIT_SOURCE_RE.search(source)
-    if not match:
-        return None
+    if match:
+        return _build_ref_from_url(source, match)
 
+    # Try SCP-style SSH (git@host:path)
+    match = _SSH_SCP_RE.search(source)
+    if match:
+        return _build_ref_from_scp(source, match)
+
+    return None
+
+
+def _build_ref_from_url(
+    source: str,
+    match: re.Match,
+) -> SourceRef | None:
+    """Build a SourceRef from an HTTPS or ssh:// regex match.
+
+    Parameters:
+        source: Original raw source string.
+        match: A regex match with ``url``, ``module``, and
+            ``ref`` named groups.
+
+    Returns:
+        A SourceRef or None when the URL cannot be parsed.
+    """
     url = match.group("url")
     module = match.group("module")
     ref = match.group("ref")
@@ -59,18 +95,64 @@ def _parse_git_source(source: str) -> SourceRef | None:
     parsed = urlparse(url)
     if not parsed.netloc or not parsed.path:
         return None
-    repo_host = parsed.netloc
+
+    # hostname strips user@ (e.g. git@gitlab.com -> gitlab.com)
+    repo_host = parsed.hostname or parsed.netloc
     repo_path = parsed.path.lstrip("/")
     if repo_path.endswith(".git"):
         repo_path = repo_path[:-4]
+
+    # Normalize SSH-scheme URLs to HTTPS for API compatibility
+    if parsed.scheme == "ssh":
+        repo_url = f"https://{repo_host}/{repo_path}"
+    else:
+        repo_url = url
 
     module_clean = module[2:] if module else None
     return SourceRef(
         file_path="",
         raw=source,
         repo=repo_path,
-        repo_url=url,
+        repo_url=repo_url,
         repo_host=repo_host,
+        ref=ref,
+        module=module_clean,
+    )
+
+
+def _build_ref_from_scp(
+    source: str,
+    match: re.Match,
+) -> SourceRef:
+    """Build a SourceRef from an SCP-style SSH regex match.
+
+    Converts ``git@host:owner/repo`` to an HTTPS ``repo_url``
+    for downstream API compatibility.
+
+    Parameters:
+        source: Original raw source string.
+        match: A regex match with ``host``, ``path``,
+            ``module``, and ``ref`` named groups.
+
+    Returns:
+        A SourceRef with HTTPS-normalized ``repo_url``.
+    """
+    host = match.group("host")
+    path = match.group("path")
+    module = match.group("module")
+    ref = match.group("ref")
+
+    if path.endswith(".git"):
+        path = path[:-4]
+
+    repo_url = f"https://{host}/{path}"
+    module_clean = module[2:] if module else None
+    return SourceRef(
+        file_path="",
+        raw=source,
+        repo=path,
+        repo_url=repo_url,
+        repo_host=host,
         ref=ref,
         module=module_clean,
     )

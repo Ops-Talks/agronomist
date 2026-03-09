@@ -135,3 +135,46 @@ class TestScannerEdgeCases:
         results = scan_sources(temp_dir, blacklist_modules=["modules/old"])
         assert len(results) == 1
         assert results[0].module == "modules/new"
+
+    def test_scan_sources_discovers_ssh_scp_sources(
+        self,
+        temp_dir,
+    ):
+        """Test that SCP-style SSH sources are discovered."""
+        infra_dir = Path(temp_dir) / "infra"
+        infra_dir.mkdir()
+        hcl = infra_dir / "terragrunt.hcl"
+        hcl.write_text(
+            'terraform {\n  source = "git::git@github.com:org/modules.git//vpc?ref=v1.0.0"\n}\n'
+        )
+
+        results = scan_sources(temp_dir)
+        assert len(results) == 1
+        assert results[0].repo == "org/modules"
+        assert results[0].repo_host == "github.com"
+        assert results[0].module == "vpc"
+        assert results[0].ref == "v1.0.0"
+
+    def test_scan_sources_mixed_https_and_ssh(
+        self,
+        temp_dir,
+    ):
+        """Test scanning files with both HTTPS and SSH sources."""
+        infra_dir = Path(temp_dir) / "infra"
+        infra_dir.mkdir()
+        tf_file = infra_dir / "main.tf"
+        tf_file.write_text(
+            'module "a" {\n'
+            '  source = "git::https://github.com/org/'
+            'repo-a.git?ref=v1.0.0"\n'
+            "}\n"
+            'module "b" {\n'
+            '  source = "git::git@github.com:org/'
+            'repo-b.git?ref=v2.0.0"\n'
+            "}\n"
+        )
+
+        results = scan_sources(temp_dir)
+        assert len(results) == 2
+        repos = {r.repo for r in results}
+        assert repos == {"org/repo-a", "org/repo-b"}

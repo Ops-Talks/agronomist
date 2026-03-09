@@ -48,7 +48,11 @@ class TestScannerBenchmarks:
         """Benchmark _parse_git_source with SSH URL."""
         source = "git::ssh://git@github.com/terraform-aws-modules/terraform-aws-vpc.git//modules/vpc?ref=v5.0.0"
         result = benchmark(_parse_git_source, source)
-        assert result is None
+        assert result is not None
+        assert result.repo == (
+            "terraform-aws-modules/terraform-aws-vpc"
+        )
+        assert result.repo_host == "github.com"
 
     def test_benchmark_scan_sources_small_repo(self, benchmark):
         """Benchmark scan_sources with small repository."""

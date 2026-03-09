@@ -98,6 +98,52 @@ class TestParseGitSource:
         assert result.repo == "company/repo"
         assert result.repo_host == "bitbucket.org"
 
+    def test_parse_scp_style_ssh_source(self):
+        """Test parsing SCP-style SSH source (git@host:path)."""
+        source = "git::git@github.com:weyderfs/terraform-aws-modules.git//iam/policy?ref=2.0.0"
+        result = _parse_git_source(source)
+
+        assert result is not None
+        assert result.repo == "weyderfs/terraform-aws-modules"
+        assert result.repo_host == "github.com"
+        assert result.ref == "2.0.0"
+        assert result.module == "iam/policy"
+        assert result.repo_url == ("https://github.com/weyderfs/terraform-aws-modules")
+
+    def test_parse_scp_ssh_without_module(self):
+        """Test SCP-style SSH source without sub-module."""
+        source = "git::git@github.com:owner/repo.git?ref=v1.0.0"
+        result = _parse_git_source(source)
+
+        assert result is not None
+        assert result.repo == "owner/repo"
+        assert result.repo_host == "github.com"
+        assert result.ref == "v1.0.0"
+        assert result.module is None
+        assert result.repo_url == ("https://github.com/owner/repo")
+
+    def test_parse_scp_ssh_without_git_prefix(self):
+        """Test SCP-style SSH without git:: prefix."""
+        source = "git@gitlab.com:group/project.git?ref=v3.1.0"
+        result = _parse_git_source(source)
+
+        assert result is not None
+        assert result.repo == "group/project"
+        assert result.repo_host == "gitlab.com"
+        assert result.ref == "v3.1.0"
+
+    def test_parse_ssh_scheme_source(self):
+        """Test parsing ssh:// scheme URL."""
+        source = "git::ssh://git@github.com/owner/repo.git//modules/vpc?ref=v2.0.0"
+        result = _parse_git_source(source)
+
+        assert result is not None
+        assert result.repo == "owner/repo"
+        assert result.repo_host == "github.com"
+        assert result.ref == "v2.0.0"
+        assert result.module == "modules/vpc"
+        assert result.repo_url == ("https://github.com/owner/repo")
+
 
 class TestScanSources:
     """Test source scanning functionality."""
