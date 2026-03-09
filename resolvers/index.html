@@ -1080,7 +1080,7 @@
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--root<span class="w"> </span>./infrastructure<span class="w"> </span>--resolver<span class="w"> </span>auto
 </span></code></pre></div>
 <p><strong>Self-hosted GitLab:</strong></p>
-<p>The GitLab resolver detects GitLab hosts by inspecting the hostname in each module's <code>source</code> URL. Tokens are passed via <code>--gitlab-token</code> or the <code>GITLAB_TOKEN</code> environment variable.</p>
+<p>The GitLab resolver detects GitLab hosts by inspecting the hostname in each module's <code>source</code> URL. For self-hosted GitLab instances, set <code>--gitlab-base-url</code> to your instance URL (e.g., <code>https://gitlab.company.com</code>). The resolver also auto-detects the host from each module's source URL. Tokens are passed via <code>--gitlab-token</code> or the <code>GITLAB_TOKEN</code> environment variable.</p>
 <p><strong>Limitations:</strong></p>
 <ul>
 <li>Requires tokens for private repositories on each platform.</li>

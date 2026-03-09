@@ -724,6 +724,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#using-self-hosted-gitlab" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using Self-Hosted GitLab
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#filtering-files" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1392,6 +1403,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#using-self-hosted-gitlab" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using Self-Hosted GitLab
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#filtering-files" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1530,6 +1552,11 @@
 <td><code>--github-base-url</code></td>
 <td>GitHub API base URL (useful for GitHub Enterprise).</td>
 <td><code>https://api.github.com</code></td>
+</tr>
+<tr>
+<td><code>--gitlab-base-url</code></td>
+<td>GitLab API base URL (useful for self-hosted GitLab).</td>
+<td><code>https://gitlab.com</code></td>
 </tr>
 <tr>
 <td><code>--resolver</code></td>
@@ -1687,37 +1714,45 @@
 </span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="c1"># Or pass token directly</span>
 </span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--github-base-url<span class="w"> </span>https://github.enterprise.com/api/v3<span class="w"> </span>--resolver<span class="w"> </span>github<span class="w"> </span>--github-token<span class="w"> </span><span class="nv">$GITHUB_TOKEN</span>
 </span></code></pre></div>
+<h3 id="using-self-hosted-gitlab">Using Self-Hosted GitLab<a class="headerlink" href="#using-self-hosted-gitlab" title="Permanent link">&para;</a></h3>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># Point to self-hosted GitLab with token</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GITLAB_TOKEN</span><span class="o">=</span><span class="s2">&quot;glpat-xxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--gitlab-base-url<span class="w"> </span>https://gitlab.company.com<span class="w"> </span>--resolver<span class="w"> </span>auto
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="c1"># Or pass token directly</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--gitlab-base-url<span class="w"> </span>https://gitlab.company.com<span class="w"> </span>--resolver<span class="w"> </span>auto<span class="w"> </span>--gitlab-token<span class="w"> </span><span class="nv">$GITLAB_TOKEN</span>
+</span></code></pre></div>
 <h3 id="filtering-files">Filtering Files<a class="headerlink" href="#filtering-files" title="Permanent link">&para;</a></h3>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># Include only specific patterns</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--include<span class="w"> </span><span class="s2">&quot;**/*.tf&quot;</span><span class="w"> </span>--include<span class="w"> </span><span class="s2">&quot;**/*.hcl&quot;</span>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1"># Exclude specific patterns</span>
-</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--exclude<span class="w"> </span><span class="s2">&quot;**/test/**&quot;</span><span class="w"> </span>--exclude<span class="w"> </span><span class="s2">&quot;**/*_test.tf&quot;</span>
-</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
-</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="c1"># Combine include and exclude</span>
-</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--include<span class="w"> </span><span class="s2">&quot;**/*.tf&quot;</span><span class="w"> </span>--exclude<span class="w"> </span><span class="s2">&quot;**/examples/**&quot;</span>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Include only specific patterns</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--include<span class="w"> </span><span class="s2">&quot;**/*.tf&quot;</span><span class="w"> </span>--include<span class="w"> </span><span class="s2">&quot;**/*.hcl&quot;</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1"># Exclude specific patterns</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--exclude<span class="w"> </span><span class="s2">&quot;**/test/**&quot;</span><span class="w"> </span>--exclude<span class="w"> </span><span class="s2">&quot;**/*_test.tf&quot;</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="c1"># Combine include and exclude</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--include<span class="w"> </span><span class="s2">&quot;**/*.tf&quot;</span><span class="w"> </span>--exclude<span class="w"> </span><span class="s2">&quot;**/examples/**&quot;</span>
 </span></code></pre></div>
 <h3 id="validating-token-before-processing">Validating Token Before Processing<a class="headerlink" href="#validating-token-before-processing" title="Permanent link">&para;</a></h3>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Validate token in CI/CD before running expensive scan (GitHub)</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--github-token<span class="w"> </span><span class="nv">$GITHUB_TOKEN</span><span class="w"> </span>--validate-token
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1"># Validate token in CI/CD before running expensive scan (GitLab)</span>
-</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--gitlab-token<span class="w"> </span><span class="nv">$GITLAB_TOKEN</span><span class="w"> </span>--validate-token
-</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>
-</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="c1"># If token is invalid, exit with code 1</span>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Validate token in CI/CD before running expensive scan (GitHub)</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--github-token<span class="w"> </span><span class="nv">$GITHUB_TOKEN</span><span class="w"> </span>--validate-token
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1"># Validate token in CI/CD before running expensive scan (GitLab)</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--gitlab-token<span class="w"> </span><span class="nv">$GITLAB_TOKEN</span><span class="w"> </span>--validate-token
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="c1"># If token is invalid, exit with code 1</span>
 </span></code></pre></div>
 <h3 id="updating-modules">Updating Modules<a class="headerlink" href="#updating-modules" title="Permanent link">&para;</a></h3>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Update all modules and generate report</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>agronomist<span class="w"> </span>update<span class="w"> </span>--output<span class="w"> </span>report.json
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1"># Update with Markdown report</span>
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>agronomist<span class="w"> </span>update<span class="w"> </span>--markdown<span class="w"> </span>UPDATES.md<span class="w"> </span>--output<span class="w"> </span>report.json
-</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>
-</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="c1"># Update specific directory with token</span>
-</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>agronomist<span class="w"> </span>update<span class="w"> </span>--root<span class="w"> </span>./terraform<span class="w"> </span>--resolver<span class="w"> </span>github<span class="w"> </span>--github-token<span class="w"> </span><span class="nv">$GITHUB_TOKEN</span>
-</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>
-</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="c1"># Update without generating report files (useful for CI/CD)</span>
-</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>agronomist<span class="w"> </span>update<span class="w"> </span>--no-report
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># Update all modules and generate report</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>agronomist<span class="w"> </span>update<span class="w"> </span>--output<span class="w"> </span>report.json
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1"># Update with Markdown report</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>agronomist<span class="w"> </span>update<span class="w"> </span>--markdown<span class="w"> </span>UPDATES.md<span class="w"> </span>--output<span class="w"> </span>report.json
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="c1"># Update specific directory with token</span>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>agronomist<span class="w"> </span>update<span class="w"> </span>--root<span class="w"> </span>./terraform<span class="w"> </span>--resolver<span class="w"> </span>github<span class="w"> </span>--github-token<span class="w"> </span><span class="nv">$GITHUB_TOKEN</span>
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="c1"># Update without generating report files (useful for CI/CD)</span>
+</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>agronomist<span class="w"> </span>update<span class="w"> </span>--no-report
 </span></code></pre></div>
 
 

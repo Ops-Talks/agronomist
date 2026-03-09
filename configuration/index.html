@@ -1139,8 +1139,8 @@
 <tr>
 <td><code>categories</code></td>
 <td>list</td>
-<td>Yes</td>
-<td>List of category rules</td>
+<td>No</td>
+<td>List of category rules. When absent, all updates are reported without category labels.</td>
 </tr>
 <tr>
 <td><code>name</code></td>
@@ -1210,6 +1210,7 @@
 <li><strong>Optional patterns</strong>: If <code>repo_patterns</code> or <code>module_patterns</code> are omitted or empty, they are skipped</li>
 <li><strong>Blacklist</strong>: Resources matching blacklist patterns are completely ignored and won't appear in reports or updates</li>
 <li><strong>File formats</strong>: Both YAML (<code>.yaml</code>, <code>.yml</code>) and JSON (<code>.json</code>) are supported</li>
+<li><strong>Malformed files</strong>: If the configuration file exists but does not contain a YAML/JSON mapping (e.g., it is a plain list), Agronomist exits with an error</li>
 </ul>
 
 

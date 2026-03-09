@@ -597,10 +597,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#example-workflow" class="md-nav__link">
+  <a href="#minimal-example" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example Workflow
+        Minimal Example
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#full-multi-pr-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Full Multi-PR Example
       
     </span>
   </a>
@@ -915,10 +926,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#example-workflow" class="md-nav__link">
+  <a href="#minimal-example" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example Workflow
+        Minimal Example
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#full-multi-pr-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Full Multi-PR Example
       
     </span>
   </a>
@@ -987,8 +1009,8 @@
 <li><code>--no-report</code> Skip generating report files (useful for CI/CD pipelines).</li>
 <li><code>--validate-token</code> Validate API token before processing.</li>
 </ul>
-<h2 id="example-workflow">Example Workflow<a class="headerlink" href="#example-workflow" title="Permanent link">&para;</a></h2>
-<p>Install Agronomist from GitHub Releases and run the CLI directly in your workflow:</p>
+<h2 id="minimal-example">Minimal Example<a class="headerlink" href="#minimal-example" title="Permanent link">&para;</a></h2>
+<p>The following workflow installs Agronomist from GitHub Releases and applies updates. It does not create pull requests -- use it as a starting point or for simple single-commit workflows:</p>
 <div class="language-yaml highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Agronomist Updates</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nt">on</span><span class="p">:</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="nt">schedule</span><span class="p">:</span>
@@ -1002,7 +1024,7 @@
 </span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
 </span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install Agronomist</span>
 </span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">          </span><span class="no">AGRONOMIST_VERSION=&quot;v1.1.3&quot;</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">          </span><span class="no">AGRONOMIST_VERSION=&quot;v1.2.3&quot;</span>
 </span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">          </span><span class="no">WHEEL=&quot;agronomist-${AGRONOMIST_VERSION#v}-py3-none-any.whl&quot;</span>
 </span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">          </span><span class="no">curl -L -o &quot;$WHEEL&quot; &quot;https://github.com/Ops-Talks/agronomist/releases/download/${AGRONOMIST_VERSION}/${WHEEL}&quot;</span>
 </span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w">          </span><span class="no">pip install &quot;$WHEEL&quot;</span>
@@ -1012,7 +1034,15 @@
 </span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w">        </span><span class="nt">env</span><span class="p">:</span>
 </span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="w">          </span><span class="nt">GITHUB_TOKEN</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.GITHUB_TOKEN }}</span>
 </span></code></pre></div>
-<p>See <a href="https://github.com/Ops-Talks/agronomist/blob/main/examples/workflows/agronomist-ci.yml">examples/workflows/agronomist-ci.yml</a> for a full example.</p>
+<h2 id="full-multi-pr-example">Full Multi-PR Example<a class="headerlink" href="#full-multi-pr-example" title="Permanent link">&para;</a></h2>
+<p>For production use, the recommended workflow creates <strong>one pull request per updated module</strong>. Each branch is named with the module identifier and a short hash, so re-running the pipeline updates existing PRs rather than creating duplicates.</p>
+<p>See <a href="https://github.com/Ops-Talks/agronomist/blob/main/examples/workflows/agronomist-ci.yml">examples/workflows/agronomist-ci.yml</a> for the full workflow that:</p>
+<ul>
+<li>Runs <code>agronomist update</code> and generates <code>report.json</code>.</li>
+<li>Iterates over each module in the report using <code>jq</code>.</li>
+<li>Creates a dedicated branch and PR per module via <code>gh pr create</code>.</li>
+<li>Uses SHA-256 hashing to produce deterministic, unique branch names.</li>
+</ul>
 <h2 id="branch-naming">Branch naming<a class="headerlink" href="#branch-naming" title="Permanent link">&para;</a></h2>
 <p>When creating one PR per module, each branch is named:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>agronomist/update-&lt;base-module&gt;-&lt;hash8&gt;

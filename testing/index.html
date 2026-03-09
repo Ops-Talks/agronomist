@@ -1298,9 +1298,9 @@
 </span></code></pre></div>
 <h3 id="understand-the-output">Understand the output<a class="headerlink" href="#understand-the-output" title="Permanent link">&para;</a></h3>
 <p>A passing run reports a summary line like:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>235 passed in 4.62s
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>&lt;N&gt; passed in &lt;T&gt;s
 </span></code></pre></div>
-<p>Coverage output follows if you ran <code>task test-coverage</code>.</p>
+<p>The exact count depends on the current test suite. Coverage output follows if you ran <code>task test-coverage</code>.</p>
 <hr />
 <h2 id="writing-new-python-tests">Writing new Python tests<a class="headerlink" href="#writing-new-python-tests" title="Permanent link">&para;</a></h2>
 <p>Test files live under <code>test/unit/python/</code>. Use <code>pytest</code> conventions:</p>
@@ -1310,16 +1310,15 @@
 <li>Use <code>pytest.fixture</code> for shared setup.</li>
 <li>Prefer small, focused tests over large integration-style test functions.</li>
 </ul>
-<p>Example fixture-based test:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">agronomist.scanner</span><span class="w"> </span><span class="kn">import</span> <span class="n">_parse_git_source</span>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">test_parse_git_source_with_module</span><span class="p">():</span>
-</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    <span class="n">source</span> <span class="o">=</span> <span class="s2">&quot;git::https://github.com/org/repo.git//modules/vpc?ref=v1.2.3&quot;</span>
-</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    <span class="n">ref</span> <span class="o">=</span> <span class="n">_parse_git_source</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
-</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    <span class="k">assert</span> <span class="n">ref</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>    <span class="k">assert</span> <span class="n">ref</span><span class="o">.</span><span class="n">ref</span> <span class="o">==</span> <span class="s2">&quot;v1.2.3&quot;</span>
-</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>    <span class="k">assert</span> <span class="n">ref</span><span class="o">.</span><span class="n">module</span> <span class="o">==</span> <span class="s2">&quot;modules/vpc&quot;</span>
+<p>Example test:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">agronomist.scanner</span><span class="w"> </span><span class="kn">import</span> <span class="n">_parse_git_source</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">test_parse_git_source_with_module</span><span class="p">():</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="n">source</span> <span class="o">=</span> <span class="s2">&quot;git::https://github.com/org/repo.git//modules/vpc?ref=v1.2.3&quot;</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    <span class="n">ref</span> <span class="o">=</span> <span class="n">_parse_git_source</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    <span class="k">assert</span> <span class="n">ref</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    <span class="k">assert</span> <span class="n">ref</span><span class="o">.</span><span class="n">ref</span> <span class="o">==</span> <span class="s2">&quot;v1.2.3&quot;</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>    <span class="k">assert</span> <span class="n">ref</span><span class="o">.</span><span class="n">module</span> <span class="o">==</span> <span class="s2">&quot;modules/vpc&quot;</span>
 </span></code></pre></div>
 <hr />
 <h2 id="full-check-lint-security-tests">Full check (lint + security + tests)<a class="headerlink" href="#full-check-lint-security-tests" title="Permanent link">&para;</a></h2>
@@ -1328,11 +1327,9 @@
 </span></code></pre></div>
 <p>This runs, in order:</p>
 <ol>
-<li><code>ruff check</code> and <code>ruff format</code> -- linting and style</li>
-<li><code>mypy</code> -- static type checking</li>
-<li><code>bandit</code> -- security scanning</li>
-<li><code>eradicate</code> -- dead code detection</li>
-<li><code>pytest</code> with coverage -- full test suite</li>
+<li><code>lint</code> -- ruff check, ruff format, and mypy (linting, formatting, and static type checking)</li>
+<li><code>security</code> -- bandit and eradicate (security scanning and dead code detection)</li>
+<li><code>test</code> -- pytest with coverage (full test suite)</li>
 </ol>
 <hr />
 <h2 id="shell-test-suite-bats">Shell test suite (BATS)<a class="headerlink" href="#shell-test-suite-bats" title="Permanent link">&para;</a></h2>

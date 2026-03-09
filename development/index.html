@@ -2045,7 +2045,7 @@
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>poetry<span class="w"> </span>run<span class="w"> </span>pytest
 </span></code></pre></div>
 <h3 id="run-specific-test">Run Specific Test<a class="headerlink" href="#run-specific-test" title="Permanent link">&para;</a></h3>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>poetry<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/test_cli.py
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>poetry<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>test/unit/python/test_cli_basic.py
 </span></code></pre></div>
 <h3 id="run-tests-with-coverage">Run Tests with Coverage<a class="headerlink" href="#run-tests-with-coverage" title="Permanent link">&para;</a></h3>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>make<span class="w"> </span>coverage
@@ -2112,9 +2112,9 @@
 </span></code></pre></div>
 <h3 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h3>
 <ul>
-<li>Built with <strong>Zensical</strong> + <strong>Material Theme</strong></li>
+<li>Built with <strong>MkDocs</strong> using the <strong>Material for MkDocs</strong> theme, served via the <strong>Zensical</strong> wrapper</li>
 <li>Source files: <code>docs/</code></li>
-<li>Auto-generated navigation from directory structure</li>
+<li>Navigation defined in <code>mkdocs.yml</code></li>
 </ul>
 <h2 id="release-process">Release Process<a class="headerlink" href="#release-process" title="Permanent link">&para;</a></h2>
 <h3 id="prerequisites_1">Prerequisites<a class="headerlink" href="#prerequisites_1" title="Permanent link">&para;</a></h3>
@@ -2192,7 +2192,7 @@
 </span><span id="__span-24-19"><a id="__codelineno-24-19" name="__codelineno-24-19" href="#__codelineno-24-19"></a>│   ├── fixtures/               # Test fixtures (report.json samples)
 </span><span id="__span-24-20"><a id="__codelineno-24-20" name="__codelineno-24-20" href="#__codelineno-24-20"></a>│   ├── integration/            # Shell integration tests
 </span><span id="__span-24-21"><a id="__codelineno-24-21" name="__codelineno-24-21" href="#__codelineno-24-21"></a>│   └── unit/
-</span><span id="__span-24-22"><a id="__codelineno-24-22" name="__codelineno-24-22" href="#__codelineno-24-22"></a>│       ├── python/             # Python test suite (pytest, 235 tests)
+</span><span id="__span-24-22"><a id="__codelineno-24-22" name="__codelineno-24-22" href="#__codelineno-24-22"></a>│       ├── python/             # Python test suite (pytest)
 </span><span id="__span-24-23"><a id="__codelineno-24-23" name="__codelineno-24-23" href="#__codelineno-24-23"></a>│       └── test_multi_pr.bats  # BATS shell tests
 </span><span id="__span-24-24"><a id="__codelineno-24-24" name="__codelineno-24-24" href="#__codelineno-24-24"></a>├── docs/                       # Documentation (MkDocs)
 </span><span id="__span-24-25"><a id="__codelineno-24-25" name="__codelineno-24-25" href="#__codelineno-24-25"></a>├── pyproject.toml              # Project metadata and dependencies

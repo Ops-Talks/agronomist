@@ -898,10 +898,32 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#exceptions-exceptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exceptions (exceptions)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#http-utilities-http" class="md-nav__link">
     <span class="md-ellipsis">
       
         HTTP utilities (http)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#version" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Version
       
     </span>
   </a>
@@ -1046,10 +1068,32 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#exceptions-exceptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exceptions (exceptions)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#http-utilities-http" class="md-nav__link">
     <span class="md-ellipsis">
       
         HTTP utilities (http)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#version" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Version
       
     </span>
   </a>
@@ -1098,8 +1142,8 @@
 </span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="c1"># Scan sources with optional blacklist filters</span>
 </span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="n">sources</span> <span class="o">=</span> <span class="n">scan_sources</span><span class="p">(</span>
 </span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    <span class="n">root</span><span class="o">=</span><span class="s2">&quot;./infra&quot;</span><span class="p">,</span>
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    <span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;.tf&quot;</span><span class="p">],</span>
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    <span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;.terraform/&quot;</span><span class="p">],</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    <span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;**/*.tf&quot;</span><span class="p">,</span> <span class="s2">&quot;**/*.hcl&quot;</span><span class="p">],</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    <span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;**/.terraform/**&quot;</span><span class="p">],</span>
 </span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>    <span class="n">blacklist_repos</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">blacklist</span><span class="o">.</span><span class="n">repos</span><span class="p">,</span>
 </span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>    <span class="n">blacklist_modules</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">blacklist</span><span class="o">.</span><span class="n">modules</span><span class="p">,</span>
 </span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>    <span class="n">blacklist_files</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">blacklist</span><span class="o">.</span><span class="n">files</span><span class="p">,</span>
@@ -1150,10 +1194,23 @@
 <ul>
 <li><code>apply_updates(root, updates)</code> -- apply <code>UpdateEntry</code> replacements to files on disk. Returns a list of modified file paths.</li>
 </ul>
+<h3 id="exceptions-exceptions">Exceptions (<code>exceptions</code>)<a class="headerlink" href="#exceptions-exceptions" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>AgronomistError</code> -- base exception for all Agronomist errors.</li>
+<li><code>NetworkError</code> -- raised on HTTP/request failure after retries.</li>
+<li><code>AuthenticationError</code> -- raised when a token is invalid or lacks permissions.</li>
+<li><code>ResolverError</code> -- raised when a git resolver cannot determine the latest ref.</li>
+<li><code>ConfigError</code> -- raised when the configuration file is malformed.</li>
+</ul>
 <h3 id="http-utilities-http">HTTP utilities (<code>http</code>)<a class="headerlink" href="#http-utilities-http" title="Permanent link">&para;</a></h3>
 <ul>
 <li><code>build_session(retries, backoff_factor)</code> -- return a <code>requests.Session</code> with automatic retry and exponential backoff.</li>
 </ul>
+<h3 id="version">Version<a class="headerlink" href="#version" title="Permanent link">&para;</a></h3>
+<p>The installed package version is available programmatically:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">agronomist</span><span class="w"> </span><span class="kn">import</span> <span class="n">__version__</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nb">print</span><span class="p">(</span><span class="n">__version__</span><span class="p">)</span>  <span class="c1"># e.g. &quot;1.2.3&quot;</span>
+</span></code></pre></div>
 <p>Refer to the source in <code>src/agronomist</code> for implementation details.</p>
 
 
