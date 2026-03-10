@@ -15,6 +15,7 @@ import sys
 from collections.abc import Callable
 from urllib.parse import urlparse
 
+from . import __version__
 from .config import load_config
 from .exceptions import AuthenticationError, ConfigError
 from .git import GitClient
@@ -134,6 +135,11 @@ examples:
   %(prog)s report --markdown report.md      # Export as Markdown
         """,
         formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"%(prog)s {__version__}",
     )
 
     subparsers = parser.add_subparsers(dest="command")

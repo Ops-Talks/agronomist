@@ -28,6 +28,7 @@ Scans Terraform/OpenTofu files, identifies available module version updates, and
 |--------|-------------|---------|
 | `--root` | Root directory to scan for `.tf` and `.hcl` files. | `.` (current directory) |
 | `--config` | Path to `.agronomist.yaml` or JSON configuration file. | `.agronomist.yaml` |
+| `--version` | Show the version of Agronomist and exit. | Not set |
 
 ### Filtering Options
 

@@ -176,6 +176,11 @@ class TestParseArgsValidation:
         with pytest.raises(SystemExit):
             _parse_args([])
 
+    def test_parse_args_version_flag(self):
+        """Test that --version flag exits."""
+        with pytest.raises(SystemExit):
+            _parse_args(["--version"])
+
 
 class TestParseArgsDefaults:
     """Test default argument values."""

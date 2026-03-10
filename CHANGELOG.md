@@ -7,6 +7,25 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [1.2.9] -- 2026-03-10
+
+### Added
+
+- **`--json` alias**: Added `--json` as a more intuitive alias for the `--output` flag in both `report` and `update` commands.
+- **`--version` flag**: Added `--version` flag to display the current version of Agronomist and exit.
+
+### Changed
+
+- **Opt-in Reporting**: JSON and Markdown reports are now strictly opt-in. They are only generated if the `--json` (or `--output`) or `--markdown` flags are explicitly provided.
+- **Documentation**: All documentation files (README, CLI guide, Reports, Getting Started, GitHub Action, and GitLab CI) have been updated to reflect the new opt-in reporting behavior and the `--json` alias.
+- **Tasks and Examples**: Updated `pyproject.toml` tasks and CI workflow examples to use the new `--json` flag.
+
+### Removed
+
+- **`--no-report` flag**: Removed the `--no-report` flag as it is no longer needed with the new opt-in reporting model.
+
+---
+
 ## [1.2.3] -- 2026-03-09
 
 ### Changed
