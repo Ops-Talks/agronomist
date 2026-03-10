@@ -1034,7 +1034,7 @@
 </span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="w">          </span><span class="nt">GITHUB_TOKEN</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.GITHUB_TOKEN }}</span>
 </span></code></pre></div>
 <h2 id="full-multi-pr-example">Full Multi-PR Example<a class="headerlink" href="#full-multi-pr-example" title="Permanent link">&para;</a></h2>
-<p>For production use, the recommended workflow creates <strong>one pull request per updated module</strong>. Each branch is named with the module identifier and a short hash, so re-running the pipeline updates existing PRs rather than creating duplicates.</p>
+<p>For production use, the recommended workflow creates <strong>one pull request per updated module</strong>. Each branch is named with the module identifier and a short hash, and every run with diffs tries to create a PR first. If a PR for the same branch already exists, the workflow updates it (or reopens it when closed).</p>
 <p>See <a href="https://github.com/Ops-Talks/agronomist/blob/main/examples/workflows/agronomist-ci.yml">examples/workflows/agronomist-ci.yml</a> for the full workflow that:</p>
 <ul>
 <li>Runs <code>agronomist update</code> and generates <code>report.json</code>.</li>
