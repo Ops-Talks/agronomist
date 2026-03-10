@@ -1501,6 +1501,11 @@
 <td>Path to <code>.agronomist.yaml</code> or JSON configuration file.</td>
 <td><code>.agronomist.yaml</code></td>
 </tr>
+<tr>
+<td><code>--version</code></td>
+<td>Show the version of Agronomist and exit.</td>
+<td>Not set</td>
+</tr>
 </tbody>
 </table>
 <h3 id="filtering-options">Filtering Options<a class="headerlink" href="#filtering-options" title="Permanent link">&para;</a></h3>
@@ -1581,19 +1586,14 @@
 </thead>
 <tbody>
 <tr>
-<td><code>--output</code></td>
+<td><code>--output</code>, <code>--json</code></td>
 <td>Path to write JSON report.</td>
-<td><code>report.json</code></td>
+<td>Not set</td>
 </tr>
 <tr>
 <td><code>--markdown</code></td>
 <td>Path to write human-readable Markdown report. If omitted, no Markdown is generated.</td>
 <td>Not set</td>
-</tr>
-<tr>
-<td><code>--no-report</code></td>
-<td>Skip generating report files (useful for CI/CD pipelines).</td>
-<td><code>false</code></td>
 </tr>
 </tbody>
 </table>
@@ -1685,11 +1685,11 @@
 </span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--root<span class="w"> </span>./infrastructure
 </span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
 </span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="c1"># Generate report and save to custom location</span>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--output<span class="w"> </span>./reports/versions.json
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--json<span class="w"> </span>./reports/versions.json
 </span></code></pre></div>
 <h3 id="with-markdown-output">With Markdown Output<a class="headerlink" href="#with-markdown-output" title="Permanent link">&para;</a></h3>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Generate both JSON and Markdown reports</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--markdown<span class="w"> </span>report.md<span class="w"> </span>--output<span class="w"> </span>report.json
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--markdown<span class="w"> </span>report.md<span class="w"> </span>--json<span class="w"> </span>report.json
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
 </span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1"># Generate Markdown report for documentation</span>
 </span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--root<span class="w"> </span>./terraform<span class="w"> </span>--markdown<span class="w"> </span>UPDATES.md
@@ -1743,16 +1743,13 @@
 </span></code></pre></div>
 <h3 id="updating-modules">Updating Modules<a class="headerlink" href="#updating-modules" title="Permanent link">&para;</a></h3>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># Update all modules and generate report</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>agronomist<span class="w"> </span>update<span class="w"> </span>--output<span class="w"> </span>report.json
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>agronomist<span class="w"> </span>update<span class="w"> </span>--json<span class="w"> </span>report.json
 </span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
 </span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1"># Update with Markdown report</span>
-</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>agronomist<span class="w"> </span>update<span class="w"> </span>--markdown<span class="w"> </span>UPDATES.md<span class="w"> </span>--output<span class="w"> </span>report.json
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>agronomist<span class="w"> </span>update<span class="w"> </span>--markdown<span class="w"> </span>UPDATES.md<span class="w"> </span>--json<span class="w"> </span>report.json
 </span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>
 </span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="c1"># Update specific directory with token</span>
 </span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>agronomist<span class="w"> </span>update<span class="w"> </span>--root<span class="w"> </span>./terraform<span class="w"> </span>--resolver<span class="w"> </span>github<span class="w"> </span>--github-token<span class="w"> </span><span class="nv">$GITHUB_TOKEN</span>
-</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>
-</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="c1"># Update without generating report files (useful for CI/CD)</span>
-</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>agronomist<span class="w"> </span>update<span class="w"> </span>--no-report
 </span></code></pre></div>
 
 

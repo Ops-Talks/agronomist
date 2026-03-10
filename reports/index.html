@@ -918,7 +918,7 @@
 <h1 id="reports">Reports<a class="headerlink" href="#reports" title="Permanent link">&para;</a></h1>
 <p>Agronomist can produce JSON and Markdown reports.</p>
 <h2 id="json-report">JSON report<a class="headerlink" href="#json-report" title="Permanent link">&para;</a></h2>
-<p>The JSON report is produced by default and written to <code>--output</code>. Use <code>--no-report</code> to skip report file generation.</p>
+<p>The JSON report is optional and only generated if <code>--json</code> (or <code>--output</code>) is provided.</p>
 <p>Example structure:</p>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">&quot;generated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-02-17T12:34:56Z&quot;</span><span class="p">,</span>
@@ -946,7 +946,7 @@
 <h2 id="markdown-report">Markdown report<a class="headerlink" href="#markdown-report" title="Permanent link">&para;</a></h2>
 <p>Use <code>--markdown</code> to generate a human readable summary.</p>
 <p>Example:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>poetry<span class="w"> </span>run<span class="w"> </span>agronomist<span class="w"> </span>report<span class="w"> </span>--root<span class="w"> </span>.<span class="w"> </span>--markdown<span class="w"> </span>report.md<span class="w"> </span>--output<span class="w"> </span>report.json
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>poetry<span class="w"> </span>run<span class="w"> </span>agronomist<span class="w"> </span>report<span class="w"> </span>--root<span class="w"> </span>.<span class="w"> </span>--markdown<span class="w"> </span>report.md<span class="w"> </span>--json<span class="w"> </span>report.json
 </span></code></pre></div>
 <p>Example output:</p>
 <div class="language-markdown highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="gh"># Agronomist Report</span>
