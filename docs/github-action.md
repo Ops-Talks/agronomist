@@ -46,7 +46,7 @@ jobs:
 
 ## Full Multi-PR Example
 
-For production use, the recommended workflow creates **one pull request per updated module**. Each branch is named with the module identifier and a short hash, so re-running the pipeline updates existing PRs rather than creating duplicates.
+For production use, the recommended workflow creates **one pull request per updated module**. Each branch is named with the module identifier and a short hash, and every run with diffs tries to create a PR first. If a PR for the same branch already exists, the workflow updates it (or reopens it when closed).
 
 See [examples/workflows/agronomist-ci.yml](https://github.com/Ops-Talks/agronomist/blob/main/examples/workflows/agronomist-ci.yml) for the full workflow that:
 

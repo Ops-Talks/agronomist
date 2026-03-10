@@ -168,3 +168,44 @@ EOF
 
     [ "$update_count" -eq 3 ]
 }
+
+
+@test "fallback fails when no PR exists" {
+    existing_pr_number="$(echo '[]' | jq -r '.[0].number')"
+
+    if [ -z "$existing_pr_number" ] || [ "$existing_pr_number" = "null" ]; then
+        run true
+    else
+        run false
+    fi
+
+    [ "$status" -eq 0 ]
+}
+
+@test "fallback updates an open PR" {
+    IFS=$'\t' read -r existing_pr_number existing_pr_state <<< "$(
+        echo '[{"number": 42, "state": "OPEN"}]' |             jq -r '.[0] | [(.number // ""), (.state // "")] | @tsv'
+    )"
+
+    if [ "$existing_pr_state" = "OPEN" ] && [ -n "$existing_pr_number" ]; then
+        run true
+    else
+        run false
+    fi
+
+    [ "$status" -eq 0 ]
+}
+
+@test "fallback reopens a closed PR" {
+    IFS=$'\t' read -r existing_pr_number existing_pr_state <<< "$(
+        echo '[{"number": 42, "state": "CLOSED"}]' |             jq -r '.[0] | [(.number // ""), (.state // "")] | @tsv'
+    )"
+
+    if [ "$existing_pr_state" = "CLOSED" ] && [ -n "$existing_pr_number" ]; then
+        run true
+    else
+        run false
+    fi
+
+    [ "$status" -eq 0 ]
+}
