@@ -71,9 +71,7 @@ def _add_common_args(parser: argparse.ArgumentParser) -> None:
         help="How to resolve the latest version: git, github or auto",
     )
     parser.add_argument(
-        "--output",
         "--json",
-        dest="output",
         default=None,
         help="Path to write JSON report (e.g.: report.json)",
     )
@@ -459,11 +457,11 @@ def main(argv: list[str] | None = None) -> int:
     if updates:
         report = None
 
-        if args.output:
+        if args.json:
             update_dicts = [u.to_dict() for u in updates]
             report = build_report(args.root, update_dicts)
-            write_report(args.output, report)
-            print(f"Report written to {args.output}.")
+            write_report(args.json, report)
+            print(f"Report written to {args.json}.")
 
         if args.markdown:
             if report is None:

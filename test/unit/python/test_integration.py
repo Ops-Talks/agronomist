@@ -68,7 +68,7 @@ class TestIntegrationReportCommand:
                 str(tmp_path),
                 "--resolver",
                 "git",
-                "--output",
+                "--json",
                 output_path,
             ]
         )
@@ -119,7 +119,7 @@ class TestIntegrationReportCommand:
                 str(tmp_path),
                 "--resolver",
                 "git",
-                "--output",
+                "--json",
                 json_path,
                 "--markdown",
                 md_path,
@@ -174,7 +174,7 @@ class TestIntegrationUpdateCommand:
                 str(tmp_path),
                 "--resolver",
                 "git",
-                "--output",
+                "--json",
                 str(tmp_path / "report.json"),
             ]
         )

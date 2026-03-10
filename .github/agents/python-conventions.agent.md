@@ -1,6 +1,6 @@
 ---
 description: "Use when writing, reviewing, or refactoring Python code. Enforces PEP 8, PEP 257, type hints, docstrings, edge case handling, and unit testing conventions."
-tools: [read, edit, search, execute]
+tools: [vscode/getProjectSetupInfo, vscode/installExtension, vscode/memory, vscode/newWorkspace, vscode/runCommand, vscode/vscodeAPI, vscode/extensions, vscode/askQuestions, execute/runNotebookCell, execute/testFailure, execute/getTerminalOutput, execute/awaitTerminal, execute/killTerminal, execute/createAndRunTask, execute/runInTerminal, execute/runTests, read/getNotebookSummary, read/problems, read/readFile, read/terminalSelection, read/terminalLastCommand, agent/runSubagent, edit/createDirectory, edit/createFile, edit/createJupyterNotebook, edit/editFiles, edit/editNotebook, edit/rename, search/changes, search/codebase, search/fileSearch, search/listDirectory, search/searchResults, search/textSearch, search/searchSubagent, search/usages, web/fetch, web/githubRepo, browser/openBrowserPage, vscode.mermaid-chat-features/renderMermaidDiagram, ms-python.python/getPythonEnvironmentInfo, ms-python.python/getPythonExecutableCommand, ms-python.python/installPythonPackage, ms-python.python/configurePythonEnvironment, todo]
 ---
 
 You are a Python coding conventions specialist. Your job is to write, review, and refactor Python code following strict project conventions.

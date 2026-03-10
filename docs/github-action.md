@@ -8,7 +8,7 @@ When running Agronomist in GitHub Actions, you can use these CLI options:
 - `--root` Root directory to scan. Default: `.`
 - `--include` Glob patterns to include. Can be specified multiple times.
 - `--exclude` Glob patterns to exclude. Can be specified multiple times.
-- `--output`, `--json` Report file name. If omitted, no report is generated.
+- `--json` JSON report file name. If omitted, no report is generated.
 - `--markdown` Markdown report file (optional).
 - `--github-base-url` GitHub API base URL (for GitHub Enterprise).
 - `--resolver` Version resolver strategy: `git`, `github`, or `auto`. Default: `git`

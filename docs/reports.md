@@ -4,7 +4,7 @@ Agronomist can produce JSON and Markdown reports.
 
 ## JSON report
 
-The JSON report is optional and only generated if `--json` (or `--output`) is provided.
+The JSON report is optional and only generated if `--json` is provided.
 
 Example structure:
 

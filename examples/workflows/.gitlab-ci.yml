@@ -9,7 +9,7 @@ workflow:
     - when: never
 
 variables:
-  AGRONOMIST_VERSION: "v1.2.3"
+  AGRONOMIST_VERSION: "v1.2.10"
   AGRONOMIST_ROOT: "."
   AGRONOMIST_RESOLVER: "git"
   AGRONOMIST_CONFIG: ".agronomist.yaml"
@@ -42,7 +42,7 @@ update:
       agronomist update --root "$AGRONOMIST_ROOT" \
         --config "$AGRONOMIST_CONFIG" \
         --resolver "$AGRONOMIST_RESOLVER" \
-        --output report.json \
+        --json report.json \
         $TOKEN_ARG
     - |
       set +e

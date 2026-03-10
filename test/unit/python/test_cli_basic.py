@@ -81,17 +81,11 @@ class TestParseArgsReportCommand:
 
         assert args.resolver == "auto"
 
-    def test_parse_args_output_file(self):
-        """Test output file argument."""
-        args = _parse_args(["report", "--output", "custom-report.json"])
-
-        assert args.output == "custom-report.json"
-
-    def test_parse_args_json_alias(self):
-        """Test that --json correctly aliases to output."""
+    def test_parse_args_json_flag(self):
+        """Test --json flag for JSON report output."""
         args = _parse_args(["report", "--json", "custom-report.json"])
 
-        assert args.output == "custom-report.json"
+        assert args.json == "custom-report.json"
 
     def test_parse_args_markdown_output(self):
         """Test markdown output argument."""
@@ -151,11 +145,11 @@ class TestParseArgsUpdateCommand:
 
         assert args.resolver == "github"
 
-    def test_parse_args_update_with_output(self):
-        """Test update command with output file."""
-        args = _parse_args(["update", "--output", "update-report.json"])
+    def test_parse_args_update_with_json(self):
+        """Test update command with --json flag."""
+        args = _parse_args(["update", "--json", "update-report.json"])
 
-        assert args.output == "update-report.json"
+        assert args.json == "update-report.json"
 
 
 class TestParseArgsValidation:
@@ -195,10 +189,10 @@ class TestParseArgsDefaults:
         args = _parse_args(["report"])
         assert args.resolver == "git"
 
-    def test_parse_args_default_output_report(self):
-        """Test default output value."""
+    def test_parse_args_default_json_report(self):
+        """Test default --json value."""
         args = _parse_args(["report"])
-        assert args.output is None
+        assert args.json is None
 
     def test_parse_args_default_config_report(self):
         """Test default config file."""
