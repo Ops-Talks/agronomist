@@ -55,28 +55,15 @@ class GitClient:
                 timeout=self.timeout,
             )
         except subprocess.TimeoutExpired as exc:
-            raise ResolverError(
-                f"Git ls-remote for {repo_url} timed out"
-            ) from exc
+            raise ResolverError(f"Git ls-remote for {repo_url} timed out") from exc
         except subprocess.CalledProcessError as exc:
             if "not found" in exc.stderr or "fatal:" in exc.stderr:
-                raise ResolverError(
-                    f"Git: repository {repo_url} not found"
-                    " or no access"
-                ) from exc
-            raise ResolverError(
-                f"Git ls-remote failed for {repo_url}:"
-                f" {exc.stderr}"
-            ) from exc
+                raise ResolverError(f"Git: repository {repo_url} not found or no access") from exc
+            raise ResolverError(f"Git ls-remote failed for {repo_url}: {exc.stderr}") from exc
         except FileNotFoundError as exc:
-            raise ResolverError(
-                "Git not installed or not in PATH"
-            ) from exc
+            raise ResolverError("Git not installed or not in PATH") from exc
         except Exception as exc:
-            raise ResolverError(
-                "Unexpected error running git ls-remote:"
-                f" {exc}"
-            ) from exc
+            raise ResolverError(f"Unexpected error running git ls-remote: {exc}") from exc
 
         for line in result.stdout.splitlines():
             try:

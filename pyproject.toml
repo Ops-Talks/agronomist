@@ -116,8 +116,8 @@ security = "task bandit && task eradicate"
 pre-commit-install = "pre-commit install"
 pre-commit-run = "pre-commit run --all-files"
 pre-commit = "task pre-commit-install && task pre-commit-run"
-report = "agronomist report --root . --output report.json"
-update = "agronomist update --root . --output report.json"
+report = "agronomist report --root . --json report.json"
+update = "agronomist update --root . --json report.json"
 
 [build-system]
 requires = ["poetry-core>=1.9.0"]

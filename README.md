@@ -59,18 +59,18 @@ pipx install dist/agronomist-*-py3-none-any.whl
 ### Usage (after installing with pipx)
 
 ```bash
-agronomist report --root . --output report.json
-agronomist report --root . --markdown report.md --output report.json
-agronomist update --root . --output report.json
+agronomist report --root . --json report.json
+agronomist report --root . --markdown report.md --json report.json
+agronomist update --root . --json report.json
 ```
 
 ### Alternative: Using poetry directly
 
 ```bash
 poetry install
-poetry run agronomist report --root . --output report.json
-poetry run agronomist report --root . --markdown report.md --output report.json
-poetry run agronomist update --root . --output report.json
+poetry run agronomist report --root . --json report.json
+poetry run agronomist report --root . --markdown report.md --json report.json
+poetry run agronomist update --root . --json report.json
 ```
 
 ## Documentation

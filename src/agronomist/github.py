@@ -57,22 +57,18 @@ class GitHubClient:
         headers = {"Authorization": f"Bearer {self.token}"}
         try:
             response = self._session.get(
-                url, headers=headers, timeout=self.timeout,
+                url,
+                headers=headers,
+                timeout=self.timeout,
             )
             if response.status_code == 401:
-                raise AuthenticationError(
-                    "GitHub token invalid or expired"
-                )
+                raise AuthenticationError("GitHub token invalid or expired")
             if response.status_code == 403:
-                raise AuthenticationError(
-                    "GitHub token insufficient permissions"
-                )
+                raise AuthenticationError("GitHub token insufficient permissions")
             response.raise_for_status()
             return True
         except requests.RequestException as exc:
-            raise AuthenticationError(
-                f"Error validating GitHub token: {exc}"
-            ) from exc
+            raise AuthenticationError(f"Error validating GitHub token: {exc}") from exc
 
     def _headers(self) -> dict[str, str]:
         """Build default request headers.
@@ -119,9 +115,7 @@ class GitHubClient:
             data = response.json()
             return str(data.get("tag_name"))
         except requests.RequestException as exc:
-            raise NetworkError(
-                f"Error fetching release tag for {repo}: {exc}"
-            ) from exc
+            raise NetworkError(f"Error fetching release tag for {repo}: {exc}") from exc
 
     def latest_tag(self, repo: str) -> str | None:
         """Fetch the name of the most recent tag.
@@ -156,9 +150,7 @@ class GitHubClient:
                 return None
             return str(data[0].get("name"))
         except requests.RequestException as exc:
-            raise NetworkError(
-                f"Error fetching tags for {repo}: {exc}"
-            ) from exc
+            raise NetworkError(f"Error fetching tags for {repo}: {exc}") from exc
 
     def latest_ref(self, repo: str) -> str | None:
         """Return the latest version ref for a repository.

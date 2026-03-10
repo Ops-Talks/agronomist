@@ -58,9 +58,7 @@ class TestGitClient:
         client = GitClient(timeout=5)
 
         with pytest.raises(ResolverError, match="timed out"):
-            client.latest_ref(
-                "https://github.com/example/repo.git"
-            )
+            client.latest_ref("https://github.com/example/repo.git")
 
     @patch("agronomist.git.subprocess.run")
     def test_latest_ref_repository_not_found(self, mock_run):
@@ -74,9 +72,7 @@ class TestGitClient:
         client = GitClient()
 
         with pytest.raises(ResolverError, match="not found"):
-            client.latest_ref(
-                "https://github.com/nonexistent/repo.git"
-            )
+            client.latest_ref("https://github.com/nonexistent/repo.git")
 
     @patch("agronomist.git.subprocess.run")
     def test_latest_ref_git_not_installed(self, mock_run):
@@ -86,9 +82,7 @@ class TestGitClient:
         client = GitClient()
 
         with pytest.raises(ResolverError, match="not installed"):
-            client.latest_ref(
-                "https://github.com/example/repo.git"
-            )
+            client.latest_ref("https://github.com/example/repo.git")
 
     @patch("agronomist.git.subprocess.run")
     def test_latest_ref_generic_exception(self, mock_run):
@@ -98,9 +92,7 @@ class TestGitClient:
         client = GitClient()
 
         with pytest.raises(ResolverError, match="Unexpected"):
-            client.latest_ref(
-                "https://github.com/example/repo.git"
-            )
+            client.latest_ref("https://github.com/example/repo.git")
 
     @patch("agronomist.git.subprocess.run")
     def test_latest_ref_strips_whitespace(self, mock_run):
@@ -161,7 +153,8 @@ class TestGitClient:
 
     @patch("agronomist.git.subprocess.run")
     def test_latest_ref_called_process_error_generic_stderr(
-        self, mock_run,
+        self,
+        mock_run,
     ):
         """Test CalledProcessError with generic stderr."""
         import subprocess
@@ -173,6 +166,4 @@ class TestGitClient:
         client = GitClient()
 
         with pytest.raises(ResolverError):
-            client.latest_ref(
-                "https://github.com/example/repo.git"
-            )
+            client.latest_ref("https://github.com/example/repo.git")

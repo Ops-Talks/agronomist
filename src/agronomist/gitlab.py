@@ -79,22 +79,18 @@ class GitLabClient:
         headers = {"PRIVATE-TOKEN": self.token}
         try:
             response = self._session.get(
-                url, headers=headers, timeout=self.timeout,
+                url,
+                headers=headers,
+                timeout=self.timeout,
             )
             if response.status_code == 401:
-                raise AuthenticationError(
-                    "GitLab token invalid or expired"
-                )
+                raise AuthenticationError("GitLab token invalid or expired")
             if response.status_code == 403:
-                raise AuthenticationError(
-                    "GitLab token insufficient permissions"
-                )
+                raise AuthenticationError("GitLab token insufficient permissions")
             response.raise_for_status()
             return True
         except requests.RequestException as exc:
-            raise AuthenticationError(
-                f"Error validating GitLab token: {exc}"
-            ) from exc
+            raise AuthenticationError(f"Error validating GitLab token: {exc}") from exc
 
     def _headers(self) -> dict[str, str]:
         """Build default request headers.
@@ -125,10 +121,7 @@ class GitLabClient:
             The tag name string, or None on any error.
         """
         effective_url = base_url or self.base_url
-        url = (
-            f"{effective_url}/api/v4/projects"
-            f"/{project_id}/repository/tags"
-        )
+        url = f"{effective_url}/api/v4/projects/{project_id}/repository/tags"
         try:
             response = self._session.get(
                 url,
@@ -160,10 +153,7 @@ class GitLabClient:
                 return None
             return str(data[0].get("name"))
         except requests.RequestException as exc:
-            raise NetworkError(
-                f"Error fetching GitLab tags for"
-                f" {project_id}: {exc}"
-            ) from exc
+            raise NetworkError(f"Error fetching GitLab tags for {project_id}: {exc}") from exc
 
     def latest_ref(self, repo_url: str) -> str | None:
         """Return the latest tag for a repository URL.
@@ -183,13 +173,10 @@ class GitLabClient:
             if path.endswith(".git"):
                 path = path[:-4]
             project_id = path.replace("/", "%2F")
-            host_url = (
-                f"{parsed.scheme}://{parsed.netloc}"
-                if parsed.netloc
-                else None
-            )
+            host_url = f"{parsed.scheme}://{parsed.netloc}" if parsed.netloc else None
             return self.latest_tag(
-                project_id, base_url=host_url,
+                project_id,
+                base_url=host_url,
             )
         except Exception as e:
             logger.error("Error processing repo_url for GitLab: %s", e)

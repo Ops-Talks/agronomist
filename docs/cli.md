@@ -54,9 +54,8 @@ Scans Terraform/OpenTofu files, identifies available module version updates, and
 
 | Option | Description | Default |
 |--------|-------------|---------|
-| `--output` | Path to write JSON report. | `report.json` |
+| `--output`, `--json` | Path to write JSON report. | Not set |
 | `--markdown` | Path to write human-readable Markdown report. If omitted, no Markdown is generated. | Not set |
-| `--no-report` | Skip generating report files (useful for CI/CD pipelines). | `false` |
 
 ### Performance Options
 
@@ -123,14 +122,14 @@ agronomist report
 agronomist report --root ./infrastructure
 
 # Generate report and save to custom location
-agronomist report --output ./reports/versions.json
+agronomist report --json ./reports/versions.json
 ```
 
 ### With Markdown Output
 
 ```sh
 # Generate both JSON and Markdown reports
-agronomist report --markdown report.md --output report.json
+agronomist report --markdown report.md --json report.json
 
 # Generate Markdown report for documentation
 agronomist report --root ./terraform --markdown UPDATES.md
@@ -202,14 +201,11 @@ agronomist report --gitlab-token $GITLAB_TOKEN --validate-token
 
 ```sh
 # Update all modules and generate report
-agronomist update --output report.json
+agronomist update --json report.json
 
 # Update with Markdown report
-agronomist update --markdown UPDATES.md --output report.json
+agronomist update --markdown UPDATES.md --json report.json
 
 # Update specific directory with token
 agronomist update --root ./terraform --resolver github --github-token $GITHUB_TOKEN
-
-# Update without generating report files (useful for CI/CD)
-agronomist update --no-report
 ```

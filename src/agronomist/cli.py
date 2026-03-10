@@ -45,10 +45,7 @@ def _add_common_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--gitlab-base-url",
         default="https://gitlab.com",
-        help=(
-            "GitLab API base URL "
-            "(default: https://gitlab.com)"
-        ),
+        help=("GitLab API base URL (default: https://gitlab.com)"),
     )
     parser.add_argument(
         "--token",
@@ -72,7 +69,13 @@ def _add_common_args(parser: argparse.ArgumentParser) -> None:
         choices=["git", "github", "auto"],
         help="How to resolve the latest version: git, github or auto",
     )
-    parser.add_argument("--output", default="report.json")
+    parser.add_argument(
+        "--output",
+        "--json",
+        dest="output",
+        default=None,
+        help="Path to write JSON report (e.g.: report.json)",
+    )
     parser.add_argument(
         "--markdown",
         default=None,
@@ -82,11 +85,6 @@ def _add_common_args(parser: argparse.ArgumentParser) -> None:
         "--validate-token",
         action="store_true",
         help="Validate token before processing (useful for CI/CD)",
-    )
-    parser.add_argument(
-        "--no-report",
-        action="store_true",
-        help="Skip generating report files (useful for CI/CD pipelines)",
     )
     parser.add_argument(
         "--timeout",
@@ -453,16 +451,20 @@ def main(argv: list[str] | None = None) -> int:
     )
 
     if updates:
-        if not args.no_report:
+        report = None
+
+        if args.output:
             update_dicts = [u.to_dict() for u in updates]
             report = build_report(args.root, update_dicts)
             write_report(args.output, report)
-
-            if args.markdown:
-                write_markdown(args.markdown, report)
-                print(f"Markdown report written to {args.markdown}.")
-
             print(f"Report written to {args.output}.")
+
+        if args.markdown:
+            if report is None:
+                update_dicts = [u.to_dict() for u in updates]
+                report = build_report(args.root, update_dicts)
+            write_markdown(args.markdown, report)
+            print(f"Markdown report written to {args.markdown}.")
 
         if args.command == "update":
             touched = apply_updates(args.root, updates)

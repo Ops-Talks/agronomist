@@ -75,7 +75,6 @@ update:
       agronomist update --root "$AGRONOMIST_ROOT" \
         --config "$AGRONOMIST_CONFIG" \
         --resolver "$AGRONOMIST_RESOLVER" \
-        --no-report \
         $TOKEN_ARG
     - |
       if [ -z "$GITLAB_TOKEN" ]; then
@@ -116,7 +115,7 @@ For production use, the recommended pipeline creates **one merge request per upd
 
 See [examples/workflows/.gitlab-ci.yml](https://github.com/ops-talks/agronomist/blob/main/examples/workflows/.gitlab-ci.yml) for the full pipeline that:
 
-- Runs `agronomist update --output report.json` to generate a report.
+- Runs `agronomist update --json report.json` to generate a report.
 - Extracts unique modules from the report using `jq`.
 - Creates a branch per module with a deterministic hash-based name.
 - Pushes each branch and creates an MR via the GitLab API.

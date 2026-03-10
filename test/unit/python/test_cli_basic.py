@@ -87,6 +87,12 @@ class TestParseArgsReportCommand:
 
         assert args.output == "custom-report.json"
 
+    def test_parse_args_json_alias(self):
+        """Test that --json correctly aliases to output."""
+        args = _parse_args(["report", "--json", "custom-report.json"])
+
+        assert args.output == "custom-report.json"
+
     def test_parse_args_markdown_output(self):
         """Test markdown output argument."""
         args = _parse_args(["report", "--markdown", "report.md"])
@@ -98,12 +104,6 @@ class TestParseArgsReportCommand:
         args = _parse_args(["report", "--validate-token"])
 
         assert args.validate_token is True
-
-    def test_parse_args_no_report_flag(self):
-        """Test no-report flag."""
-        args = _parse_args(["report", "--no-report"])
-
-        assert args.no_report is True
 
     def test_parse_args_github_base_url(self):
         """Test github-base-url argument."""
@@ -193,7 +193,7 @@ class TestParseArgsDefaults:
     def test_parse_args_default_output_report(self):
         """Test default output value."""
         args = _parse_args(["report"])
-        assert args.output == "report.json"
+        assert args.output is None
 
     def test_parse_args_default_config_report(self):
         """Test default config file."""

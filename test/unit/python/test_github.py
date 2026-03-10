@@ -106,7 +106,8 @@ class TestGitHubClient:
         )
 
         with pytest.raises(
-            AuthenticationError, match="invalid",
+            AuthenticationError,
+            match="invalid",
         ):
             client.validate_token()
 
@@ -229,7 +230,8 @@ class TestGitHubClient:
         )
 
         with pytest.raises(
-            AuthenticationError, match="permissions",
+            AuthenticationError,
+            match="permissions",
         ):
             client.validate_token()
 

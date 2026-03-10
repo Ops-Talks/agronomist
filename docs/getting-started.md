@@ -63,10 +63,10 @@ agronomist report
 agronomist report --root ./infrastructure
 
 # Write the JSON report to a custom path
-agronomist report --root ./infrastructure --output updates.json
+agronomist report --root ./infrastructure --json updates.json
 
 # Also generate a human-readable Markdown summary
-agronomist report --root ./infrastructure --output updates.json --markdown updates.md
+agronomist report --root ./infrastructure --json updates.json --markdown updates.md
 ```
 
 ## Apply updates
@@ -78,7 +78,7 @@ The `update` command applies the identified version changes directly to your sou
 agronomist update
 
 # Apply updates in a specific directory
-agronomist update --root ./infrastructure --output updates.json
+agronomist update --root ./infrastructure --json updates.json
 ```
 
 !!! warning

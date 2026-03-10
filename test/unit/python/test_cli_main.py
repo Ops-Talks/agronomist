@@ -320,7 +320,7 @@ class TestCliMain:
 
         assert result == 0
         mock_build_report.assert_called_once()
-        mock_write_report.assert_called_once()
+        mock_write_report.assert_not_called()
         mock_write_markdown.assert_called_once()
         mock_apply_updates.assert_called_once()
         out = capsys.readouterr().out
@@ -335,7 +335,7 @@ class TestCliMain:
     @patch("agronomist.cli.GitHubClient")
     @patch("agronomist.cli.scan_sources")
     @patch("agronomist.cli.load_config")
-    def test_main_update_no_report_and_no_updates_applied(
+    def test_main_update_no_outputs_requested(
         self,
         mock_load_config,
         mock_scan_sources,
@@ -370,7 +370,7 @@ class TestCliMain:
 
         mock_apply_updates.return_value = []
 
-        result = main(["update", "--resolver", "auto", "--no-report"])
+        result = main(["update", "--resolver", "auto"])
 
         assert result == 0
         mock_build_report.assert_not_called()
@@ -413,7 +413,7 @@ class TestCliMain:
         git_client.latest_ref.return_value = "v2.0.0"
         mock_git_cls.return_value = git_client
 
-        result = main(["report", "--resolver", "github", "--no-report"])
+        result = main(["report", "--resolver", "github"])
 
         assert result == 0
         git_client.latest_ref.assert_called_once()
@@ -452,7 +452,7 @@ class TestCliMain:
         git_client.latest_ref.return_value = "v2.0.0"
         mock_git_cls.return_value = git_client
 
-        result = main(["report", "--resolver", "auto", "--no-report"])
+        result = main(["report", "--resolver", "auto"])
 
         assert result == 0
         gh_client.latest_ref.assert_called_once()
@@ -563,7 +563,7 @@ class TestCliMain:
         git_client.latest_ref.return_value = "v3.0.0"
         mock_git_cls.return_value = git_client
 
-        result = main(["report", "--resolver", "auto", "--no-report"])
+        result = main(["report", "--resolver", "auto"])
 
         assert result == 0
         gl_client.latest_ref.assert_called_once()

@@ -4,7 +4,7 @@ Agronomist can produce JSON and Markdown reports.
 
 ## JSON report
 
-The JSON report is produced by default and written to `--output`. Use `--no-report` to skip report file generation.
+The JSON report is optional and only generated if `--json` (or `--output`) is provided.
 
 Example structure:
 
@@ -40,7 +40,7 @@ Use `--markdown` to generate a human readable summary.
 Example:
 
 ```sh
-poetry run agronomist report --root . --markdown report.md --output report.json
+poetry run agronomist report --root . --markdown report.md --json report.json
 ```
 
 Example output:

@@ -8,12 +8,11 @@ When running Agronomist in GitHub Actions, you can use these CLI options:
 - `--root` Root directory to scan. Default: `.`
 - `--include` Glob patterns to include. Can be specified multiple times.
 - `--exclude` Glob patterns to exclude. Can be specified multiple times.
-- `--output` Report file name. Default: `report.json`
+- `--output`, `--json` Report file name. If omitted, no report is generated.
 - `--markdown` Markdown report file (optional).
 - `--github-base-url` GitHub API base URL (for GitHub Enterprise).
 - `--resolver` Version resolver strategy: `git`, `github`, or `auto`. Default: `git`
 - `--config` Path to configuration file. Default: `.agronomist.yaml`
-- `--no-report` Skip generating report files (useful for CI/CD pipelines).
 - `--validate-token` Validate API token before processing.
 
 ## Minimal Example
@@ -34,13 +33,13 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install Agronomist
         run: |
-          AGRONOMIST_VERSION="v1.2.3"
+          AGRONOMIST_VERSION="v1.2.8"
           WHEEL="agronomist-${AGRONOMIST_VERSION#v}-py3-none-any.whl"
           curl -L -o "$WHEEL" "https://github.com/Ops-Talks/agronomist/releases/download/${AGRONOMIST_VERSION}/${WHEEL}"
           pip install "$WHEEL"
       - name: Run Agronomist
         run: |
-          agronomist update --root . --no-report
+          agronomist update --root .
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
