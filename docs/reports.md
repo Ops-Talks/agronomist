@@ -1,6 +1,15 @@
 # Reports
 
-Agronomist can produce JSON and Markdown reports.
+Agronomist can produce JSON and Markdown reports. **By default, no report files are generated** unless the corresponding flags are provided.
+
+## Reporting Behavior
+
+To generate report files, you must explicitly provide the output paths:
+
+- Use `--json <path>` for a structured JSON report.
+- Use `--markdown <path>` for a human-readable summary.
+
+If these flags are omitted, Agronomist will only print a summary of discovered updates to the terminal.
 
 ## JSON report
 

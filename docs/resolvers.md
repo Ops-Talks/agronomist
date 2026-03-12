@@ -2,6 +2,7 @@
 
 A resolver is the strategy Agronomist uses to determine the latest available version for a module source. Select one with the `--resolver` flag.
 
+
 ## Comparison
 
 | Resolver | Works with | Authentication | Internet required |

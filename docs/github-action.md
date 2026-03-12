@@ -17,7 +17,13 @@ When running Agronomist in GitHub Actions, you can use these CLI options:
 
 ## Minimal Example
 
-The following workflow installs Agronomist from GitHub Releases and applies updates. It does not create pull requests -- use it as a starting point or for simple single-commit workflows:
+!!! info "Note on Versions"
+    Replace `vX.Y.Z` with the latest stable version from the [Releases page](https://github.com/Ops-Talks/agronomist/releases). To automatically fetch the latest version in a script, you can use:
+    ```sh
+    LATEST=$(curl -s https://api.github.com/repos/Ops-Talks/agronomist/releases/latest | jq -r .tag_name)
+    ```
+
+The following workflow installs Agronomist from GitHub Releases and applies updates:
 
 ```yaml
 name: Agronomist Updates
@@ -33,7 +39,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install Agronomist
         run: |
-          AGRONOMIST_VERSION="v1.2.8"
+          AGRONOMIST_VERSION="vX.Y.Z" # Use the latest version
           WHEEL="agronomist-${AGRONOMIST_VERSION#v}-py3-none-any.whl"
           curl -L -o "$WHEEL" "https://github.com/Ops-Talks/agronomist/releases/download/${AGRONOMIST_VERSION}/${WHEEL}"
           pip install "$WHEEL"

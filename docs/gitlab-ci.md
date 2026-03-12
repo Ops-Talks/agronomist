@@ -2,6 +2,21 @@
 
 This project includes a GitLab pipeline to run Agronomist using GitLab Runners.
 
+## Available CLI Options
+
+When running Agronomist in GitLab CI, you can use these CLI options (either directly in the `script` or mapped via variables):
+
+- `--gitlab-token` GitLab token for API calls and MR creation.
+- `--root` Root directory to scan. Default: `.`
+- `--include` Glob patterns to include. Can be specified multiple times.
+- `--exclude` Glob patterns to exclude. Can be specified multiple times.
+- `--json` JSON report file name. Required for multi-MR workflows.
+- `--markdown` Markdown report file (optional).
+- `--gitlab-base-url` GitLab API base URL (for self-hosted GitLab).
+- `--resolver` Version resolver strategy: `git`, `github`, or `auto`. Default: `git`
+- `--config` Path to configuration file. Default: `.agronomist.yaml`
+- `--validate-token` Validate API token before processing.
+
 ## Requirements
 
 - GitLab Runner with Docker or shell executor.
@@ -28,6 +43,9 @@ This project includes a GitLab pipeline to run Agronomist using GitLab Runners.
 
 ## Minimal Example (single MR)
 
+!!! info "Note on Versions"
+    Replace `vX.Y.Z` with the latest stable version from the [Releases page](https://github.com/Ops-Talks/agronomist/releases). 
+
 The following pipeline applies all updates in a single MR. Use it as a starting point for simple setups:
 
 ```yaml
@@ -42,7 +60,7 @@ workflow:
     - when: never
 
 variables:
-  AGRONOMIST_VERSION: "v1.2.3"
+  AGRONOMIST_VERSION: "vX.Y.Z" # Use the latest version
   AGRONOMIST_ROOT: "."
   AGRONOMIST_RESOLVER: "git"
   AGRONOMIST_CONFIG: ".agronomist.yaml"

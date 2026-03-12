@@ -26,7 +26,7 @@ Scans Terraform/OpenTofu files, identifies available module version updates, and
 
 | Option | Description | Default |
 |--------|-------------|---------|
-| `--root` | Root directory to scan for `.tf` and `.hcl` files. | `.` (current directory) |
+| `--root` | Root directory to scan for Terragrunt (`.hcl`), OpenTofu, and Terraform (`.tf`) files. | `.` (current directory) |
 | `--config` | Path to `.agronomist.yaml` or JSON configuration file. | `.agronomist.yaml` |
 | `--version` | Show the version of Agronomist and exit. | Not set |
 
@@ -55,8 +55,18 @@ Scans Terraform/OpenTofu files, identifies available module version updates, and
 
 | Option | Description | Default |
 |--------|-------------|---------|
-| `--output`, `--json` | Path to write JSON report. | Not set |
-| `--markdown` | Path to write human-readable Markdown report. If omitted, no Markdown is generated. | Not set |
+| `--json` | Path to write JSON report. | Not set |
+| `--markdown` | Path to write human-readable Markdown report. | Not set |
+
+## Reporting Behavior
+
+By default, Agronomist runs the scan and prints a summary of discovered updates to the terminal. **No output files are generated unless explicitly requested.**
+
+- To generate a JSON report, use the `--json <path>` flag.
+- To generate a Markdown summary, use the `--markdown <path>` flag.
+- Both flags can be used simultaneously to produce both formats.
+
+If these flags are omitted, Agronomist will only output its findings to `stdout` and `stderr` (logs).
 
 ### Performance Options
 

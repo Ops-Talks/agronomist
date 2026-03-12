@@ -3,6 +3,7 @@ site_description: Documentation for Agronomist
 site_url: https://ops-talks.github.io/agronomist/
 repo_url: https://github.com/Ops-Talks/agronomist
 repo_name: Ops-Talks/agronomist
+copyright: Copyright &copy; 2024-2026 Agronomist Project
 
 theme:
   name: material

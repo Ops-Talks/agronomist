@@ -38,9 +38,9 @@ Entry point for file discovery. Implements `scan_sources()`, which walks a root 
 
 Filtering is applied during the walk:
 
-- Files matching `file_blacklist` patterns are skipped.
-- Repos matching `repo_blacklist` are excluded from the output.
-- Modules matching `module_blacklist` are excluded from the output.
+- Files matching `blacklist_files` patterns are skipped.
+- Repos matching `blacklist_repos` are excluded from the output.
+- Modules matching `blacklist_modules` are excluded from the output.
 
 The `_parse_git_source()` helper uses a compiled regex to decompose sources of the form `git::https://host/org/repo.git//module/path?ref=vX.Y.Z` into structured fields (`repo_host`, `repo`, `module`, `ref`).
 
@@ -48,7 +48,7 @@ The `_parse_git_source()` helper uses a compiled regex to decompose sources of t
 
 Defines the core dataclasses:
 
-- `SourceRef` -- a single scanned module reference (file path, raw source string, repo, host, current ref, module path). Frozen and immutable.
+- `SourceRef` -- a single scanned module reference (file path, raw source string, repo, repo_url, repo_host, ref, module). Frozen and immutable.
 - `Replacement` -- a single source-string substitution pair (`old` and `new`). Provides `to_dict()` returning `{"from": ..., "to": ...}` for JSON serialization.
 - `UpdateEntry` -- a standalone frozen dataclass representing a version-update action. Contains repo metadata, current and latest refs, affected files, replacement pairs, and an optional category. Provides `to_dict()` for JSON serialization.
 

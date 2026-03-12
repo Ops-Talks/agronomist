@@ -1,8 +1,8 @@
 """Command-line interface for Agronomist.
 
 Provides ``report`` and ``update`` sub-commands for scanning
-Terraform/HCL files, resolving latest module versions, and
-optionally applying in-place updates.
+Terragrunt, OpenTofu, and Terraform/HCL files, resolving latest
+module versions, and optionally applying in-place updates.
 """
 
 from __future__ import annotations
@@ -124,7 +124,9 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
     """
     parser = argparse.ArgumentParser(
         prog="agronomist",
-        description=("Detect and update Terraform module versions across repositories"),
+        description=(
+            "Detect and update Terragrunt, OpenTofu, and Terraform module versions across repositories"
+        ),
         epilog="""
 examples:
   %(prog)s report                           # Generate version report
@@ -144,13 +146,15 @@ examples:
 
     report_parser = subparsers.add_parser(
         "report",
-        help="Generate a version report for all Terraform modules",
+        help="Generate a version report for all Terragrunt, OpenTofu, and Terraform modules",
     )
     _add_common_args(report_parser)
 
     update_parser = subparsers.add_parser(
         "update",
-        help=("Update Terraform modules to their latest versions and generate report"),
+        help=(
+            "Update Terragrunt, OpenTofu, and Terraform modules to their latest versions and generate report"
+        ),
     )
     _add_common_args(update_parser)
 

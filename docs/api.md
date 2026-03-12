@@ -47,9 +47,9 @@ report = build_report(root=".", updates=[u.to_dict() for u in updates])
 
 ### Data models (`models`)
 
-- `SourceRef` -- immutable dataclass representing a scanned module reference (file path, repo, host, ref, module).
+- `SourceRef` -- immutable dataclass representing a scanned module reference (file path, raw, repo, repo_url, repo_host, ref, module).
 - `Replacement` -- immutable dataclass for a single source-string substitution pair. Provides `to_dict()`.
-- `UpdateEntry` -- immutable dataclass for a version-update action. Contains repo metadata, current and latest refs, files, replacements, and optional category. Provides `to_dict()`.
+- `UpdateEntry` -- immutable dataclass for a version-update action. Contains repo, repo_host, repo_url, module, base_module, file, current_ref, latest_ref, strategy, files, replacements, and optional category. Provides `to_dict()`.
 
 ### Scanner (`scanner`)
 
@@ -93,7 +93,7 @@ The installed package version is available programmatically:
 
 ```python
 from agronomist import __version__
-print(__version__)  # e.g. "1.2.3"
+print(__version__)  # e.g. "1.2.10"
 ```
 
 Refer to the source in `src/agronomist` for implementation details.
