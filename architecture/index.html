@@ -1262,15 +1262,15 @@
 <p>Entry point for file discovery. Implements <code>scan_sources()</code>, which walks a root directory recursively, parses every file for <code>source = "..."</code> lines, and extracts structured <code>SourceRef</code> objects for any source that contains a <code>?ref=</code> segment.</p>
 <p>Filtering is applied during the walk:</p>
 <ul>
-<li>Files matching <code>file_blacklist</code> patterns are skipped.</li>
-<li>Repos matching <code>repo_blacklist</code> are excluded from the output.</li>
-<li>Modules matching <code>module_blacklist</code> are excluded from the output.</li>
+<li>Files matching <code>blacklist_files</code> patterns are skipped.</li>
+<li>Repos matching <code>blacklist_repos</code> are excluded from the output.</li>
+<li>Modules matching <code>blacklist_modules</code> are excluded from the output.</li>
 </ul>
 <p>The <code>_parse_git_source()</code> helper uses a compiled regex to decompose sources of the form <code>git::https://host/org/repo.git//module/path?ref=vX.Y.Z</code> into structured fields (<code>repo_host</code>, <code>repo</code>, <code>module</code>, <code>ref</code>).</p>
 <h3 id="models"><code>models</code><a class="headerlink" href="#models" title="Permanent link">&para;</a></h3>
 <p>Defines the core dataclasses:</p>
 <ul>
-<li><code>SourceRef</code> -- a single scanned module reference (file path, raw source string, repo, host, current ref, module path). Frozen and immutable.</li>
+<li><code>SourceRef</code> -- a single scanned module reference (file path, raw source string, repo, repo_url, repo_host, ref, module). Frozen and immutable.</li>
 <li><code>Replacement</code> -- a single source-string substitution pair (<code>old</code> and <code>new</code>). Provides <code>to_dict()</code> returning <code>{"from": ..., "to": ...}</code> for JSON serialization.</li>
 <li><code>UpdateEntry</code> -- a standalone frozen dataclass representing a version-update action. Contains repo metadata, current and latest refs, affected files, replacement pairs, and an optional category. Provides <code>to_dict()</code> for JSON serialization.</li>
 </ul>
@@ -1356,6 +1356,10 @@
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
       <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024-2026 Agronomist Project
+    </div>
   
   
     Made with

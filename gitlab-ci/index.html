@@ -614,6 +614,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#available-cli-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Available CLI Options
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#requirements" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -937,6 +948,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#available-cli-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Available CLI Options
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#requirements" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1039,6 +1061,20 @@
 
 <h1 id="gitlab-ci">GitLab CI<a class="headerlink" href="#gitlab-ci" title="Permanent link">&para;</a></h1>
 <p>This project includes a GitLab pipeline to run Agronomist using GitLab Runners.</p>
+<h2 id="available-cli-options">Available CLI Options<a class="headerlink" href="#available-cli-options" title="Permanent link">&para;</a></h2>
+<p>When running Agronomist in GitLab CI, you can use these CLI options (either directly in the <code>script</code> or mapped via variables):</p>
+<ul>
+<li><code>--gitlab-token</code> GitLab token for API calls and MR creation.</li>
+<li><code>--root</code> Root directory to scan. Default: <code>.</code></li>
+<li><code>--include</code> Glob patterns to include. Can be specified multiple times.</li>
+<li><code>--exclude</code> Glob patterns to exclude. Can be specified multiple times.</li>
+<li><code>--json</code> JSON report file name. Required for multi-MR workflows.</li>
+<li><code>--markdown</code> Markdown report file (optional).</li>
+<li><code>--gitlab-base-url</code> GitLab API base URL (for self-hosted GitLab).</li>
+<li><code>--resolver</code> Version resolver strategy: <code>git</code>, <code>github</code>, or <code>auto</code>. Default: <code>git</code></li>
+<li><code>--config</code> Path to configuration file. Default: <code>.agronomist.yaml</code></li>
+<li><code>--validate-token</code> Validate API token before processing.</li>
+</ul>
 <h2 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">&para;</a></h2>
 <ul>
 <li>GitLab Runner with Docker or shell executor.</li>
@@ -1064,6 +1100,10 @@
 <li><strong>Report handling</strong>: Generates <code>report.json</code> during the pipeline to extract per-module file lists. The report is consumed in-pipeline and is not committed to the repository.</li>
 </ul>
 <h2 id="minimal-example-single-mr">Minimal Example (single MR)<a class="headerlink" href="#minimal-example-single-mr" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p class="admonition-title">Note on Versions</p>
+<p>Replace <code>vX.Y.Z</code> with the latest stable version from the <a href="https://github.com/Ops-Talks/agronomist/releases">Releases page</a>. </p>
+</div>
 <p>The following pipeline applies all updates in a single MR. Use it as a starting point for simple setups:</p>
 <div class="language-yaml highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">stages</span><span class="p">:</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">update</span>
@@ -1076,7 +1116,7 @@
 </span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">when</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">never</span>
 </span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
 </span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="nt">variables</span><span class="p">:</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">  </span><span class="nt">AGRONOMIST_VERSION</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;v1.2.3&quot;</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">  </span><span class="nt">AGRONOMIST_VERSION</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;vX.Y.Z&quot;</span><span class="w"> </span><span class="c1"># Use the latest version</span>
 </span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">  </span><span class="nt">AGRONOMIST_ROOT</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;.&quot;</span>
 </span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">  </span><span class="nt">AGRONOMIST_RESOLVER</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;git&quot;</span>
 </span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">  </span><span class="nt">AGRONOMIST_CONFIG</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;.agronomist.yaml&quot;</span>
@@ -1238,6 +1278,10 @@
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
       <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024-2026 Agronomist Project
+    </div>
   
   
     Made with
