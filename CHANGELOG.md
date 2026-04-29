@@ -7,6 +7,27 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [Unreleased]
+
+### Security
+
+- **CodeQL** — added `.github/workflows/codeql.yml` for advanced Python SAST
+  (taint analysis, dataflow, injection, SSRF) via `github/codeql-action@v3`,
+  triggered on `push`/`pull_request` to `main` and weekly on Mondays at 06:00
+  UTC.
+- **Dependabot** — added `.github/dependabot.yml` covering three ecosystems:
+  `pip` (Poetry / `pyproject.toml`), `github-actions` (all workflows), and
+  `docker` (`Dockerfile`). Dev-dependency updates are grouped into a single
+  weekly PR to reduce noise.
+- **Gitleaks** — added `.github/workflows/gitleaks.yml` for secret scanning on
+  every push/PR and a full history scan weekly (Mondays 07:00 UTC). Also added
+  the `gitleaks` pre-commit hook (`v8.21.2`) so secrets are caught locally
+  before a commit reaches the remote. A minimal `.gitleaks.toml` allowlist
+  suppresses false positives from `poetry.lock`, `assets/`, `docs/` and `*.md`
+  files.
+
+---
+
 ## [1.2.9] -- 2026-03-10
 
 ### Added

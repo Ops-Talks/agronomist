@@ -1,0 +1,20 @@
+# Gitleaks configuration — extends the default ruleset with project-specific
+# allowlists to reduce false positives from lock files, docs and assets.
+title = "agronomist gitleaks config"
+
+[extend]
+# Inherit all default Gitleaks rules.
+useDefault = true
+
+[allowlist]
+description = "Ignore generated/binary/documentation paths that commonly trigger false positives"
+paths = [
+  # Poetry lock file contains hashes that look like secrets.
+  '''poetry\.lock''',
+  # Static assets (images, SVGs, fonts) may contain base64 data.
+  '''assets/''',
+  # Documentation sources are plain-text and reviewed separately.
+  '''docs/''',
+  # Markdown files often contain example tokens in code blocks.
+  '''.*\.md''',
+]
