@@ -29,7 +29,4 @@ jobs:
         uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
-          # Uncomment the line above and configure the GITLEAKS_LICENSE secret
-          # if this organisation is considered a paid user by Gitleaks.
-          # For public repositories the action runs in community/free mode.
+          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
