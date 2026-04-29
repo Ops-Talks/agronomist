@@ -25,6 +25,12 @@ repos:
         args: [--skip, B101,B601]
         exclude: ^test/
 
+  # Secret detection with Gitleaks
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.21.2
+    hooks:
+      - id: gitleaks
+
   # Remove dead code with Eradicate
   - repo: https://github.com/asottile/eradicate
     rev: 2.3.0

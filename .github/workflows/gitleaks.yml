@@ -1,0 +1,35 @@
+name: Gitleaks
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "0 7 * * 1"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  scan:
+    name: Scan for secrets
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
+          # Uncomment the line above and configure the GITLEAKS_LICENSE secret
+          # if this organisation is considered a paid user by Gitleaks.
+          # For public repositories the action runs in community/free mode.
