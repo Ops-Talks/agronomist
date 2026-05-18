@@ -168,8 +168,12 @@ class GitHubClient:
             tag = self.latest_release_tag(repo)
             if tag:
                 return tag
-        except NetworkError:
-            pass
+        except NetworkError as exc:
+            logger.debug(
+                "GitHub: failed to fetch latest release for %s, falling back to tags: %s",
+                repo,
+                exc,
+            )
         try:
             return self.latest_tag(repo)
         except NetworkError:
