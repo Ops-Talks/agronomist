@@ -9,7 +9,8 @@ A resolver is the strategy Agronomist uses to determine the latest available ver
 |----------|-----------|----------------|------------------|
 | `git` (default) | Any Git host | None | Yes, via Git protocol |
 | `github` | GitHub only | Optional, recommended | Yes |
-| `auto` | GitHub, GitLab, other | Optional per host | Yes |
+| `bitbucket` | Bitbucket Cloud only | Optional, recommended | Yes |
+| `auto` | GitHub, GitLab, Bitbucket, other | Optional per host | Yes |
 
 ---
 
@@ -79,17 +80,76 @@ agronomist report \
 
 ---
 
+## bitbucket
+
+Uses the Bitbucket Cloud REST API to fetch tags for the module repository.
+
+**When to use it:**
+
+- All your module sources are hosted on Bitbucket Cloud.
+- You want API-based resolution instead of `git ls-remote`.
+- You need token-authenticated access to private Bitbucket Cloud repositories.
+
+**Authentication:**
+
+Provide a Bitbucket Repository Access Token with repository read access:
+
+```sh
+export BITBUCKET_TOKEN="..."
+agronomist report --root ./infrastructure --resolver bitbucket
+```
+
+Or pass it directly:
+
+```sh
+agronomist report --root ./infrastructure --resolver bitbucket --bitbucket-token "$BITBUCKET_TOKEN"
+```
+
+For App Password Basic Auth, also provide your Bitbucket username:
+
+```sh
+agronomist report \
+  --root ./infrastructure \
+  --resolver bitbucket \
+  --bitbucket-username "$BITBUCKET_USERNAME" \
+  --bitbucket-token "$BITBUCKET_TOKEN"
+```
+
+**Bitbucket Cloud:**
+
+Bitbucket Cloud uses the API base URL `https://api.bitbucket.org/2.0` by default:
+
+```sh
+agronomist report \
+  --resolver bitbucket \
+  --bitbucket-base-url https://api.bitbucket.org/2.0
+```
+
+**Limitations:**
+
+- Only works with Bitbucket Cloud. Bitbucket Server/Data Center support is a future TODO.
+- Requires a token for private repositories.
+
+**Example:**
+
+```sh
+agronomist report --root ./infrastructure --resolver bitbucket
+```
+
+---
+
 ## auto
 
 Automatically selects the most appropriate resolver based on the hostname in each module's source URL.
 
 - GitLab hostnames use the GitLab API.
 - GitHub hostnames use the GitHub API.
+- Bitbucket Cloud hostnames use the Bitbucket API.
 - All other hostnames fall back to the `git` resolver.
 
 **When to use it:**
 
-- Your infrastructure uses modules from a mix of GitHub and GitLab repositories.
+- Your infrastructure uses modules from a mix of GitHub, GitLab, and Bitbucket repositories.
 - You want optimal resolution per host without manual `--resolver` switching.
 
 **Authentication:**
@@ -99,6 +159,7 @@ Configure tokens for each platform as needed:
 ```sh
 export GITHUB_TOKEN="ghp_..."
 export GITLAB_TOKEN="glpat-..."
+export BITBUCKET_TOKEN="..."
 agronomist report --root ./infrastructure --resolver auto
 ```
 
@@ -115,7 +176,7 @@ The GitLab resolver detects GitLab hosts by inspecting the hostname in each modu
 
 ## Choosing a resolver
 
-Use `git` as the default in most environments. Switch to `github` or `auto` when you need release-aware resolution or are scanning repositories across multiple Git hosting platforms where API tokens are already available.
+Use `git` as the default in most environments. Switch to `github`, `bitbucket`, or `auto` when you need release-aware resolution or are scanning repositories across multiple Git hosting platforms where API tokens are already available.
 
 See [CLI Reference](cli.md#resolution-strategies) for the full flag reference.
 

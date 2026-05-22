@@ -9,16 +9,16 @@ Agronomist continuously monitors and reports on module version updates across Te
 ## How it works
 
 1. Scan `.tf` and `.hcl` files for `source` references that contain `?ref=`.
-2. Resolve the latest available version using Git tags, the GitHub API, or the GitLab API.
+2. Resolve the latest available version using Git tags, the GitHub API, the GitLab API, or the Bitbucket API.
 3. Generate a structured JSON report and an optional human-readable Markdown summary.
 4. Optionally apply updates in place across all affected files.
 
 ## Core features
 
-- Multi-resolver support: Git, GitHub API, GitLab API, or automatic detection.
+- Multi-resolver support: Git, GitHub API, GitLab API, Bitbucket API, or automatic detection.
 - Category tagging for grouping updates by team or domain (e.g., `aws`, `database`).
 - Blacklist filtering to permanently ignore specific repositories, modules, or files.
-- CI/CD integration for GitHub Actions and GitLab CI, including automated pull and merge request creation.
+- CI/CD integration for GitHub Actions, GitLab CI, and Bitbucket Pipelines, including automated pull and merge request creation.
 - Python library API for custom automation workflows.
 
 ---
@@ -34,6 +34,7 @@ If you want to install Agronomist and run it against your infrastructure reposit
 - [Reports](reports.md) — understand the JSON and Markdown report formats.
 - [GitHub Action](github-action.md) — automate updates via GitHub Actions workflows.
 - [GitLab CI](gitlab-ci.md) — automate updates via GitLab CI pipelines with automatic MR creation.
+- [Bitbucket Pipelines](bitbucket-pipelines.md) — automate updates via Bitbucket Cloud Pipelines with automatic PR creation.
 - [Troubleshooting](troubleshooting.md) — common issues and solutions.
 
 ## For contributors and developers

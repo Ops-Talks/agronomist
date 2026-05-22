@@ -568,3 +568,114 @@ class TestCliMain:
         assert result == 0
         gl_client.latest_ref.assert_called_once()
         git_client.latest_ref.assert_called_once()
+
+
+class TestCliBitbucket:
+    """Test Bitbucket integration in CLI."""
+
+    def _config(self):
+        return Config(categories=[], blacklist=Blacklist(repos=[], modules=[], files=[]))
+
+    @patch("agronomist.cli.GitClient")
+    @patch("agronomist.cli.BitbucketClient")
+    @patch("agronomist.cli.GitLabClient")
+    @patch("agronomist.cli.GitHubClient")
+    @patch("agronomist.cli.scan_sources")
+    @patch("agronomist.cli.load_config")
+    def test_main_bitbucket_token_env_var(
+        self,
+        mock_load_config,
+        mock_scan_sources,
+        _mock_gh_cls,
+        _mock_gl_cls,
+        mock_bb_cls,
+        _mock_git_cls,
+        monkeypatch,
+    ):
+        """Test BITBUCKET_TOKEN env var is picked up by BitbucketClient."""
+        mock_load_config.return_value = self._config()
+        mock_scan_sources.return_value = []
+        monkeypatch.setenv("BITBUCKET_TOKEN", "env-bb-token")
+
+        result = main(["report"])
+
+        assert result == 0
+        mock_bb_cls.assert_called_once()
+        kwargs = mock_bb_cls.call_args.kwargs
+        assert kwargs["token"] == "env-bb-token"
+
+    @patch("agronomist.cli.apply_updates")
+    @patch("agronomist.cli.GitClient")
+    @patch("agronomist.cli.BitbucketClient")
+    @patch("agronomist.cli.GitLabClient")
+    @patch("agronomist.cli.GitHubClient")
+    @patch("agronomist.cli.scan_sources")
+    @patch("agronomist.cli.load_config")
+    def test_main_resolver_bitbucket(
+        self,
+        mock_load_config,
+        mock_scan_sources,
+        _mock_gh_cls,
+        _mock_gl_cls,
+        mock_bb_cls,
+        mock_git_cls,
+        _mock_apply,
+    ):
+        """Test --resolver bitbucket uses BitbucketClient.latest_ref."""
+        mock_load_config.return_value = self._config()
+        source = _mk_source(
+            repo="ws/repo",
+            repo_url="https://bitbucket.org/ws/repo.git",
+            repo_host="bitbucket.org",
+            ref="v1.0.0",
+        )
+        mock_scan_sources.return_value = [source]
+
+        bb_client = MagicMock()
+        bb_client.latest_ref.return_value = "v2.0.0"
+        mock_bb_cls.return_value = bb_client
+        mock_bb_cls.detect_bitbucket_host.return_value = "https://bitbucket.org"
+
+        git_client = MagicMock()
+        mock_git_cls.return_value = git_client
+
+        result = main(["report", "--resolver", "bitbucket"])
+
+        assert result == 0
+        bb_client.latest_ref.assert_called_once()
+
+    @patch("agronomist.cli.GitClient")
+    @patch("agronomist.cli.BitbucketClient")
+    @patch("agronomist.cli.GitLabClient")
+    @patch("agronomist.cli.GitHubClient")
+    @patch("agronomist.cli.scan_sources")
+    @patch("agronomist.cli.load_config")
+    def test_main_validate_token_bitbucket_fail(
+        self,
+        mock_load_config,
+        mock_scan_sources,
+        mock_gh_cls,
+        mock_gl_cls,
+        mock_bb_cls,
+        _mock_git_cls,
+    ):
+        """Test --validate-token surfaces Bitbucket auth failures."""
+        mock_load_config.return_value = self._config()
+        mock_scan_sources.return_value = []
+
+        gh_client = MagicMock()
+        gh_client.validate_token.return_value = True
+        mock_gh_cls.return_value = gh_client
+        gl_client = MagicMock()
+        gl_client.validate_token.return_value = True
+        mock_gl_cls.return_value = gl_client
+        bb_client = MagicMock()
+        bb_client.validate_token.side_effect = AuthenticationError(
+            "Bitbucket token invalid or expired"
+        )
+        mock_bb_cls.return_value = bb_client
+
+        result = main(["report", "--validate-token", "--bitbucket-token", "bad"])
+
+        assert result == 1
+        bb_client.validate_token.assert_called_once()

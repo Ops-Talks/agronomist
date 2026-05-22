@@ -144,6 +144,27 @@ class TestParseGitSource:
         assert result.module == "modules/vpc"
         assert result.repo_url == ("https://github.com/owner/repo")
 
+    def test_parse_https_bitbucket_url(self):
+        """Test parsing HTTPS Bitbucket URL with module and ref."""
+        source = "https://bitbucket.org/myworkspace/myrepo.git//modules/vpc?ref=v1.0.0"
+        result = _parse_git_source(source)
+
+        assert result is not None
+        assert result.repo == "myworkspace/myrepo"
+        assert result.repo_host == "bitbucket.org"
+        assert result.module == "modules/vpc"
+        assert result.ref == "v1.0.0"
+
+    def test_parse_scp_bitbucket_url(self):
+        """Test parsing SCP-style SSH Bitbucket URL."""
+        source = "git@bitbucket.org:myworkspace/myrepo.git?ref=v2.0.0"
+        result = _parse_git_source(source)
+
+        assert result is not None
+        assert result.repo_url == "https://bitbucket.org/myworkspace/myrepo"
+        assert result.repo_host == "bitbucket.org"
+        assert result.ref == "v2.0.0"
+
 
 class TestScanSources:
     """Test source scanning functionality."""

@@ -81,6 +81,30 @@ class TestParseArgsReportCommand:
 
         assert args.resolver == "auto"
 
+    def test_parse_args_resolver_bitbucket(self):
+        """Test bitbucket resolver."""
+        args = _parse_args(["report", "--resolver", "bitbucket"])
+
+        assert args.resolver == "bitbucket"
+
+    def test_parse_args_bitbucket_token(self):
+        """Test --bitbucket-token argument."""
+        args = _parse_args(["report", "--bitbucket-token", "bb-token"])
+
+        assert args.bitbucket_token == "bb-token"
+
+    def test_parse_args_bitbucket_username(self):
+        """Test --bitbucket-username argument."""
+        args = _parse_args(["report", "--bitbucket-username", "alice"])
+
+        assert args.bitbucket_username == "alice"
+
+    def test_parse_args_bitbucket_base_url_default(self):
+        """Test default --bitbucket-base-url value."""
+        args = _parse_args(["report"])
+
+        assert args.bitbucket_base_url == "https://api.bitbucket.org/2.0"
+
     def test_parse_args_json_flag(self):
         """Test --json flag for JSON report output."""
         args = _parse_args(["report", "--json", "custom-report.json"])
