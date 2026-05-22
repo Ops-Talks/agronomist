@@ -60,12 +60,13 @@ class BitbucketClient:
             repo_url: Full repository URL to inspect.
 
         Returns:
-            ``"https://bitbucket.org"`` when the URL netloc
-            contains ``bitbucket.org``, None otherwise.
+            ``"https://bitbucket.org"`` when the URL hostname
+            is exactly ``bitbucket.org``, None otherwise.
         """
         try:
             parsed = urlparse(repo_url)
-            if "bitbucket.org" in parsed.netloc:
+            host = parsed.hostname
+            if host and host.lower() == "bitbucket.org":
                 return "https://bitbucket.org"
         except Exception:  # nosec B110
             logger.debug(
