@@ -661,6 +661,33 @@
   
   
     <li class="md-nav__item">
+      <a href="./bitbucket-pipelines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Bitbucket Pipelines
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="./troubleshooting/" class="md-nav__link">
         
   
@@ -962,16 +989,16 @@
 <h2 id="how-it-works">How it works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h2>
 <ol>
 <li>Scan <code>.tf</code> and <code>.hcl</code> files for <code>source</code> references that contain <code>?ref=</code>.</li>
-<li>Resolve the latest available version using Git tags, the GitHub API, or the GitLab API.</li>
+<li>Resolve the latest available version using Git tags, the GitHub API, the GitLab API, or the Bitbucket API.</li>
 <li>Generate a structured JSON report and an optional human-readable Markdown summary.</li>
 <li>Optionally apply updates in place across all affected files.</li>
 </ol>
 <h2 id="core-features">Core features<a class="headerlink" href="#core-features" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Multi-resolver support: Git, GitHub API, GitLab API, or automatic detection.</li>
+<li>Multi-resolver support: Git, GitHub API, GitLab API, Bitbucket API, or automatic detection.</li>
 <li>Category tagging for grouping updates by team or domain (e.g., <code>aws</code>, <code>database</code>).</li>
 <li>Blacklist filtering to permanently ignore specific repositories, modules, or files.</li>
-<li>CI/CD integration for GitHub Actions and GitLab CI, including automated pull and merge request creation.</li>
+<li>CI/CD integration for GitHub Actions, GitLab CI, and Bitbucket Pipelines, including automated pull and merge request creation.</li>
 <li>Python library API for custom automation workflows.</li>
 </ul>
 <hr />
@@ -985,6 +1012,7 @@
 <li><a href="reports/">Reports</a> — understand the JSON and Markdown report formats.</li>
 <li><a href="github-action/">GitHub Action</a> — automate updates via GitHub Actions workflows.</li>
 <li><a href="gitlab-ci/">GitLab CI</a> — automate updates via GitLab CI pipelines with automatic MR creation.</li>
+<li><a href="bitbucket-pipelines/">Bitbucket Pipelines</a> — automate updates via Bitbucket Cloud Pipelines with automatic PR creation.</li>
 <li><a href="troubleshooting/">Troubleshooting</a> — common issues and solutions.</li>
 </ul>
 <h2 id="for-contributors-and-developers">For contributors and developers<a class="headerlink" href="#for-contributors-and-developers" title="Permanent link">&para;</a></h2>

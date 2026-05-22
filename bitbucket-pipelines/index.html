@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://ops-talks.github.io/agronomist/troubleshooting/">
+        <link rel="canonical" href="https://ops-talks.github.io/agronomist/bitbucket-pipelines/">
       
       
-        <link rel="prev" href="../bitbucket-pipelines/">
+        <link rel="prev" href="../gitlab-ci/">
       
       
-        <link rel="next" href="../architecture/">
+        <link rel="next" href="../troubleshooting/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Troubleshooting - Agronomist</title>
+        <title>Bitbucket Pipelines - Agronomist</title>
       
     
     
@@ -85,7 +85,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#troubleshooting" class="md-skip">
+        <a href="#bitbucket-pipelines" class="md-skip">
           Skip to content
         </a>
       
@@ -118,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Troubleshooting
+              Bitbucket Pipelines
             
           </span>
         </div>
@@ -574,33 +574,6 @@
                 
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../bitbucket-pipelines/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-  Bitbucket Pipelines
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
     
   
   
@@ -620,7 +593,7 @@
   <span class="md-ellipsis">
     
   
-  Troubleshooting
+  Bitbucket Pipelines
 
     
   </span>
@@ -637,7 +610,7 @@
   <span class="md-ellipsis">
     
   
-  Troubleshooting
+  Bitbucket Pipelines
 
     
   </span>
@@ -663,10 +636,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#git-is-not-installed" class="md-nav__link">
+  <a href="#available-cli-options" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Git is not installed
+        Available CLI Options
       </span>
     </span>
   </a>
@@ -674,10 +647,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#githubgitlab-token-errors" class="md-nav__link">
+  <a href="#requirements" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        GitHub/GitLab token errors
+        Requirements
       </span>
     </span>
   </a>
@@ -685,10 +658,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#no-updates-found" class="md-nav__link">
+  <a href="#variables" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        No updates found
+        Variables
       </span>
     </span>
   </a>
@@ -696,10 +669,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pre-commit-python-version-errors" class="md-nav__link">
+  <a href="#pipeline-overview" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Pre-commit Python version errors
+        Pipeline overview
       </span>
     </span>
   </a>
@@ -707,10 +680,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#github-api-base-url-issues" class="md-nav__link">
+  <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        GitHub API base URL issues
+        Example
       </span>
     </span>
   </a>
@@ -718,10 +691,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gitlab-api-issues" class="md-nav__link">
+  <a href="#authentication-notes" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        GitLab API issues
+        Authentication notes
       </span>
     </span>
   </a>
@@ -729,10 +702,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#resolver-issues" class="md-nav__link">
+  <a href="#limitations" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Resolver issues
+        Limitations
       </span>
     </span>
   </a>
@@ -743,6 +716,33 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Troubleshooting
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -959,10 +959,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#git-is-not-installed" class="md-nav__link">
+  <a href="#available-cli-options" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Git is not installed
+        Available CLI Options
       </span>
     </span>
   </a>
@@ -970,10 +970,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#githubgitlab-token-errors" class="md-nav__link">
+  <a href="#requirements" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        GitHub/GitLab token errors
+        Requirements
       </span>
     </span>
   </a>
@@ -981,10 +981,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#no-updates-found" class="md-nav__link">
+  <a href="#variables" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        No updates found
+        Variables
       </span>
     </span>
   </a>
@@ -992,10 +992,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pre-commit-python-version-errors" class="md-nav__link">
+  <a href="#pipeline-overview" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Pre-commit Python version errors
+        Pipeline overview
       </span>
     </span>
   </a>
@@ -1003,10 +1003,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#github-api-base-url-issues" class="md-nav__link">
+  <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        GitHub API base URL issues
+        Example
       </span>
     </span>
   </a>
@@ -1014,10 +1014,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gitlab-api-issues" class="md-nav__link">
+  <a href="#authentication-notes" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        GitLab API issues
+        Authentication notes
       </span>
     </span>
   </a>
@@ -1025,10 +1025,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#resolver-issues" class="md-nav__link">
+  <a href="#limitations" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Resolver issues
+        Limitations
       </span>
     </span>
   </a>
@@ -1053,37 +1053,85 @@
   
 
 
-<h1 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h1>
-<h2 id="git-is-not-installed">Git is not installed<a class="headerlink" href="#git-is-not-installed" title="Permanent link">&para;</a></h2>
-<p>Agronomist uses <code>git ls-remote</code>. Install Git and ensure it is on your PATH.</p>
-<h2 id="githubgitlab-token-errors">GitHub/GitLab token errors<a class="headerlink" href="#githubgitlab-token-errors" title="Permanent link">&para;</a></h2>
+<h1 id="bitbucket-pipelines">Bitbucket Pipelines<a class="headerlink" href="#bitbucket-pipelines" title="Permanent link">&para;</a></h1>
+<p>This project includes a Bitbucket Pipelines template to run Agronomist using Bitbucket Cloud Pipelines.</p>
+<h2 id="available-cli-options">Available CLI Options<a class="headerlink" href="#available-cli-options" title="Permanent link">&para;</a></h2>
+<p>When running Agronomist in Bitbucket Pipelines, you can use these CLI options (either directly in the <code>script</code> or mapped via variables):</p>
 <ul>
-<li><code>401</code> means the token is invalid or expired.</li>
-<li><code>403</code> means the token lacks permissions or rate limit was hit.</li>
-<li>For GitHub, ensure the token has <code>public_repo</code> or <code>repo</code> scope.</li>
-<li>For GitLab, ensure the token has <code>read_api</code> scope.</li>
+<li><code>--bitbucket-token</code> Bitbucket token for API calls and PR creation.</li>
+<li><code>--bitbucket-username</code> Optional Bitbucket username for App Password Basic Auth. When omitted, Agronomist uses Bearer authentication for Repository Access Tokens.</li>
+<li><code>--root</code> Root directory to scan. Default: <code>.</code></li>
+<li><code>--include</code> Glob patterns to include. Can be specified multiple times.</li>
+<li><code>--exclude</code> Glob patterns to exclude. Can be specified multiple times.</li>
+<li><code>--json</code> JSON report file name. Required for multi-PR workflows.</li>
+<li><code>--markdown</code> Markdown report file (optional).</li>
+<li><code>--bitbucket-base-url</code> Bitbucket API base URL. Default: <code>https://api.bitbucket.org/2.0</code></li>
+<li><code>--resolver</code> Version resolver strategy: <code>git</code>, <code>github</code>, <code>bitbucket</code>, or <code>auto</code>. Default: <code>git</code></li>
+<li><code>--config</code> Path to configuration file. Default: <code>.agronomist.yaml</code></li>
+<li><code>--validate-token</code> Validate API token before processing.</li>
 </ul>
-<p><strong>Tip</strong>: Use <code>--validate-token</code> to check token validity before processing.</p>
-<h2 id="no-updates-found">No updates found<a class="headerlink" href="#no-updates-found" title="Permanent link">&para;</a></h2>
+<h2 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Ensure your sources use <code>?ref=</code> in the <code>source</code> string.</li>
-<li>Confirm the repository has tags.</li>
-<li>Check if the repository is blacklisted in <code>.agronomist.yaml</code>.</li>
+<li>Bitbucket Cloud Pipelines enabled for the repository.</li>
+<li>Bitbucket token stored as a secured repository or workspace variable.</li>
+<li><code>git</code>, <code>curl</code>, and <code>jq</code> installed in the pipeline image.</li>
 </ul>
-<h2 id="pre-commit-python-version-errors">Pre-commit Python version errors<a class="headerlink" href="#pre-commit-python-version-errors" title="Permanent link">&para;</a></h2>
-<p>If pre-commit cannot find <code>python3.10</code>, install it or set:</p>
-<div class="language-yaml highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">default_language_version</span><span class="p">:</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">python</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python3</span>
+<h2 id="variables">Variables<a class="headerlink" href="#variables" title="Permanent link">&para;</a></h2>
+<ul>
+<li><code>BITBUCKET_TOKEN</code> Token used by Agronomist for Bitbucket API calls and PR creation.</li>
+<li><code>BITBUCKET_WORKSPACE</code> Workspace slug. Provided automatically by Bitbucket Pipelines.</li>
+<li><code>BITBUCKET_REPO_SLUG</code> Repository slug. Provided automatically by Bitbucket Pipelines.</li>
+<li><code>AGRONOMIST_VERSION</code> Agronomist release or package version (e.g. <code>1.2.10</code>).</li>
+<li><code>AGRONOMIST_ROOT</code> Root directory to scan. Default: <code>.</code></li>
+<li><code>AGRONOMIST_RESOLVER</code> Resolver strategy: <code>git</code>, <code>github</code>, <code>bitbucket</code>, or <code>auto</code>. Default: <code>auto</code>.</li>
+<li><code>AGRONOMIST_CONFIG</code> Path to configuration file (supports category rules and blacklist filters). Default: <code>.agronomist.yaml</code>.</li>
+<li><code>PR_BODY</code> Pull Request description. Default: <code>Updates generated by Agronomist.</code>.</li>
+<li><code>PR_TARGET_BRANCH</code> Target branch for PR. Default: <code>main</code> or <code>$BITBUCKET_BRANCH</code>.</li>
+</ul>
+<h2 id="pipeline-overview">Pipeline overview<a class="headerlink" href="#pipeline-overview" title="Permanent link">&para;</a></h2>
+<ul>
+<li><code>agronomist-update</code> custom pipeline runs Agronomist, applies changes, and automatically creates one Pull Request per updated module if updates are found.</li>
+<li><strong>Manual and scheduled runs</strong>: Bitbucket custom pipelines are triggered manually or from a repository schedule.</li>
+<li><strong>Dynamic branch naming</strong>: Each PR branch is named <code>agronomist/update-&lt;base-module&gt;-&lt;hash8&gt;</code>, where <code>&lt;hash8&gt;</code> is the first 8 characters of the SHA-256 hash of the full module ID. This keeps branch names short and guarantees uniqueness across files.</li>
+<li><strong>Git configuration</strong>: The template configures Git to use <code>BITBUCKET_TOKEN</code> with the <code>x-token-auth</code> user for HTTPS access to private repositories.</li>
+<li><strong>PR cleanup</strong>: Deletes existing remote branch before pushing to avoid conflicts when re-running the pipeline.</li>
+<li><strong>Report handling</strong>: Generates <code>report.json</code> during the pipeline to extract per-module file lists. The report is consumed in-pipeline and is not committed to the repository.</li>
+</ul>
+<h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
+<p>See <a href="https://github.com/ops-talks/agronomist/blob/main/examples/bitbucket-pipelines.yml">examples/bitbucket-pipelines.yml</a> and <a href="https://github.com/ops-talks/agronomist/blob/main/examples/bitbucket/create_pr.sh">examples/bitbucket/create_pr.sh</a> for the full pipeline and helper script.</p>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python:3.12-slim</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nt">pipelines</span><span class="p">:</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span><span class="nt">custom</span><span class="p">:</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="nt">agronomist-update</span><span class="p">:</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">step</span><span class="p">:</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run Agronomist update</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">          </span><span class="nt">script</span><span class="p">:</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">apt-get update -qq &amp;&amp; apt-get install -y -qq git curl jq ca-certificates</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pip install -q &quot;agronomist==${AGRONOMIST_VERSION}&quot;</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">git config user.name &quot;agronomist-bot&quot;</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">git config user.email &quot;agronomist@bot.local&quot;</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">git config --global url.&quot;https://x-token-auth:${BITBUCKET_TOKEN}@bitbucket.org/&quot;.insteadOf &quot;https://bitbucket.org/&quot;</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">agronomist update --root &quot;${AGRONOMIST_ROOT:-.}&quot; --resolver &quot;${AGRONOMIST_RESOLVER:-auto}&quot; --config &quot;${AGRONOMIST_CONFIG:-.agronomist.yaml}&quot; --json report.json --bitbucket-token &quot;$BITBUCKET_TOKEN&quot;</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bash examples/bitbucket/create_pr.sh</span>
 </span></code></pre></div>
-<h2 id="github-api-base-url-issues">GitHub API base URL issues<a class="headerlink" href="#github-api-base-url-issues" title="Permanent link">&para;</a></h2>
-<p>For GitHub Enterprise, set <code>--github-base-url</code> to your API endpoint (e.g., <code>https://github.company.com/api/v3</code>).</p>
-<h2 id="gitlab-api-issues">GitLab API issues<a class="headerlink" href="#gitlab-api-issues" title="Permanent link">&para;</a></h2>
-<p>For self-hosted GitLab instances, set <code>--gitlab-base-url</code> to your instance URL and use <code>--gitlab-token</code> for authentication.</p>
-<h2 id="resolver-issues">Resolver issues<a class="headerlink" href="#resolver-issues" title="Permanent link">&para;</a></h2>
+<h2 id="authentication-notes">Authentication notes<a class="headerlink" href="#authentication-notes" title="Permanent link">&para;</a></h2>
+<p>Agronomist supports two Bitbucket Cloud authentication modes:</p>
 <ul>
-<li><strong>git resolver</strong>: Requires Git installed and network access to repositories.</li>
-<li><strong>github/gitlab resolvers</strong>: Require valid tokens and API access.</li>
-<li><strong>auto resolver</strong>: Falls back to git if API resolvers fail. Check logs for details.</li>
+<li><strong>Repository Access Token (Bearer)</strong>: Set <code>BITBUCKET_TOKEN</code> or pass <code>--bitbucket-token</code>. Do not set <code>--bitbucket-username</code>; Agronomist sends the token as a Bearer token.</li>
+<li><strong>App Password (Basic)</strong>: Pass both <code>--bitbucket-username</code> and <code>--bitbucket-token</code>. Agronomist sends Basic authentication using username + token.</li>
+</ul>
+<p>The helper script uses Bitbucket's HTTPS Git convention for pushes and PR creation:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>url.<span class="s2">&quot;https://x-token-auth:</span><span class="si">${</span><span class="nv">BITBUCKET_TOKEN</span><span class="si">}</span><span class="s2">@bitbucket.org/&quot;</span>.insteadOf<span class="w"> </span><span class="s2">&quot;https://bitbucket.org/&quot;</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>curl<span class="w"> </span>-u<span class="w"> </span><span class="s2">&quot;x-token-auth:</span><span class="si">${</span><span class="nv">BITBUCKET_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;https://api.bitbucket.org/2.0/repositories/</span><span class="si">${</span><span class="nv">BITBUCKET_WORKSPACE</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">BITBUCKET_REPO_SLUG</span><span class="si">}</span><span class="s2">/pullrequests&quot;</span>
+</span></code></pre></div>
+<p>Store <code>BITBUCKET_TOKEN</code> as a secured Bitbucket variable. Never hardcode tokens in the pipeline file.</p>
+<h2 id="limitations">Limitations<a class="headerlink" href="#limitations" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Bitbucket support is Cloud-only. Bitbucket Server/Data Center support is a future TODO.</li>
+<li>The template creates one PR per updated module and assumes <code>report.json</code> contains file lists for each update.</li>
+<li>The helper requires <code>jq</code>; install it in the image before running the script.</li>
+<li>If a PR already exists for a recreated branch, the Bitbucket API call may fail and the script logs the failure without exposing secrets.</li>
 </ul>
 
 

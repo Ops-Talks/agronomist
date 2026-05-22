@@ -647,6 +647,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#bitbucket" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>bitbucket</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#auto" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -734,6 +745,17 @@
     <span class="md-ellipsis">
       <span class="md-typeset">
         Using GitHub Enterprise
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-bitbucket-cloud" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Using Bitbucket Cloud
       </span>
     </span>
   </a>
@@ -921,6 +943,33 @@
     
   
   GitLab CI
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bitbucket-pipelines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Bitbucket Pipelines
 
     
   </span>
@@ -1344,6 +1393,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#bitbucket" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>bitbucket</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#auto" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -1431,6 +1491,17 @@
     <span class="md-ellipsis">
       <span class="md-typeset">
         Using GitHub Enterprise
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-bitbucket-cloud" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Using Bitbucket Cloud
       </span>
     </span>
   </a>
@@ -1584,8 +1655,18 @@
 <td>Read from <code>GITLAB_TOKEN</code> env var</td>
 </tr>
 <tr>
+<td><code>--bitbucket-token</code></td>
+<td>Authentication token for Bitbucket Cloud API. Can also be set via <code>BITBUCKET_TOKEN</code> environment variable.</td>
+<td>Read from <code>BITBUCKET_TOKEN</code> env var</td>
+</tr>
+<tr>
+<td><code>--bitbucket-username</code></td>
+<td>Optional Bitbucket username for App Password Basic Auth. When omitted, <code>--bitbucket-token</code> is used as a Bearer token.</td>
+<td>Not set</td>
+</tr>
+<tr>
 <td><code>--token</code></td>
-<td>Shared fallback token for GitHub and GitLab APIs when specific tokens are not provided.</td>
+<td>Shared fallback token for GitHub, GitLab, and Bitbucket APIs when specific tokens are not provided.</td>
 <td>Not set</td>
 </tr>
 <tr>
@@ -1597,6 +1678,11 @@
 <td><code>--gitlab-base-url</code></td>
 <td>GitLab API base URL (useful for self-hosted GitLab).</td>
 <td><code>https://gitlab.com</code></td>
+</tr>
+<tr>
+<td><code>--bitbucket-base-url</code></td>
+<td>Bitbucket API base URL.</td>
+<td><code>https://api.bitbucket.org/2.0</code></td>
 </tr>
 <tr>
 <td><code>--resolver</code></td>
@@ -1697,11 +1783,20 @@
 <li>Requires valid GitHub token for better rate limits</li>
 <li><strong>Best for</strong>: Public repositories or when you need GitHub-specific features</li>
 </ul>
+<h3 id="bitbucket"><code>bitbucket</code><a class="headerlink" href="#bitbucket" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Uses Bitbucket Cloud API to fetch tags</li>
+<li>Only works with Bitbucket Cloud</li>
+<li>Supports Repository Access Tokens as Bearer tokens and App Passwords with <code>--bitbucket-username</code></li>
+<li>Requires valid Bitbucket token for private repositories</li>
+<li><strong>Best for</strong>: Bitbucket Cloud repositories or when Git protocol access is restricted</li>
+</ul>
 <h3 id="auto"><code>auto</code><a class="headerlink" href="#auto" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Automatically selects the best resolver based on repository host</li>
 <li>Uses GitLab API for GitLab repositories</li>
 <li>Uses GitHub API for GitHub repositories</li>
+<li>Uses Bitbucket API for Bitbucket Cloud repositories</li>
 <li>Falls back to Git for other repositories</li>
 <li>Requires tokens if accessing private repositories</li>
 <li><strong>Best for</strong>: Mixed environments with multiple Git hosting platforms</li>
@@ -1710,9 +1805,10 @@
 <ul>
 <li><code>GITHUB_TOKEN</code> - Default authentication token for GitHub API. Used when <code>--github-token</code> is not specified.</li>
 <li><code>GITLAB_TOKEN</code> - Default authentication token for GitLab API. Used when <code>--gitlab-token</code> is not specified.</li>
+<li><code>BITBUCKET_TOKEN</code> - Default authentication token for Bitbucket Cloud API. Used when <code>--bitbucket-token</code> is not specified.</li>
 </ul>
 <blockquote>
-<p><strong>Security note:</strong> Prefer environment variables (<code>GITHUB_TOKEN</code>, <code>GITLAB_TOKEN</code>) over the <code>--token</code>, <code>--github-token</code>, and <code>--gitlab-token</code> CLI flags.  Arguments passed on the command line may be visible in shell history, process listings (<code>ps</code>), and CI/CD logs.  Environment variables avoid this exposure.</p>
+<p><strong>Security note:</strong> Prefer environment variables (<code>GITHUB_TOKEN</code>, <code>GITLAB_TOKEN</code>, <code>BITBUCKET_TOKEN</code>) over the <code>--token</code>, <code>--github-token</code>, <code>--gitlab-token</code>, and <code>--bitbucket-token</code> CLI flags.  Arguments passed on the command line may be visible in shell history, process listings (<code>ps</code>), and CI/CD logs.  Environment variables avoid this exposure.</p>
 </blockquote>
 <h2 id="exit-codes">Exit Codes<a class="headerlink" href="#exit-codes" title="Permanent link">&para;</a></h2>
 <ul>
@@ -1748,6 +1844,10 @@
 </span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="c1"># Use GITLAB_TOKEN from environment (GitLab API)</span>
 </span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GITLAB_TOKEN</span><span class="o">=</span><span class="s2">&quot;glpat_xxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;</span>
 </span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--root<span class="w"> </span>.<span class="w"> </span>--resolver<span class="w"> </span>auto
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="c1"># Use BITBUCKET_TOKEN from environment (Bitbucket Cloud API)</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="nb">export</span><span class="w"> </span><span class="nv">BITBUCKET_TOKEN</span><span class="o">=</span><span class="s2">&quot;xxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;</span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--root<span class="w"> </span>.<span class="w"> </span>--resolver<span class="w"> </span>bitbucket
 </span></code></pre></div>
 <h3 id="using-github-enterprise">Using GitHub Enterprise<a class="headerlink" href="#using-github-enterprise" title="Permanent link">&para;</a></h3>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Point to GitHub Enterprise API with token</span>
@@ -1757,42 +1857,53 @@
 </span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="c1"># Or pass token directly</span>
 </span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--github-base-url<span class="w"> </span>https://github.enterprise.com/api/v3<span class="w"> </span>--resolver<span class="w"> </span>github<span class="w"> </span>--github-token<span class="w"> </span><span class="nv">$GITHUB_TOKEN</span>
 </span></code></pre></div>
-<h3 id="using-self-hosted-gitlab">Using Self-Hosted GitLab<a class="headerlink" href="#using-self-hosted-gitlab" title="Permanent link">&para;</a></h3>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># Point to self-hosted GitLab with token</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GITLAB_TOKEN</span><span class="o">=</span><span class="s2">&quot;glpat-xxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;</span>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--gitlab-base-url<span class="w"> </span>https://gitlab.company.com<span class="w"> </span>--resolver<span class="w"> </span>auto
+<h3 id="using-bitbucket-cloud">Using Bitbucket Cloud<a class="headerlink" href="#using-bitbucket-cloud" title="Permanent link">&para;</a></h3>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># Use a Repository Access Token as a Bearer token</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">BITBUCKET_TOKEN</span><span class="o">=</span><span class="s2">&quot;xxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--bitbucket-base-url<span class="w"> </span>https://api.bitbucket.org/2.0<span class="w"> </span>--resolver<span class="w"> </span>bitbucket
 </span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>
-</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="c1"># Or pass token directly</span>
-</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--gitlab-base-url<span class="w"> </span>https://gitlab.company.com<span class="w"> </span>--resolver<span class="w"> </span>auto<span class="w"> </span>--gitlab-token<span class="w"> </span><span class="nv">$GITLAB_TOKEN</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="c1"># Or use an App Password with Basic Auth</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--resolver<span class="w"> </span>bitbucket<span class="w"> </span>--bitbucket-username<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$BITBUCKET_USERNAME</span><span class="s2">&quot;</span><span class="w"> </span>--bitbucket-token<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$BITBUCKET_TOKEN</span><span class="s2">&quot;</span>
+</span></code></pre></div>
+<h3 id="using-self-hosted-gitlab">Using Self-Hosted GitLab<a class="headerlink" href="#using-self-hosted-gitlab" title="Permanent link">&para;</a></h3>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Point to self-hosted GitLab with token</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GITLAB_TOKEN</span><span class="o">=</span><span class="s2">&quot;glpat-xxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--gitlab-base-url<span class="w"> </span>https://gitlab.company.com<span class="w"> </span>--resolver<span class="w"> </span>auto
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="c1"># Or pass token directly</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--gitlab-base-url<span class="w"> </span>https://gitlab.company.com<span class="w"> </span>--resolver<span class="w"> </span>auto<span class="w"> </span>--gitlab-token<span class="w"> </span><span class="nv">$GITLAB_TOKEN</span>
 </span></code></pre></div>
 <h3 id="filtering-files">Filtering Files<a class="headerlink" href="#filtering-files" title="Permanent link">&para;</a></h3>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Include only specific patterns</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--include<span class="w"> </span><span class="s2">&quot;**/*.tf&quot;</span><span class="w"> </span>--include<span class="w"> </span><span class="s2">&quot;**/*.hcl&quot;</span>
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1"># Exclude specific patterns</span>
-</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--exclude<span class="w"> </span><span class="s2">&quot;**/test/**&quot;</span><span class="w"> </span>--exclude<span class="w"> </span><span class="s2">&quot;**/*_test.tf&quot;</span>
-</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>
-</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="c1"># Combine include and exclude</span>
-</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--include<span class="w"> </span><span class="s2">&quot;**/*.tf&quot;</span><span class="w"> </span>--exclude<span class="w"> </span><span class="s2">&quot;**/examples/**&quot;</span>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Include only specific patterns</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--include<span class="w"> </span><span class="s2">&quot;**/*.tf&quot;</span><span class="w"> </span>--include<span class="w"> </span><span class="s2">&quot;**/*.hcl&quot;</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1"># Exclude specific patterns</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--exclude<span class="w"> </span><span class="s2">&quot;**/test/**&quot;</span><span class="w"> </span>--exclude<span class="w"> </span><span class="s2">&quot;**/*_test.tf&quot;</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="c1"># Combine include and exclude</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--include<span class="w"> </span><span class="s2">&quot;**/*.tf&quot;</span><span class="w"> </span>--exclude<span class="w"> </span><span class="s2">&quot;**/examples/**&quot;</span>
 </span></code></pre></div>
 <h3 id="validating-token-before-processing">Validating Token Before Processing<a class="headerlink" href="#validating-token-before-processing" title="Permanent link">&para;</a></h3>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Validate token in CI/CD before running expensive scan (GitHub)</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--github-token<span class="w"> </span><span class="nv">$GITHUB_TOKEN</span><span class="w"> </span>--validate-token
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1"># Validate token in CI/CD before running expensive scan (GitLab)</span>
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--gitlab-token<span class="w"> </span><span class="nv">$GITLAB_TOKEN</span><span class="w"> </span>--validate-token
-</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>
-</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="c1"># If token is invalid, exit with code 1</span>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># Validate token in CI/CD before running expensive scan (GitHub)</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--github-token<span class="w"> </span><span class="nv">$GITHUB_TOKEN</span><span class="w"> </span>--validate-token
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1"># Validate token in CI/CD before running expensive scan (GitLab)</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--gitlab-token<span class="w"> </span><span class="nv">$GITLAB_TOKEN</span><span class="w"> </span>--validate-token
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="c1"># Validate token in CI/CD before running expensive scan (Bitbucket)</span>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--bitbucket-token<span class="w"> </span><span class="nv">$BITBUCKET_TOKEN</span><span class="w"> </span>--validate-token
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="c1"># If token is invalid, exit with code 1</span>
 </span></code></pre></div>
 <h3 id="updating-modules">Updating Modules<a class="headerlink" href="#updating-modules" title="Permanent link">&para;</a></h3>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># Update all modules and generate report</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>agronomist<span class="w"> </span>update<span class="w"> </span>--json<span class="w"> </span>report.json
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1"># Update with Markdown report</span>
-</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>agronomist<span class="w"> </span>update<span class="w"> </span>--markdown<span class="w"> </span>UPDATES.md<span class="w"> </span>--json<span class="w"> </span>report.json
-</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>
-</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="c1"># Update specific directory with token</span>
-</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>agronomist<span class="w"> </span>update<span class="w"> </span>--root<span class="w"> </span>./terraform<span class="w"> </span>--resolver<span class="w"> </span>github<span class="w"> </span>--github-token<span class="w"> </span><span class="nv">$GITHUB_TOKEN</span>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># Update all modules and generate report</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>agronomist<span class="w"> </span>update<span class="w"> </span>--json<span class="w"> </span>report.json
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="c1"># Update with Markdown report</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>agronomist<span class="w"> </span>update<span class="w"> </span>--markdown<span class="w"> </span>UPDATES.md<span class="w"> </span>--json<span class="w"> </span>report.json
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="c1"># Update specific directory with token</span>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>agronomist<span class="w"> </span>update<span class="w"> </span>--root<span class="w"> </span>./terraform<span class="w"> </span>--resolver<span class="w"> </span>github<span class="w"> </span>--github-token<span class="w"> </span><span class="nv">$GITHUB_TOKEN</span>
 </span></code></pre></div>
 
 

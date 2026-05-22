@@ -561,6 +561,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#bitbucket" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        bitbucket
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#auto" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -660,6 +671,33 @@
     
   
   GitLab CI
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bitbucket-pipelines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Bitbucket Pipelines
 
     
   </span>
@@ -943,6 +981,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#bitbucket" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        bitbucket
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#auto" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -1008,8 +1057,14 @@
 <td>Yes</td>
 </tr>
 <tr>
+<td><code>bitbucket</code></td>
+<td>Bitbucket Cloud only</td>
+<td>Optional, recommended</td>
+<td>Yes</td>
+</tr>
+<tr>
 <td><code>auto</code></td>
-<td>GitHub, GitLab, other</td>
+<td>GitHub, GitLab, Bitbucket, other</td>
 <td>Optional per host</td>
 <td>Yes</td>
 </tr>
@@ -1062,23 +1117,63 @@
 <li>Without a token, GitHub's unauthenticated API rate limit (60 requests/hour) is quickly reached.</li>
 </ul>
 <hr />
+<h2 id="bitbucket">bitbucket<a class="headerlink" href="#bitbucket" title="Permanent link">&para;</a></h2>
+<p>Uses the Bitbucket Cloud REST API to fetch tags for the module repository.</p>
+<p><strong>When to use it:</strong></p>
+<ul>
+<li>All your module sources are hosted on Bitbucket Cloud.</li>
+<li>You want API-based resolution instead of <code>git ls-remote</code>.</li>
+<li>You need token-authenticated access to private Bitbucket Cloud repositories.</li>
+</ul>
+<p><strong>Authentication:</strong></p>
+<p>Provide a Bitbucket Repository Access Token with repository read access:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">BITBUCKET_TOKEN</span><span class="o">=</span><span class="s2">&quot;...&quot;</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--root<span class="w"> </span>./infrastructure<span class="w"> </span>--resolver<span class="w"> </span>bitbucket
+</span></code></pre></div>
+<p>Or pass it directly:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--root<span class="w"> </span>./infrastructure<span class="w"> </span>--resolver<span class="w"> </span>bitbucket<span class="w"> </span>--bitbucket-token<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$BITBUCKET_TOKEN</span><span class="s2">&quot;</span>
+</span></code></pre></div>
+<p>For App Password Basic Auth, also provide your Bitbucket username:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>agronomist<span class="w"> </span>report<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span>--root<span class="w"> </span>./infrastructure<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">  </span>--resolver<span class="w"> </span>bitbucket<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span>--bitbucket-username<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$BITBUCKET_USERNAME</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">  </span>--bitbucket-token<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$BITBUCKET_TOKEN</span><span class="s2">&quot;</span>
+</span></code></pre></div>
+<p><strong>Bitbucket Cloud:</strong></p>
+<p>Bitbucket Cloud uses the API base URL <code>https://api.bitbucket.org/2.0</code> by default:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>agronomist<span class="w"> </span>report<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span>--resolver<span class="w"> </span>bitbucket<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span>--bitbucket-base-url<span class="w"> </span>https://api.bitbucket.org/2.0
+</span></code></pre></div>
+<p><strong>Limitations:</strong></p>
+<ul>
+<li>Only works with Bitbucket Cloud. Bitbucket Server/Data Center support is a future TODO.</li>
+<li>Requires a token for private repositories.</li>
+</ul>
+<p><strong>Example:</strong></p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--root<span class="w"> </span>./infrastructure<span class="w"> </span>--resolver<span class="w"> </span>bitbucket
+</span></code></pre></div>
+<hr />
 <h2 id="auto">auto<a class="headerlink" href="#auto" title="Permanent link">&para;</a></h2>
 <p>Automatically selects the most appropriate resolver based on the hostname in each module's source URL.</p>
 <ul>
 <li>GitLab hostnames use the GitLab API.</li>
 <li>GitHub hostnames use the GitHub API.</li>
+<li>Bitbucket Cloud hostnames use the Bitbucket API.</li>
 <li>All other hostnames fall back to the <code>git</code> resolver.</li>
 </ul>
 <p><strong>When to use it:</strong></p>
 <ul>
-<li>Your infrastructure uses modules from a mix of GitHub and GitLab repositories.</li>
+<li>Your infrastructure uses modules from a mix of GitHub, GitLab, and Bitbucket repositories.</li>
 <li>You want optimal resolution per host without manual <code>--resolver</code> switching.</li>
 </ul>
 <p><strong>Authentication:</strong></p>
 <p>Configure tokens for each platform as needed:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GITHUB_TOKEN</span><span class="o">=</span><span class="s2">&quot;ghp_...&quot;</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GITLAB_TOKEN</span><span class="o">=</span><span class="s2">&quot;glpat-...&quot;</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--root<span class="w"> </span>./infrastructure<span class="w"> </span>--resolver<span class="w"> </span>auto
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GITHUB_TOKEN</span><span class="o">=</span><span class="s2">&quot;ghp_...&quot;</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GITLAB_TOKEN</span><span class="o">=</span><span class="s2">&quot;glpat-...&quot;</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">BITBUCKET_TOKEN</span><span class="o">=</span><span class="s2">&quot;...&quot;</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>agronomist<span class="w"> </span>report<span class="w"> </span>--root<span class="w"> </span>./infrastructure<span class="w"> </span>--resolver<span class="w"> </span>auto
 </span></code></pre></div>
 <p><strong>Self-hosted GitLab:</strong></p>
 <p>The GitLab resolver detects GitLab hosts by inspecting the hostname in each module's <code>source</code> URL. For self-hosted GitLab instances, set <code>--gitlab-base-url</code> to your instance URL (e.g., <code>https://gitlab.company.com</code>). The resolver also auto-detects the host from each module's source URL. Tokens are passed via <code>--gitlab-token</code> or the <code>GITLAB_TOKEN</code> environment variable.</p>
@@ -1089,7 +1184,7 @@
 </ul>
 <hr />
 <h2 id="choosing-a-resolver">Choosing a resolver<a class="headerlink" href="#choosing-a-resolver" title="Permanent link">&para;</a></h2>
-<p>Use <code>git</code> as the default in most environments. Switch to <code>github</code> or <code>auto</code> when you need release-aware resolution or are scanning repositories across multiple Git hosting platforms where API tokens are already available.</p>
+<p>Use <code>git</code> as the default in most environments. Switch to <code>github</code>, <code>bitbucket</code>, or <code>auto</code> when you need release-aware resolution or are scanning repositories across multiple Git hosting platforms where API tokens are already available.</p>
 <p>See <a href="../cli/#resolution-strategies">CLI Reference</a> for the full flag reference.</p>
 
 
