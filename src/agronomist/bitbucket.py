@@ -184,7 +184,10 @@ class BitbucketClient:
             values = data.get("values") or []
             if not values:
                 return None
-            return str(values[0].get("name"))
+            name = values[0].get("name")
+            if not name:
+                return None
+            return str(name)
         except requests.RequestException as exc:
             raise NetworkError(
                 f"Error fetching Bitbucket tags for {workspace}/{repo_slug}: {exc}"
