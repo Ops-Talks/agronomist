@@ -20,12 +20,12 @@ Agronomist continuously monitors and reports on module updates, ensuring your Ia
 - Generates JSON report and optionally updates refs in-place.
 - Generates human-readable reports with updates using Markdown.
 - Supports blacklist filtering to ignore specific repositories, modules, or files.
-- Can be used via local CLI, GitHub Action, or GitLab CI.
+- Can be used via local CLI, GitHub Action, GitLab CI, or Bitbucket Pipelines.
 
 ## Requirements
 - Python 3.10+
 - Git 
-- GitHub/GitLab token (PAT)
+- GitHub/GitLab/Bitbucket token
 
 ## Quick start (CLI)
 
@@ -82,6 +82,7 @@ poetry run agronomist update --root . --json report.json
 - Reports: [docs/reports.md](docs/reports.md)
 - GitHub Action: [docs/github-action.md](docs/github-action.md)
 - GitLab CI: [docs/gitlab-ci.md](docs/gitlab-ci.md)
+- Bitbucket Pipelines: [docs/bitbucket-pipelines.md](docs/bitbucket-pipelines.md)
 - Testing: [docs/testing.md](docs/testing.md)
 
 ## Development & Testing

@@ -9,6 +9,12 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Bitbucket Cloud support: new `bitbucket` resolver, `--bitbucket-token`, `--bitbucket-username`, `--bitbucket-base-url` flags, `BITBUCKET_TOKEN` env var
+- `examples/bitbucket-pipelines.yml` template and `examples/bitbucket/create_pr.sh` helper
+- Documentation: `docs/bitbucket-pipelines.md`
+
 ### Security
 
 - **CodeQL** — added `.github/workflows/codeql.yml` for advanced Python SAST

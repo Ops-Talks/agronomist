@@ -45,9 +45,12 @@ Scans Terraform/OpenTofu files, identifies available module version updates, and
 |--------|-------------|---------|
 | `--github-token` | Authentication token for GitHub API (PAT - Personal Access Token). Can also be set via `GITHUB_TOKEN` environment variable. | Read from `GITHUB_TOKEN` env var |
 | `--gitlab-token` | Authentication token for GitLab API (PAT - Personal Access Token). Can also be set via `GITLAB_TOKEN` environment variable. | Read from `GITLAB_TOKEN` env var |
-| `--token` | Shared fallback token for GitHub and GitLab APIs when specific tokens are not provided. | Not set |
+| `--bitbucket-token` | Authentication token for Bitbucket Cloud API. Can also be set via `BITBUCKET_TOKEN` environment variable. | Read from `BITBUCKET_TOKEN` env var |
+| `--bitbucket-username` | Optional Bitbucket username for App Password Basic Auth. When omitted, `--bitbucket-token` is used as a Bearer token. | Not set |
+| `--token` | Shared fallback token for GitHub, GitLab, and Bitbucket APIs when specific tokens are not provided. | Not set |
 | `--github-base-url` | GitHub API base URL (useful for GitHub Enterprise). | `https://api.github.com` |
 | `--gitlab-base-url` | GitLab API base URL (useful for self-hosted GitLab). | `https://gitlab.com` |
+| `--bitbucket-base-url` | Bitbucket API base URL. | `https://api.bitbucket.org/2.0` |
 | `--resolver` | Version resolution strategy. See [Resolution Strategies](#resolution-strategies). | `git` |
 | `--validate-token` | Validate API token before processing (useful for CI/CD pipelines). Does not scan if invalid. | `false` |
 
@@ -100,11 +103,20 @@ The `--resolver` option determines how Agronomist queries for the latest module 
 - Requires valid GitHub token for better rate limits
 - **Best for**: Public repositories or when you need GitHub-specific features
 
+### `bitbucket`
+
+- Uses Bitbucket Cloud API to fetch tags
+- Only works with Bitbucket Cloud
+- Supports Repository Access Tokens as Bearer tokens and App Passwords with `--bitbucket-username`
+- Requires valid Bitbucket token for private repositories
+- **Best for**: Bitbucket Cloud repositories or when Git protocol access is restricted
+
 ### `auto`
 
 - Automatically selects the best resolver based on repository host
 - Uses GitLab API for GitLab repositories
 - Uses GitHub API for GitHub repositories
+- Uses Bitbucket API for Bitbucket Cloud repositories
 - Falls back to Git for other repositories
 - Requires tokens if accessing private repositories
 - **Best for**: Mixed environments with multiple Git hosting platforms
@@ -113,8 +125,9 @@ The `--resolver` option determines how Agronomist queries for the latest module 
 
 - `GITHUB_TOKEN` - Default authentication token for GitHub API. Used when `--github-token` is not specified.
 - `GITLAB_TOKEN` - Default authentication token for GitLab API. Used when `--gitlab-token` is not specified.
+- `BITBUCKET_TOKEN` - Default authentication token for Bitbucket Cloud API. Used when `--bitbucket-token` is not specified.
 
-> **Security note:** Prefer environment variables (`GITHUB_TOKEN`, `GITLAB_TOKEN`) over the `--token`, `--github-token`, and `--gitlab-token` CLI flags.  Arguments passed on the command line may be visible in shell history, process listings (`ps`), and CI/CD logs.  Environment variables avoid this exposure.
+> **Security note:** Prefer environment variables (`GITHUB_TOKEN`, `GITLAB_TOKEN`, `BITBUCKET_TOKEN`) over the `--token`, `--github-token`, `--gitlab-token`, and `--bitbucket-token` CLI flags.  Arguments passed on the command line may be visible in shell history, process listings (`ps`), and CI/CD logs.  Environment variables avoid this exposure.
 
 ## Exit Codes
 
@@ -159,6 +172,10 @@ GITHUB_TOKEN="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxx" agronomist report --root . --res
 # Use GITLAB_TOKEN from environment (GitLab API)
 export GITLAB_TOKEN="glpat_xxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 agronomist report --root . --resolver auto
+
+# Use BITBUCKET_TOKEN from environment (Bitbucket Cloud API)
+export BITBUCKET_TOKEN="xxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+agronomist report --root . --resolver bitbucket
 ```
 
 ### Using GitHub Enterprise
@@ -170,6 +187,17 @@ agronomist report --github-base-url https://github.enterprise.com/api/v3 --resol
 
 # Or pass token directly
 agronomist report --github-base-url https://github.enterprise.com/api/v3 --resolver github --github-token $GITHUB_TOKEN
+```
+
+### Using Bitbucket Cloud
+
+```sh
+# Use a Repository Access Token as a Bearer token
+export BITBUCKET_TOKEN="xxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+agronomist report --bitbucket-base-url https://api.bitbucket.org/2.0 --resolver bitbucket
+
+# Or use an App Password with Basic Auth
+agronomist report --resolver bitbucket --bitbucket-username "$BITBUCKET_USERNAME" --bitbucket-token "$BITBUCKET_TOKEN"
 ```
 
 ### Using Self-Hosted GitLab
@@ -204,6 +232,9 @@ agronomist report --github-token $GITHUB_TOKEN --validate-token
 
 # Validate token in CI/CD before running expensive scan (GitLab)
 agronomist report --gitlab-token $GITLAB_TOKEN --validate-token
+
+# Validate token in CI/CD before running expensive scan (Bitbucket)
+agronomist report --bitbucket-token $BITBUCKET_TOKEN --validate-token
 
 # If token is invalid, exit with code 1
 ```

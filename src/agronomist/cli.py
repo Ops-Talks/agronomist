@@ -16,6 +16,7 @@ from collections.abc import Callable
 from urllib.parse import urlparse
 
 from . import __version__
+from .bitbucket import BitbucketClient
 from .config import load_config
 from .exceptions import AuthenticationError, ConfigError
 from .git import GitClient
@@ -49,9 +50,17 @@ def _add_common_args(parser: argparse.ArgumentParser) -> None:
         help=("GitLab API base URL (default: https://gitlab.com)"),
     )
     parser.add_argument(
+        "--bitbucket-base-url",
+        default="https://api.bitbucket.org/2.0",
+        help="Bitbucket Cloud API base URL",
+    )
+    parser.add_argument(
         "--token",
         default=None,
-        help=("Shared fallback token for GitHub/GitLab when specific tokens are not provided"),
+        help=(
+            "Shared fallback token for GitHub/GitLab/Bitbucket when specific tokens "
+            "are not provided"
+        ),
     )
     parser.add_argument(
         "--github-token",
@@ -63,12 +72,22 @@ def _add_common_args(parser: argparse.ArgumentParser) -> None:
         default=None,
         help="GitLab API token (overrides GITLAB_TOKEN env var)",
     )
+    parser.add_argument(
+        "--bitbucket-token",
+        default=None,
+        help="Bitbucket API token (overrides BITBUCKET_TOKEN env var)",
+    )
+    parser.add_argument(
+        "--bitbucket-username",
+        default=None,
+        help="Bitbucket username for App Password Basic auth (optional)",
+    )
     parser.add_argument("--config", default=".agronomist.yaml")
     parser.add_argument(
         "--resolver",
         default="git",
-        choices=["git", "github", "auto"],
-        help="How to resolve the latest version: git, github or auto",
+        choices=["git", "github", "bitbucket", "auto"],
+        help="How to resolve the latest version: git, github, bitbucket or auto",
     )
     parser.add_argument(
         "--json",
@@ -287,7 +306,15 @@ def _print_category_summary(
 
 def _create_clients(
     args: argparse.Namespace,
-) -> tuple[GitHubClient, GitLabClient, GitClient, str | None, str | None]:
+) -> tuple[
+    GitHubClient,
+    GitLabClient,
+    BitbucketClient,
+    GitClient,
+    str | None,
+    str | None,
+    str | None,
+]:
     """Instantiate API clients and resolve tokens.
 
     Token resolution priority: CLI flag > environment
@@ -297,11 +324,12 @@ def _create_clients(
         args: Parsed CLI arguments.
 
     Returns:
-        A tuple of (github_client, gitlab_client, git_client,
-        github_token, gitlab_token).
+        A tuple of (github_client, gitlab_client, bitbucket_client,
+        git_client, github_token, gitlab_token, bitbucket_token).
     """
     github_token = args.github_token or os.environ.get("GITHUB_TOKEN") or args.token
     gitlab_token = args.gitlab_token or os.environ.get("GITLAB_TOKEN") or args.token
+    bitbucket_token = args.bitbucket_token or os.environ.get("BITBUCKET_TOKEN") or args.token
     github_client = GitHubClient(
         base_url=args.github_base_url,
         token=github_token,
@@ -312,13 +340,21 @@ def _create_clients(
         token=gitlab_token,
         timeout=args.timeout,
     )
+    bitbucket_client = BitbucketClient(
+        base_url=args.bitbucket_base_url,
+        token=bitbucket_token,
+        username=args.bitbucket_username,
+        timeout=args.timeout,
+    )
     git_client = GitClient(timeout=args.timeout)
     return (
         github_client,
         gitlab_client,
+        bitbucket_client,
         git_client,
         github_token,
         gitlab_token,
+        bitbucket_token,
     )
 
 
@@ -326,8 +362,10 @@ def _validate_tokens(
     args: argparse.Namespace,
     github_client: GitHubClient,
     gitlab_client: GitLabClient,
+    bitbucket_client: BitbucketClient,
     github_token: str | None,
     gitlab_token: str | None,
+    bitbucket_token: str | None,
 ) -> bool:
     """Validate configured API tokens when requested.
 
@@ -335,8 +373,10 @@ def _validate_tokens(
         args: Parsed CLI arguments.
         github_client: GitHub API client.
         gitlab_client: GitLab API client.
+        bitbucket_client: Bitbucket API client.
         github_token: Resolved GitHub token (may be None).
         gitlab_token: Resolved GitLab token (may be None).
+        bitbucket_token: Resolved Bitbucket token (may be None).
 
     Returns:
         True if validation passed or was skipped,
@@ -359,6 +399,13 @@ def _validate_tokens(
             gitlab_client.validate_token()
         except AuthenticationError:
             logger.error("GitLab token validation failed")
+            return False
+    if bitbucket_token:
+        validated_any = True
+        try:
+            bitbucket_client.validate_token()
+        except AuthenticationError:
+            logger.error("Bitbucket token validation failed")
             return False
     if validated_any:
         print("Tokens validated successfully.")
@@ -405,17 +452,21 @@ def main(argv: list[str] | None = None) -> int:
     (
         github_client,
         gitlab_client,
+        bitbucket_client,
         git_client,
         github_token,
         gitlab_token,
+        bitbucket_token,
     ) = _create_clients(args)
 
     if not _validate_tokens(
         args,
         github_client,
         gitlab_client,
+        bitbucket_client,
         github_token,
         gitlab_token,
+        bitbucket_token,
     ):
         return 1
 
@@ -427,10 +478,18 @@ def main(argv: list[str] | None = None) -> int:
     def _latest_ref(source: SourceRef) -> str | None:
         """Resolve latest ref using the configured strategy."""
         gitlab_host = GitLabClient.detect_gitlab_host(source.repo_url)
+        bitbucket_host = BitbucketClient.detect_bitbucket_host(source.repo_url)
 
         if args.resolver == "github":
             if source.repo_host in github_hosts:
                 ref = github_client.latest_ref(source.repo)
+                if ref:
+                    return ref
+            return git_client.latest_ref(source.repo_url)
+
+        if args.resolver == "bitbucket":
+            if bitbucket_host:
+                ref = bitbucket_client.latest_ref(source.repo_url)
                 if ref:
                     return ref
             return git_client.latest_ref(source.repo_url)
@@ -441,6 +500,10 @@ def main(argv: list[str] | None = None) -> int:
         if args.resolver == "auto":
             if gitlab_host:
                 ref = gitlab_client.latest_ref(source.repo_url)
+                if ref:
+                    return ref
+            elif bitbucket_host:
+                ref = bitbucket_client.latest_ref(source.repo_url)
                 if ref:
                     return ref
             elif source.repo_host in github_hosts:

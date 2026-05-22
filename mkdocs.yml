@@ -38,6 +38,7 @@ nav:
     - Reports: reports.md
     - GitHub Action: github-action.md
     - GitLab CI: gitlab-ci.md
+    - Bitbucket Pipelines: bitbucket-pipelines.md
     - Troubleshooting: troubleshooting.md
   - Contributing:
     - Architecture: architecture.md
