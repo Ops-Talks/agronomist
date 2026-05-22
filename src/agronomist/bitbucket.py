@@ -139,7 +139,9 @@ class BitbucketClient:
             repo_slug: Repository slug within the workspace.
 
         Returns:
-            The tag name string, or None on any error.
+            The tag name string, or None if the repository is not found,
+            access is unauthorized or forbidden, or the repository has
+            no tags.
 
         Raises:
             NetworkError: When a request exception occurs.
